@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -11,6 +12,8 @@ const predefinedQuestions = [
     { question: "How can I hire a developer?", answer: "You can hire developers on an hourly, monthly, or quarterly basis. Please visit our 'Hire Developers' page or provide your details here, and our team will get in touch." },
     { question: "What is your pricing?", answer: "Our pricing is flexible. For detailed information, please check the 'Pricing' section on our 'Hire Developers' page. We can also provide a custom quote based on your project requirements." },
     { question: "Where are you located?", answer: "Our main office is located at 123 Tech Avenue, Silicon Valley, CA. We serve clients globally!" },
+    { question: "What technologies do you use?", answer: "We specialize in a wide array of technologies, including React, Next.js, Node.js, Python for AI/ML, Swift/Kotlin for mobile, and Solidity for Blockchain. You can see a full list on our 'Hire Developers' page." },
+    { question: "Can you tell me about your experience?", answer: "We have over 17 years of experience in the industry, with a team of over 700 developers. We have successfully completed hundreds of projects for clients across the globe." }
 ];
 
 export function Chatbot() {
@@ -99,22 +102,53 @@ export function Chatbot() {
         handleUserQuery(option);
     };
 
+    const findBestMatch = (query: string) => {
+        const lowerCaseQuery = query.toLowerCase();
+        let bestMatch = null;
+        let highestScore = 0;
+
+        // Check for exact match first
+        const exactMatch = predefinedQuestions.find(q => q.question.toLowerCase() === lowerCaseQuery);
+        if (exactMatch) return exactMatch;
+
+        // Keyword matching logic
+        const queryWords = new Set(lowerCaseQuery.replace(/[?.,]/g, '').split(' '));
+        
+        predefinedQuestions.forEach(q => {
+            const questionWords = new Set(q.question.toLowerCase().replace(/[?.,]/g, '').split(' '));
+            let score = 0;
+            queryWords.forEach(word => {
+                if (questionWords.has(word)) {
+                    score++;
+                }
+            });
+
+            if (score > highestScore) {
+                highestScore = score;
+                bestMatch = q;
+            }
+        });
+        
+        return bestMatch;
+    }
+
     const handleUserQuery = (query: string) => {
         setIsTyping(true);
         setTimeout(() => {
-            const matchedAnswer = predefinedQuestions.find(q => q.question.toLowerCase() === query.toLowerCase());
+            const matchedQuestion = findBestMatch(query);
             let botResponse;
 
-            if (matchedAnswer) {
-                botResponse = matchedAnswer.answer;
+            if (matchedQuestion) {
+                botResponse = matchedQuestion.answer;
             } else {
-                 botResponse = "I'm sorry, I'm not sure how to answer that. You can try one of the predefined questions, or ask something else about our services, hiring process, or pricing.";
+                 botResponse = "I'm sorry, I'm not sure how to answer that. You can ask me about our services, pricing, hiring developers, or our experience. You can also try one of the suggestions below.";
             }
             
             setIsTyping(false);
             setMessages(prev => [...prev, 
                 { id: Date.now() + 1, text: botResponse, sender: 'bot' },
-                { id: Date.now() + 2, text: 'Is there anything else?', sender: 'options', options: predefinedQuestions.map(q => q.question) }
+                { id: Date.now() + 2, text: 'Is there anything else I can help with?', sender: 'bot' },
+                { id: Date.now() + 3, text: '', sender: 'options', options: predefinedQuestions.map(q => q.question) }
             ]);
         }, 1500);
     }

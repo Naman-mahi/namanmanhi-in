@@ -10,8 +10,14 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
           <stop offset="100%" style={{stopColor: 'hsl(210 90% 55%)', stopOpacity: 1}} />
         </linearGradient>
       </defs>
-      <path d="M6 29L6 7L15 22L24 7L24 29" stroke="url(#logoIconGradient)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-      <text x="34" y="27" fontFamily="'Poppins', sans-serif" fontSize="24" fontWeight="bold" fill="hsl(var(--foreground))">
+      {/* NM Monogram */}
+      <g transform="translate(0, 4)">
+        <path d="M4 2.5L4 23.5L13 10L13 23.5" stroke="url(#logoIconGradient)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M17 2.5L26 23.5L26 2.5" stroke="url(#logoIconGradient)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+      </g>
+      
+      {/* Full Name Text */}
+      <text x="36" y="27" fontFamily="'Poppins', sans-serif" fontSize="24" fontWeight="bold" fill="hsl(var(--foreground))">
         NamanMahi
         <tspan fill="url(#logoTextGradient)">.in</tspan>
       </text>

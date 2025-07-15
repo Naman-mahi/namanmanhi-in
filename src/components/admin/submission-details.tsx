@@ -74,48 +74,50 @@ const FormDetails = ({ form, onUpdate }: { form: ContactSubmission, onUpdate: ()
                     Save
                 </Button>
             </div>
-            <ScrollArea className="flex-grow">
-                <div className="p-6 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                        <DetailItem icon={User} label="Full Name" value={form.fullName} />
-                        <DetailItem icon={Mail} label="Email" value={<a href={`mailto:${form.email}`} className="text-primary hover:underline">{form.email}</a>} />
-                        <DetailItem icon={Phone} label="Contact No." value={form.contact} />
-                        <DetailItem icon={Phone} label="WhatsApp" value={form.whatsapp} />
-                        <DetailItem icon={MapPin} label="Location" value={form.location} />
-                        {form.budget && (
-                            <DetailItem icon={DollarSign} label="Project Budget" value={`$${new Intl.NumberFormat('en-US').format(form.budget)}`} />
-                        )}
-                    </div>
-                    <Separator />
-                    <DetailItem icon={MessageSquare} label="Message" value={<p className="whitespace-pre-wrap">{form.message}</p>} />
-                    <Separator />
-                    <div className="space-y-4">
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground mb-2">Lead Status</p>
-                            <Select value={status} onValueChange={setStatus}>
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Set status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="New">New</SelectItem>
-                                    <SelectItem value="Contacted">Contacted</SelectItem>
-                                    <SelectItem value="In Progress">In Progress</SelectItem>
-                                    <SelectItem value="Closed">Closed</SelectItem>
-                                </SelectContent>
-                            </Select>
+            <div className="flex-grow h-0">
+                <ScrollArea className="h-full">
+                    <div className="p-6 space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                            <DetailItem icon={User} label="Full Name" value={form.fullName} />
+                            <DetailItem icon={Mail} label="Email" value={<a href={`mailto:${form.email}`} className="text-primary hover:underline">{form.email}</a>} />
+                            <DetailItem icon={Phone} label="Contact No." value={form.contact} />
+                            <DetailItem icon={Phone} label="WhatsApp" value={form.whatsapp} />
+                            <DetailItem icon={MapPin} label="Location" value={form.location} />
+                            {form.budget && (
+                                <DetailItem icon={DollarSign} label="Project Budget" value={`$${new Intl.NumberFormat('en-US').format(form.budget)}`} />
+                            )}
                         </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2"><StickyNote className="w-4 h-4"/> Internal Notes</p>
-                            <Textarea 
-                                placeholder="Add notes about this lead..."
-                                value={notes}
-                                onChange={(e) => setNotes(e.target.value)}
-                                rows={5}
-                            />
+                        <Separator />
+                        <DetailItem icon={MessageSquare} label="Message" value={<p className="whitespace-pre-wrap">{form.message}</p>} />
+                        <Separator />
+                        <div className="space-y-4">
+                            <div>
+                                <p className="text-sm font-medium text-muted-foreground mb-2">Lead Status</p>
+                                <Select value={status} onValueChange={setStatus}>
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Set status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="New">New</SelectItem>
+                                        <SelectItem value="Contacted">Contacted</SelectItem>
+                                        <SelectItem value="In Progress">In Progress</SelectItem>
+                                        <SelectItem value="Closed">Closed</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2"><StickyNote className="w-4 h-4"/> Internal Notes</p>
+                                <Textarea 
+                                    placeholder="Add notes about this lead..."
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                    rows={5}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-            </ScrollArea>
+                </ScrollArea>
+            </div>
         </div>
     );
 };

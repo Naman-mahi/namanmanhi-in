@@ -42,18 +42,18 @@ export function Footer() {
     >
       <div className="relative">
         <div className="absolute inset-x-0 top-0 -translate-y-1/2">
-            <svg viewBox="0 0 1440 120" className="w-full h-auto text-secondary/50 fill-current">
+            <svg viewBox="0 0 1440 120" className="w-full h-auto text-secondary fill-current">
                 <path d="M1440 48L1200 64L960 48L720 64L480 48L240 64L0 48L0 120L1440 120L1440 48Z" />
             </svg>
         </div>
       </div>
       <div className="relative container mx-auto px-4 pt-24 pb-8">
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
           variants={containerVariants}
         >
           {/* Column 1: Logo and About */}
-          <motion.div className="space-y-6" variants={itemVariants}>
+          <motion.div className="space-y-6 lg:col-span-1" variants={itemVariants}>
             <Logo className="h-10 w-auto" />
             <p className="text-sm text-muted-foreground">
               Innovating with cutting-edge technology to build the future of digital experiences.
@@ -75,9 +75,10 @@ export function Footer() {
           <motion.div className="space-y-6" variants={itemVariants}>
             <h3 className="text-xl font-bold tracking-tight">Quick Links</h3>
             <ul className="space-y-3 text-sm">
+              <li><Link href="/about" className="text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link href="/hire-developers" className="text-muted-foreground hover:text-primary transition-colors">Hire Developers</Link></li>
               <li><Link href="/#services" className="text-muted-foreground hover:text-primary transition-colors">Services</Link></li>
               <li><Link href="/#industries" className="text-muted-foreground hover:text-primary transition-colors">Industries</Link></li>
-              <li><Link href="/#about" className="text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
               <li><Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</Link></li>
             </ul>
           </motion.div>
@@ -100,23 +101,18 @@ export function Footer() {
               </li>
             </ul>
           </motion.div>
-        </motion.div>
-
-        {/* Newsletter Row */}
-        <motion.div 
-          className="mt-16 pt-12 border-t border-border/50"
-          variants={itemVariants}
-        >
-          <div className="max-w-lg mx-auto text-center">
-            <h3 className="text-xl font-bold tracking-tight">Subscribe to our Newsletter</h3>
-            <p className="text-sm text-muted-foreground mt-2 mb-4">Get the latest updates on tech trends and our services.</p>
-            <form className="flex space-x-2">
+          
+          {/* Column 4: Newsletter */}
+          <motion.div className="space-y-6" variants={itemVariants}>
+            <h3 className="text-xl font-bold tracking-tight">Subscribe</h3>
+            <p className="text-sm text-muted-foreground">Get the latest updates on tech trends and our services.</p>
+            <form className="flex flex-col space-y-2">
               <Input type="email" placeholder="Your Email" className="bg-background border-border" required/>
               <Button>Subscribe</Button>
             </form>
-          </div>
+          </motion.div>
         </motion.div>
-        
+
         <motion.div 
           className="mt-16 border-t border-border pt-8 text-center text-sm text-muted-foreground"
           initial={{ opacity: 0 }}

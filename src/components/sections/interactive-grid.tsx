@@ -22,9 +22,9 @@ export function InteractiveGrid({ className, ...props }: InteractiveGridProps) {
     let mouseX = 0;
     let mouseY = 0;
 
-    const spacing = 30;
-    const dotRadius = 2;
-    const maxDistortion = 40;
+    const spacing = 35;
+    const dotRadius = 1.5;
+    const maxDistortion = 30;
     const dampening = 0.08;
 
     let dots: any[] = [];
@@ -83,8 +83,8 @@ export function InteractiveGrid({ className, ...props }: InteractiveGridProps) {
         if (distance < 150) {
           const force = (150 - distance) / 150;
           const angle = Math.atan2(dy, dx);
-          const targetX = dot.originalX + Math.cos(angle) * force * maxDistortion;
-          const targetY = dot.originalY + Math.sin(angle) * force * maxDistortion;
+          const targetX = dot.originalX - Math.cos(angle) * force * maxDistortion;
+          const targetY = dot.originalY - Math.sin(angle) * force * maxDistortion;
 
           dot.vx += (targetX - dot.x) * dampening;
           dot.vy += (targetY - dot.y) * dampening;
@@ -104,47 +104,35 @@ export function InteractiveGrid({ className, ...props }: InteractiveGridProps) {
         );
 
         const gradient = 1 - Math.min(1, dotDistance / 200);
-        const colorVal = Math.floor(40 + gradient * 200);
         
-        const isDark = document.body.classList.contains('dark');
+        const isDark = document.documentElement.classList.contains('dark');
         
-        ctx.fillStyle = isDark ? `rgb(${colorVal}, ${colorVal}, ${colorVal + 40})` : `rgba(var(--foreground-rgb), ${0.2 + gradient * 0.5})`;
-
+        ctx.fillStyle = isDark ? `rgba(200, 200, 255, ${0.1 + gradient * 0.4})` : `rgba(31, 41, 55, ${0.1 + gradient * 0.4})`;
 
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dotRadius + gradient * 1.5, 0, Math.PI * 2);
+        ctx.arc(dot.x, dot.y, dotRadius, 0, Math.PI * 2);
         ctx.fill();
 
+        // Horizontal line to the next dot
         if (i < dots.length - 1 && (i + 1) % cols !== 0) {
           const nextDot = dots[i + 1];
-          const lineDist = Math.sqrt(
-            (nextDot.x - dot.x) * (nextDot.x - dot.x) + (nextDot.y - dot.y) * (nextDot.y - dot.y)
-          );
-
-          if (lineDist < spacing * 1.5) {
-            ctx.beginPath();
-            ctx.strokeStyle = isDark ? `rgba(100, 100, 140, ${0.1 + gradient * 0.2})` : `rgba(var(--foreground-rgb), ${0.1 + gradient * 0.2})`;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(dot.x, dot.y);
-            ctx.lineTo(nextDot.x, nextDot.y);
-            ctx.stroke();
-          }
+           ctx.beginPath();
+           ctx.strokeStyle = isDark ? `rgba(100, 100, 140, ${0.05 + gradient * 0.2})` : `rgba(31, 41, 55, ${0.05 + gradient * 0.2})`;
+           ctx.lineWidth = 0.5;
+           ctx.moveTo(dot.x, dot.y);
+           ctx.lineTo(nextDot.x, nextDot.y);
+           ctx.stroke();
         }
 
+        // Vertical line to the dot below
         if (i + cols < dots.length) {
           const dotBelow = dots[i + cols];
-          const lineDist = Math.sqrt(
-            (dotBelow.x - dot.x) * (dotBelow.x - dot.x) + (dotBelow.y - dot.y) * (dotBelow.y - dot.y)
-          );
-
-          if (lineDist < spacing * 1.5) {
             ctx.beginPath();
-             ctx.strokeStyle = isDark ? `rgba(100, 100, 140, ${0.1 + gradient * 0.2})` : `rgba(var(--foreground-rgb), ${0.1 + gradient * 0.2})`;
+            ctx.strokeStyle = isDark ? `rgba(100, 100, 140, ${0.05 + gradient * 0.2})` : `rgba(31, 41, 55, ${0.05 + gradient * 0.2})`;
             ctx.lineWidth = 0.5;
             ctx.moveTo(dot.x, dot.y);
             ctx.lineTo(dotBelow.x, dotBelow.y);
             ctx.stroke();
-          }
         }
       }
 

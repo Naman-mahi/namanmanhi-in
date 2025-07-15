@@ -10,6 +10,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { ArrowRight } from "lucide-react";
 import { InteractiveGrid } from "./interactive-grid";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 const slides = [
   {
@@ -107,58 +108,60 @@ const slides = [
 export function HeroCarousel() {
   return (
     <section className="relative w-full overflow-hidden bg-background">
-      <InteractiveGrid className="absolute inset-0 -z-10" />
-      <Carousel
-        opts={{ loop: true }}
-        plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
-        className="w-full"
-      >
-        <CarouselContent>
-          {slides.map((slide, index) => (
-            <CarouselItem key={index}>
-              <div className="w-full pt-20">
-                <div className="container mx-auto pt-16 pb-24">
-                  <div className="grid md:grid-cols-2 items-center gap-12">
-                    <div className="flex flex-col items-start text-left">
-                      <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground">
-                        {slide.title}
-                      </h1>
-                      <p className="mt-2 text-2xl text-foreground/80">{slide.subtitle}</p>
-                      
-                      <div className="mt-8 space-y-6">
-                          <div className="flex items-center gap-4">
-                              <span className="text-5xl font-bold text-primary">#1</span>
-                              <div>
-                                  <p className="font-semibold">{slide.descriptionLine1}</p>
-                                  <p className="text-muted-foreground">{slide.descriptionLine2}</p>
-                              </div>
-                          </div>
-                           <Link href="#contact" className="group inline-flex items-center gap-4">
-                              <div className="w-12 h-12 rounded-full border border-muted-foreground/50 flex items-center justify-center group-hover:border-primary transition-colors">
-                                  <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors"/>
-                              </div>
-                              <span className="font-semibold text-muted-foreground group-hover:text-primary transition-colors">Drop Your Queries</span>
-                          </Link>
+      <InteractiveGrid className="absolute inset-0 z-0 opacity-50" />
+      <div className="relative z-10">
+        <Carousel
+          opts={{ loop: true }}
+          plugins={[Autoplay({ delay: 3000, stopOnInteraction: true })]}
+          className="w-full"
+        >
+          <CarouselContent>
+            {slides.map((slide, index) => (
+              <CarouselItem key={index}>
+                <div className="w-full pt-20">
+                  <div className="container mx-auto pt-16 pb-24">
+                    <div className="grid md:grid-cols-2 items-center gap-12">
+                      <div className="flex flex-col items-start text-left">
+                        <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground">
+                          {slide.title}
+                        </h1>
+                        <p className="mt-2 text-2xl text-foreground/80">{slide.subtitle}</p>
+                        
+                        <div className="mt-8 space-y-6">
+                            <div className="flex items-center gap-4">
+                                <span className="text-5xl font-bold text-primary">#1</span>
+                                <div>
+                                    <p className="font-semibold">{slide.descriptionLine1}</p>
+                                    <p className="text-muted-foreground">{slide.descriptionLine2}</p>
+                                </div>
+                            </div>
+                            <Button asChild>
+                                <Link href="/contact">
+                                    Drop Your Queries
+                                    <ArrowRight />
+                                </Link>
+                            </Button>
+                        </div>
                       </div>
-                    </div>
-                    <div className="relative hidden md:block">
-                       <Image
-                          src={slide.image.src}
-                          alt={slide.title}
-                          width={550}
-                          height={550}
-                          className="object-contain rounded-xl relative z-10"
-                          data-ai-hint={slide.image.hint}
-                          priority={index === 0}
-                        />
+                      <div className="relative hidden md:block">
+                         <Image
+                            src={slide.image.src}
+                            alt={slide.title}
+                            width={550}
+                            height={550}
+                            className="object-contain rounded-xl relative z-10"
+                            data-ai-hint={slide.image.hint}
+                            priority={index === 0}
+                          />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      </div>
     </section>
   );
 }

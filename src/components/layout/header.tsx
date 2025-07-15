@@ -9,10 +9,6 @@ import { Logo } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { name: "Home", href: "/" },
-  { name: "Services", href: "/#services" },
-  { name: "Industries", href: "/#industries" },
-  { name: "About Us", href: "/#about" },
   { name: "Hire Developers", href: "/hire-developers" },
   { name: "Contact", href: "/#contact" },
 ];

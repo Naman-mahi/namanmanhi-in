@@ -8,17 +8,16 @@
 
 import {genkit, Plugin} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import {firebase} from 'genkit/firebase';
+import {enableFirebaseTelemetry} from '@genkit-ai/firebase';
 
 const plugins: Plugin<any>[] = [
   googleAI(),
-  firebase(), // required for production logging
+  enableFirebaseTelemetry(), // required for production logging
 ];
 
 if (process.env.NODE_ENV === 'development') {
-  const {genkitEval} = await import('genkit/eval');
-  const {dotprompt} = await import('genkit/dotprompt');
-  plugins.push(dotprompt());
+  const {genkitEval, dotPrompt} = await import('genkit');
+  plugins.push(dotPrompt());
   plugins.push(genkitEval());
 }
 

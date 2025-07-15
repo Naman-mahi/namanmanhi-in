@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { CompanyOverview } from "@/components/sections/company-overview";
-import { CheckCircle, ArrowRight, Clock, CalendarDays, CalendarClock, Star } from 'lucide-react';
+import { CheckCircle, ArrowRight, Clock, CalendarDays, CalendarClock, Star, Zap, Award, Cpu } from 'lucide-react';
 import Image from "next/image";
 import { ContactForm } from "@/components/sections/contact-form";
 import { cn } from "@/lib/utils";
@@ -55,9 +55,9 @@ const talent = [
 ];
 
 const onDemandFeatures = [
-    { title: "Efficient Process", description: "Our quick and efficient process means clients do not have to wait much before selecting their ideal team." },
-    { title: "Choose the Best", description: "We offer a team of experts who provide quality and excellent work. Our success rate is high because of our work." },
-    { title: "Advanced Technology", description: "Our experts are proficient with advanced technology and implement it in their profession." }
+    { icon: Zap, title: "Efficient Process", description: "Our quick and efficient process means clients do not have to wait much before selecting their ideal team." },
+    { icon: Award, title: "Choose the Best", description: "We offer a team of experts who provide quality and excellent work. Our success rate is high because of our work." },
+    { icon: Cpu, title: "Advanced Technology", description: "Our experts are proficient with advanced technology and implement it in their profession." }
 ];
 
 const techSkills = {
@@ -213,14 +213,17 @@ export default function HireDevelopersPage() {
                     <div className="container mx-auto px-4">
                          <div className="text-center mb-12">
                              <h2 className="text-3xl md:text-4xl font-bold">Create Outstanding On-Demand Teams</h2>
-                             <p className="mt-4 text-muted-foreground">Get the Team or Team Member you want for your project.</p>
+                             <p className="mt-4 text-muted-foreground max-w-3xl mx-auto">Get the Team or Team Member you want for your project.</p>
                         </div>
                         <div className="grid md:grid-cols-3 gap-8 text-center">
-                            {onDemandFeatures.map(feature => (
-                                <div key={feature.title} className="p-6">
-                                    <h3 className="text-2xl font-bold mb-2">{feature.title}</h3>
+                            {onDemandFeatures.map((feature, index) => (
+                                 <Card key={index} className="p-8 bg-card shadow-lg hover:shadow-primary/20 transition-all duration-300 transform hover:-translate-y-2">
+                                    <div className="mx-auto mb-6 bg-primary/10 text-primary rounded-full w-20 h-20 flex items-center justify-center">
+                                        <feature.icon className="w-10 h-10" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
                                     <p className="text-muted-foreground">{feature.description}</p>
-                                </div>
+                                </Card>
                             ))}
                         </div>
                     </div>

@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CompanyOverview } from "@/components/sections/company-overview";
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, ArrowRight } from 'lucide-react';
 import Image from "next/image";
 import { ContactForm } from "@/components/sections/contact-form";
 
@@ -20,12 +20,12 @@ const pricingTiers = [
 ];
 
 const talent = [
-    { image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=80&auto=format&fit=crop", hint: "developer code", title: "Junior Developers", description: "Our Junior Developers with 1 to 2 years of experience understand the client's needs and ensure that the entire process matches requirements." },
-    { image: "https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=80&auto=format&fit=crop", hint: "senior developer", title: "Senior Developers", description: "Senior Developers having 2 to 8 years of experience are highly skilled and proficient throughout the development process." },
-    { image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=80&auto=format&fit=crop", hint: "project manager", title: "Project Managers", description: "Our project managers are well aware of how to handle and execute projects and keep an eye on every minor detail." },
-    { image: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=80&auto=format&fit=crop", hint: "ui ux", title: "UI/UX Designers", description: "Our web developers have expertise in all the latest web technologies and deliver exceptional web design and development services." },
-    { image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=80&auto=format&fit=crop", hint: "web design", title: "Web Designers", description: "Our skilled web designers have several years of experience and a futuristic vision of web development." },
-    { image: "https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67e?q=80&w=80&auto=format&fit=crop", hint: "quality assurance", title: "Testers", description: "Our QA team checks every project we work on and helps us deliver bug-free solutions to our clients." },
+    { title: "Junior Developers", description: "Our Junior Developers with 1 to 2 years of experience understand the client's needs and ensure that the entire process matches requirements." },
+    { title: "Senior Developers", description: "Senior Developers having 2 to 8 years of experience are highly skilled and proficient throughout the development process." },
+    { title: "Project Managers", description: "Our project managers are well aware of how to handle and execute projects and keep an eye on every minor detail." },
+    { title: "UI/UX Designers", description: "Our web developers have expertise in all the latest web technologies and deliver exceptional web design and development services." },
+    { title: "Web Designers", description: "Our skilled web designers have several years of experience and a futuristic vision of web development." },
+    { title: "Testers", description: "Our QA team checks every project we work on and helps us deliver bug-free solutions to our clients." },
 ];
 
 const onDemandFeatures = [
@@ -149,14 +149,16 @@ export default function HireDevelopersPage() {
                         </div>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {talent.map(item => (
-                                <Card key={item.title} className="p-6 transition-all hover:shadow-lg hover:-translate-y-1">
-                                    <div className="flex items-center gap-4">
-                                        <Image src={item.image} alt={item.title} width={64} height={64} className="w-16 h-16 rounded-full object-cover flex-shrink-0" data-ai-hint={item.hint} />
-                                        <div>
-                                            <h3 className="text-xl font-bold">{item.title}</h3>
+                                <Card key={item.title} className="h-full group overflow-hidden bg-card shadow-lg border-2 border-transparent hover:border-primary transition-all duration-300 hover:-translate-y-2">
+                                    <CardHeader>
+                                        <CardTitle>{item.title}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <p className="text-muted-foreground">{item.description}</p>
+                                        <div className="mt-4 flex items-center text-primary font-semibold">
+                                          Read More <ArrowRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
                                         </div>
-                                    </div>
-                                    <p className="text-muted-foreground mt-4 text-sm">{item.description}</p>
+                                    </CardContent>
                                 </Card>
                             ))}
                         </div>

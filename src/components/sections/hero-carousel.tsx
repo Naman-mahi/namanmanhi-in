@@ -52,7 +52,6 @@ const slides = [
 export function HeroCarousel() {
   return (
     <section id="home" className="relative h-screen w-full overflow-hidden bg-background">
-       <Header variant="sticky" />
       <Carousel
         opts={{ loop: true }}
         plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}

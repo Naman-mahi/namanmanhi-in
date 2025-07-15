@@ -1,31 +1,54 @@
-import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { Header } from '@/components/layout/header';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
+import { Particles } from './particles';
 
 export function HeroSection() {
   return (
-    <section id="home" className="relative h-screen w-full flex items-center justify-center text-center overflow-hidden">
-      <Header />
-      <div className="absolute inset-0 bg-black/60 z-10" />
-      <Image
-        src="https://placehold.co/1920x1080.png"
-        alt="Hero background"
-        fill
-        className="object-cover"
-        data-ai-hint="digital technology"
-        priority
-      />
-      <div className="relative z-20 flex flex-col items-center text-white container mx-auto px-4">
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight">
-          Pioneering <span className="text-primary">Digital</span> Transformation
-        </h1>
-        <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-white/80">
-          We craft innovative solutions in Blockchain, AI/ML, and Web/Mobile Development to elevate your business in the digital era.
-        </p>
-        <div className="mt-8">
-          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            Let's Build Together
-          </Button>
+    <section id="home" className="relative w-full overflow-hidden bg-background pt-20">
+      <Particles className="absolute inset-0 -z-10" />
+      <div className="container mx-auto pt-16 pb-24">
+        <div className="grid md:grid-cols-2 items-center gap-12">
+          <div className="flex flex-col items-start text-left">
+            <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground">
+              Artificial Intelligence(AI)
+            </h1>
+            <p className="mt-2 text-2xl text-foreground/80">Development Company</p>
+            
+            <div className="mt-8 space-y-6">
+                <div className="flex items-center gap-4">
+                    <span className="text-5xl font-bold text-primary">#1</span>
+                    <div>
+                        <p className="font-semibold">Top AI Development Company in</p>
+                        <p className="text-muted-foreground">GCC and India</p>
+                    </div>
+                </div>
+                 <div className="flex items-center gap-4 group">
+                    <div className="w-12 h-12 rounded-full border border-muted-foreground/50 flex items-center justify-center group-hover:border-primary transition-colors">
+                        <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors"/>
+                    </div>
+                    <a href="#contact" className="font-semibold text-muted-foreground group-hover:text-primary transition-colors">Drop Your Queries</a>
+                </div>
+            </div>
+          </div>
+          <div className="relative hidden md:block">
+            <div className="absolute -right-20 -top-20 w-[500px] h-[500px] bg-gradient-to-br from-blue-200 to-purple-300 rounded-full blur-3xl opacity-30"></div>
+            <div 
+                className="absolute top-1/2 left-1/2 w-[600px] h-[450px] bg-gradient-to-br from-blue-400 to-purple-500 -translate-x-1/2 -translate-y-1/2"
+                style={{
+                    clipPath: 'polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%)'
+                }}
+            ></div>
+             <Image
+                src="https://placehold.co/550x550.png"
+                alt="AI Development"
+                width={550}
+                height={550}
+                className="object-contain relative z-10"
+                data-ai-hint="artificial intelligence robot"
+                priority
+              />
+          </div>
         </div>
       </div>
     </section>

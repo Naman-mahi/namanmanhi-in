@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Logo } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
+  { name: "Home", href: "/" },
   { name: "Hire Developers", href: "/hire-developers" },
   { name: "Contact", href: "/#contact" },
 ];
@@ -22,7 +23,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Set initial state
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -30,15 +31,14 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
 
   const headerClasses = cn(
     "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-    isSticky && isScrolled ? "bg-background/80 shadow-md backdrop-blur-sm" : "bg-transparent"
+    isSticky && isScrolled ? "bg-background/80 shadow-md backdrop-blur-sm" : "bg-background"
   );
   
   const linkClasses = cn(
-    "text-sm font-medium transition-colors",
-    isSticky && isScrolled ? "text-foreground/80 hover:text-primary" : "text-foreground/80 hover:text-primary"
+    "text-sm font-medium transition-colors text-foreground/80 hover:text-primary"
   );
   
-  const mobileMenuIconColor = isSticky && isScrolled ? "text-foreground" : "text-foreground";
+  const mobileMenuIconColor = "text-foreground";
 
   return (
     <header className={headerClasses}>
@@ -48,7 +48,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
             <Logo className="h-9 w-auto" />
           </Link>
           
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center justify-center flex-1">
             <nav className="flex items-center space-x-8">
               {navLinks.map((link) => (
                 <Link
@@ -60,10 +60,11 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                 </Link>
               ))}
             </nav>
-            <Button variant="outline" className={cn(
-                (isSticky && isScrolled) ? "border-primary text-primary hover:bg-primary hover:text-primary-foreground" : "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-            )}>
-              Get a Quote
+          </div>
+
+          <div className="hidden lg:flex items-center">
+             <Button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+              Get A Free Quote
             </Button>
           </div>
 
@@ -97,7 +98,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                     ))}
                   </nav>
                   <div className="p-4 border-t">
-                    <Button className="w-full">Get a Quote</Button>
+                    <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white">Get A Free Quote</Button>
                   </div>
                 </div>
               </SheetContent>

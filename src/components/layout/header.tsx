@@ -16,25 +16,34 @@ const navLinks = [
   { name: "Contact", href: "#contact" },
 ];
 
-export function Header() {
+export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    if (variant !== "sticky") return;
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [variant]);
+
+  const headerClasses = {
+    sticky: cn(
+      "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+      isScrolled ? "bg-background/80 shadow-md backdrop-blur-sm" : "bg-transparent"
+    ),
+    inline: "absolute top-0 left-0 right-0 z-50 bg-transparent text-white",
+  };
+
+  const linkClasses = {
+    sticky: "text-sm font-medium text-foreground/80 hover:text-primary transition-colors",
+    inline: "text-sm font-medium text-white/80 hover:text-white transition-colors",
+  }
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-background/80 shadow-md backdrop-blur-sm" : "bg-transparent"
-      )}
-    >
+    <header className={headerClasses[variant]}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <Link href="#home" className="flex items-center">
@@ -46,7 +55,7 @@ export function Header() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
+                className={linkClasses[variant]}
               >
                 {link.name}
               </Link>
@@ -54,7 +63,9 @@ export function Header() {
           </nav>
 
           <div className="hidden lg:flex items-center space-x-4">
-            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+            <Button variant="outline" className={cn(
+                variant === 'inline' ? "border-white text-white hover:bg-white hover:text-primary" : "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+            )}>
               Get a Quote
             </Button>
           </div>
@@ -62,7 +73,7 @@ export function Header() {
           <div className="lg:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className={cn(variant === 'inline' && "text-white hover:text-white hover:bg-white/10")}>
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Open menu</span>
                 </Button>

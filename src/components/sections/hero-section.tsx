@@ -1,9 +1,11 @@
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { Header } from '@/components/layout/header';
 
 export function HeroSection() {
   return (
     <section id="home" className="relative h-screen w-full flex items-center justify-center text-center overflow-hidden">
+      <Header />
       <div className="absolute inset-0 bg-black/60 z-10" />
       <Image
         src="https://placehold.co/1920x1080.png"

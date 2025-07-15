@@ -138,6 +138,7 @@ export default function AdminPage() {
 
         // Optimistically update UI
         setSelectedSubmission(updatedSession);
+        setSubmissions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
         setReply('');
 
         try {
@@ -167,6 +168,7 @@ export default function AdminPage() {
             });
             // Revert optimistic update on failure
             setSelectedSubmission(session);
+            setSubmissions(prev => prev.map(s => s.id === session.id ? session : s));
         } finally {
             setIsSending(false);
         }
@@ -289,7 +291,7 @@ export default function AdminPage() {
                     <p className="text-muted-foreground">Review and manage customer interactions.</p>
                 </div>
 
-                <div className="border rounded-xl shadow-sm overflow-hidden h-full lg:h-[70vh] grid lg:grid-cols-3">
+                <div className="border rounded-xl shadow-sm overflow-hidden h-[calc(100vh-250px)] grid lg:grid-cols-3">
                     <div className="lg:col-span-1 border-r flex flex-col h-full">
                         <div className="p-4 border-b">
                              <Input
@@ -320,7 +322,7 @@ export default function AdminPage() {
                        </Tabs>
                     </div>
 
-                    <div className="lg:col-span-2 h-full">
+                    <div className="lg:col-span-2 h-full hidden lg:flex flex-col">
                         <SubmissionDetails />
                     </div>
                 </div>

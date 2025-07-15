@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useRef, useEffect, useState } from "react";
@@ -9,7 +10,7 @@ import { ChatMessage } from "./chat-message";
 import { TypingIndicator } from "./typing-indicator";
 
 interface ChatWindowProps {
-    messages: { id: number; text: string; sender: 'bot' | 'user' | 'options'; options?: string[] }[];
+    messages: { id: string; text: string; sender: 'bot' | 'user' | 'options'; options?: string[] }[];
     onSendMessage: (text: string) => void;
     onOptionSelect: (option: string) => void;
     onClose: () => void;

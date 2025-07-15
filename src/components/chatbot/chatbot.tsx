@@ -18,10 +18,11 @@ const predefinedQuestions = [
 ];
 
 const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+let messageIdCounter = 0;
 
 export function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState<{ id: number; text: string; sender: 'bot' | 'user' | 'options'; options?: string[] }[]>([]);
+    const [messages, setMessages] = useState<{ id: string; text: string; sender: 'bot' | 'user' | 'options'; options?: string[] }[]>([]);
     const [step, setStep] = useState<'collecting' | 'chatting'>('collecting');
     const [userDetails, setUserDetails] = useState({ name: '', number: '' });
     const [isTyping, setIsTyping] = useState(false);
@@ -30,7 +31,7 @@ export function Chatbot() {
     const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     const initializeChat = useCallback(() => {
-        setMessages([{ id: 1, text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' }]);
+        setMessages([{ id: '1', text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' }]);
         setStep('collecting');
         setUserDetails({ name: '', number: '' });
         setLastQuestion('');
@@ -101,9 +102,13 @@ export function Chatbot() {
             }
         }
     }, [messages, step, userDetails, lastQuestion, resetInactivityTimer]);
+    
+    const generateUniqueId = () => {
+        return `${Date.now()}-${messageIdCounter++}`;
+    };
 
     const addMessage = (message: Omit<typeof messages[0], 'id'>) => {
-        setMessages(prev => [...prev, { ...message, id: Date.now() }]);
+        setMessages(prev => [...prev, { ...message, id: generateUniqueId() }]);
     }
     
     const handleSendMessage = (text: string) => {

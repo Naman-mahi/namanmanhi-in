@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 
 interface ChatMessageProps {
-    message: { id: number; text: string; sender: 'bot' | 'user' | 'options', options?: string[] };
+    message: { id: string; text: string; sender: 'bot' | 'user' | 'options', options?: string[] };
     onOptionSelect: (option: string) => void;
 }
 

@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MessageSquare, User, FileText, Loader2, Inbox, Send } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 type Message = {
     id: string;
@@ -53,33 +54,51 @@ export default function AdminPage() {
     const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [isSending, setIsSending] = useState(false);
     const [activeTab, setActiveTab] = useState('chat');
     const [reply, setReply] = useState("");
+    const { toast } = useToast();
+
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch('/api/contact');
+            const { data } = await response.json();
+            const sortedData = data.sort((a: Submission, b: Submission) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            setSubmissions(sortedData);
+            
+            if (!selectedSubmission && sortedData.length > 0) {
+               const firstChat = sortedData.find(s => s.source === 'Chatbot Lead');
+               if (firstChat) {
+                   setSelectedSubmission(firstChat);
+                   setActiveTab('chat');
+               } else {
+                   setSelectedSubmission(sortedData[0]);
+                   setActiveTab(sortedData[0].source === 'Chatbot Lead' ? 'chat' : 'forms');
+               }
+            } else if (selectedSubmission) {
+                // If a submission was selected, refresh its data
+                const refreshedSubmission = sortedData.find((s: Submission) => s.id === selectedSubmission.id);
+                if (refreshedSubmission) {
+                    setSelectedSubmission(refreshedSubmission);
+                } else {
+                    // The selected submission might have been deleted, so clear it
+                    setSelectedSubmission(null);
+                }
+            }
+        } catch (error) {
+            console.error("Failed to fetch submissions:", error);
+            toast({
+                title: "Error",
+                description: "Failed to load submission data.",
+                variant: "destructive"
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     useEffect(() => {
-        async function fetchData() {
-            setIsLoading(true);
-            try {
-                const response = await fetch('/api/contact');
-                const { data } = await response.json();
-                const sortedData = data.sort((a: Submission, b: Submission) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-                setSubmissions(sortedData);
-                if(sortedData.length > 0) {
-                   const firstChat = sortedData.find(s => s.source === 'Chatbot Lead');
-                   if (firstChat) {
-                       setSelectedSubmission(firstChat);
-                       setActiveTab('chat');
-                   } else {
-                       setSelectedSubmission(sortedData[0]);
-                       setActiveTab('forms');
-                   }
-                }
-            } catch (error) {
-                console.error("Failed to fetch submissions:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
         fetchData();
     }, []);
 
@@ -106,9 +125,13 @@ export default function AdminPage() {
         setSelectedSubmission(submission);
     }
     
-    const handleReplySubmit = (e: React.FormEvent) => {
+    const handleReplySubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!reply.trim() || !selectedSubmission || selectedSubmission.source !== 'Chatbot Lead') return;
+        if (!reply.trim() || !selectedSubmission || selectedSubmission.source !== 'Chatbot Lead' || isSending) return;
+
+        setIsSending(true);
+
+        const session = selectedSubmission as ChatSession;
 
         const newAdminMessage: Message = {
             id: `admin-${Date.now()}`,
@@ -116,30 +139,39 @@ export default function AdminPage() {
             sender: 'bot', // Representing admin as 'bot' for styling
         };
         
-        // Update the state to reflect the new message
-        setSubmissions(prevSubmissions => 
-            prevSubmissions.map(sub => 
-                sub.id === selectedSubmission.id 
-                ? { ...sub, messages: [...(sub as ChatSession).messages, newAdminMessage] }
-                : sub
-            )
-        );
+        const updatedMessages = [...session.messages, newAdminMessage];
+        const updatedSession = { ...session, messages: updatedMessages };
 
-        setSelectedSubmission(prevSelected => {
-            if (prevSelected && prevSelected.id === selectedSubmission.id) {
-                return {
-                    ...prevSelected,
-                    messages: [...(prevSelected as ChatSession).messages, newAdminMessage]
-                }
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedSession),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to save message");
             }
-            return prevSelected;
-        });
+            
+            toast({
+                title: "Reply Sent!",
+                description: "Your message has been saved to the chat log.",
+            });
 
-        // Here you would also call an API to send the message to the user
-        // and save it to the database
-        console.log("Admin reply:", reply);
-        
-        setReply('');
+            setReply('');
+            // Refresh data to show the new message
+            await fetchData();
+
+        } catch (error) {
+             console.error("Failed to send reply:", error);
+             toast({
+                title: "Error",
+                description: "Could not send reply. Please try again.",
+                variant: "destructive"
+            });
+        } finally {
+            setIsSending(false);
+        }
     };
 
     const SubmissionList = ({ items, type }: { items: Submission[], type: 'chat' | 'form' }) => (
@@ -205,9 +237,10 @@ export default function AdminPage() {
                                 placeholder="Type your reply..." 
                                 value={reply} 
                                 onChange={(e) => setReply(e.target.value)}
+                                disabled={isSending}
                             />
-                            <Button type="submit" size="icon" aria-label="Send reply">
-                                <Send size={20} />
+                            <Button type="submit" size="icon" aria-label="Send reply" disabled={isSending}>
+                                {isSending ? <Loader2 size={20} className="animate-spin"/> : <Send size={20} />}
                             </Button>
                         </form>
                     </div>
@@ -258,7 +291,7 @@ export default function AdminPage() {
                     <p className="text-muted-foreground">Review and manage customer interactions.</p>
                 </div>
 
-                <div className="border rounded-xl shadow-sm overflow-hidden h-[70vh] grid lg:grid-cols-3">
+                <div className="border rounded-xl shadow-sm overflow-hidden h-full lg:h-[70vh] grid lg:grid-cols-3">
                     <div className="lg:col-span-1 border-r flex flex-col h-full">
                         <div className="p-4 border-b">
                              <Input
@@ -297,3 +330,4 @@ export default function AdminPage() {
             <Footer />
         </div>
     );
+}

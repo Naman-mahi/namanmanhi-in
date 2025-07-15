@@ -171,7 +171,7 @@
     ],
     "sessionId": "session-1752599550483-ykll957",
     "createdAt": "2025-07-15T17:13:51.199Z",
-    "updatedAt": "2025-07-15T17:50:08.076Z"
+    "updatedAt": "2025-07-15T17:50:53.621Z"
   },
   {
     "id": 1752600555719,
@@ -249,10 +249,48 @@
           "What technologies do you use?",
           "Can you tell me about your experience?"
         ]
+      },
+      {
+        "id": "1752601882149-0",
+        "text": "422012",
+        "sender": "user"
+      },
+      {
+        "id": "1752601883154-2",
+        "text": "I'm sorry, I'm not sure how to answer that. Is there anything else I can help with?",
+        "sender": "bot"
+      },
+      {
+        "id": "1752601883155-5",
+        "text": "What else can I help you with?",
+        "sender": "bot"
+      },
+      {
+        "id": "1752601883155-7",
+        "text": "",
+        "sender": "options",
+        "options": [
+          "What services do you offer?",
+          "How can I hire a developer?",
+          "What is your pricing?",
+          "Where are you located?",
+          "What technologies do you use?",
+          "Can you tell me about your experience?"
+        ]
+      },
+      {
+        "id": "admin-1752601903179",
+        "text": "hello",
+        "sender": "bot"
+      },
+      {
+        "id": "admin-1752601928631",
+        "text": "tresting this emssage'",
+        "sender": "bot"
       }
     ],
     "sessionId": "session-1752599577369-lyeo0lc",
     "createdAt": "2025-07-15T17:29:15.719Z",
-    "updatedAt": "2025-07-15T17:47:08.438Z"
+    "updatedAt": "2025-07-15T17:52:11.421Z"
   }
 ]

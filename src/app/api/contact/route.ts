@@ -24,6 +24,7 @@ const ChatLeadSchema = z.object({
 
 // Define a schema for a contact form submission
 const ContactFormSchema = z.object({
+  id: z.number().optional(),
   source: z.literal('Contact Form'),
   fullName: z.string(),
   email: z.string().email(),
@@ -33,6 +34,8 @@ const ContactFormSchema = z.object({
   budget: z.number().optional(),
   message: z.string(),
   file: z.any().optional(),
+  status: z.enum(['New', 'Contacted', 'In Progress', 'Closed']).optional(),
+  notes: z.string().optional(),
 });
 
 // A union type for all possible request bodies
@@ -64,6 +67,7 @@ export async function POST(request: Request) {
     const parsed = RequestSchema.safeParse(body);
 
     if (!parsed.success) {
+      console.error('Zod parsing error:', parsed.error.issues);
       return NextResponse.json({ message: 'Invalid data format', errors: parsed.error.issues }, { status: 400 });
     }
 
@@ -74,10 +78,8 @@ export async function POST(request: Request) {
         const existingLeadIndex = data.findIndex((item: any) => item.sessionId === sessionId && item.source === 'Chatbot Lead');
 
         if (existingLeadIndex > -1) {
-            // Update existing chat log
             data[existingLeadIndex] = { ...data[existingLeadIndex], ...leadData, updatedAt: new Date().toISOString() };
         } else {
-            // Create new chat log
             data.push({
                 id: Date.now(),
                 ...leadData,
@@ -85,14 +87,25 @@ export async function POST(request: Request) {
                 createdAt: new Date().toISOString(),
             });
         }
-    } else {
-        // Handle contact form submission
-        const newEntry = {
-            id: Date.now(),
-            ...parsed.data,
-            createdAt: new Date().toISOString(),
-        };
-        data.push(newEntry);
+    } else if (parsed.data.source === 'Contact Form') {
+        const { id, ...formData } = parsed.data;
+        if (id) {
+            // This is an update to an existing form submission
+            const existingFormIndex = data.findIndex((item: any) => item.id === id && item.source === 'Contact Form');
+            if (existingFormIndex > -1) {
+                data[existingFormIndex] = { ...data[existingFormIndex], ...formData, updatedAt: new Date().toISOString() };
+            }
+        } else {
+            // This is a new form submission
+            const newEntry = {
+                id: Date.now(),
+                ...formData,
+                status: 'New' as const,
+                notes: '',
+                createdAt: new Date().toISOString(),
+            };
+            data.push(newEntry);
+        }
     }
 
     await writeData(data);

@@ -50,8 +50,7 @@ export default function AdminPage() {
 
     useEffect(() => {
         fetchData();
-        // Optional: Poll for new data periodically
-        const intervalId = setInterval(fetchData, 30000); // Poll every 30 seconds
+        const intervalId = setInterval(fetchData, 30000); 
         return () => clearInterval(intervalId);
     }, []);
 
@@ -69,11 +68,14 @@ export default function AdminPage() {
             }
             return false;
         };
-
-        if (activeTab === 'chat') return chatSubmissions.filter(filterLogic);
-        if (activeTab === 'forms') return formSubmissions.filter(filterLogic);
         
-        return [];
+        const sourceFilter = (sub: Submission) => {
+             if (activeTab === 'chat') return sub.source === 'Chatbot Lead';
+             if (activeTab === 'forms') return sub.source === 'Contact Form';
+             return false;
+        };
+
+        return submissions.filter(sourceFilter).filter(filterLogic);
     }, [submissions, searchTerm, activeTab]);
 
     useEffect(() => {
@@ -117,8 +119,6 @@ export default function AdminPage() {
                 title: "Reply Sent!",
                 description: "Your message has been saved to the chat log.",
             });
-            // Optionally, refetch to confirm, but optimistic update handles the view
-            // await fetchData(); 
         } catch (error) {
              console.error("Failed to send reply:", error);
              toast({ title: "Error", description: "Could not send reply.", variant: "destructive" });
@@ -145,7 +145,7 @@ export default function AdminPage() {
                     </Button>
                 </div>
 
-                <div className="border rounded-xl shadow-sm overflow-hidden flex-grow flex flex-col lg:grid lg:grid-cols-3 min-h-[calc(100vh-280px)]">
+                <div className="border rounded-xl shadow-sm overflow-hidden flex-grow flex flex-col lg:grid lg:grid-cols-3 h-full lg:h-[calc(100vh-250px)]">
                     {isLoading ? (
                          <div className="flex-grow flex items-center justify-center p-8 col-span-3">
                             <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -154,16 +154,22 @@ export default function AdminPage() {
                         <>
                             <div className={cn("lg:col-span-1 border-r flex-col h-full lg:flex", { 'hidden': !showList })}>
                                 <SubmissionList
+                                    submissions={submissions}
+                                    filteredSubmissions={filteredSubmissions}
+                                    selectedSubmission={selectedSubmission}
+                                    onSubmissionSelect={setSelectedSubmission}
                                     searchTerm={searchTerm}
                                     onSearchTermChange={setSearchTerm}
                                     activeTab={activeTab}
                                     onTabChange={(tab) => {
                                         setActiveTab(tab);
-                                        setSelectedSubmission(null);
+                                        const firstInTab = submissions.find(s => (tab === 'chat' && s.source === 'Chatbot Lead') || (tab === 'forms' && s.source === 'Contact Form'));
+                                        if (!isMobile) {
+                                            setSelectedSubmission(firstInTab || null);
+                                        } else {
+                                            setSelectedSubmission(null);
+                                        }
                                     }}
-                                    submissions={filteredSubmissions}
-                                    selectedSubmission={selectedSubmission}
-                                    onSubmissionSelect={setSelectedSubmission}
                                 />
                             </div>
                             <div className={cn("lg:col-span-2 h-full lg:flex flex-col", { 'hidden': !showDetails })}>
@@ -175,6 +181,7 @@ export default function AdminPage() {
                                 <SubmissionDetails
                                     submission={selectedSubmission}
                                     onReplySubmit={handleReplySubmit}
+                                    onSubmissionUpdate={fetchData}
                                 />
                             </div>
                         </>

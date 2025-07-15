@@ -4,18 +4,19 @@
 import type { Submission } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MessageSquare, FileText } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 
 interface SubmissionListProps {
+  submissions: Submission[];
+  filteredSubmissions: Submission[];
+  selectedSubmission: Submission | null;
+  onSubmissionSelect: (submission: Submission) => void;
   searchTerm: string;
   onSearchTermChange: (term: string) => void;
   activeTab: string;
   onTabChange: (tab: string) => void;
-  submissions: Submission[];
-  selectedSubmission: Submission | null;
-  onSubmissionSelect: (submission: Submission) => void;
 }
 
 const SubmissionListItem = ({ submission, isSelected, onSelect }: { submission: Submission; isSelected: boolean; onSelect: (sub: Submission) => void }) => {
@@ -45,13 +46,14 @@ const SubmissionListItem = ({ submission, isSelected, onSelect }: { submission: 
 };
 
 export function SubmissionList({
+  submissions,
+  filteredSubmissions,
+  selectedSubmission,
+  onSubmissionSelect,
   searchTerm,
   onSearchTermChange,
   activeTab,
   onTabChange,
-  submissions,
-  selectedSubmission,
-  onSubmissionSelect,
 }: SubmissionListProps) {
   const chatLeadsCount = submissions.filter(s => s.source === 'Chatbot Lead').length;
   const formSubmissionsCount = submissions.filter(s => s.source === 'Contact Form').length;
@@ -77,10 +79,10 @@ export function SubmissionList({
         <div className="flex-grow h-0">
           <ScrollArea className="h-full">
             <div className="p-2 space-y-1">
-              {submissions.length === 0 ? (
+              {filteredSubmissions.length === 0 ? (
                 <p className="text-muted-foreground text-center p-4">No submissions found.</p>
               ) : (
-                submissions.map(sub => (
+                filteredSubmissions.map(sub => (
                   <SubmissionListItem
                     key={sub.id}
                     submission={sub}

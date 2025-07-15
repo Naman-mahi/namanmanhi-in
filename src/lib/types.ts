@@ -28,6 +28,9 @@ export type ContactSubmission = {
     message: string;
     createdAt: string;
     source: 'Contact Form';
+    status?: 'New' | 'Contacted' | 'In Progress' | 'Closed';
+    notes?: string;
+    updatedAt?: string;
 };
 
 export type Submission = ChatSession | ContactSubmission;

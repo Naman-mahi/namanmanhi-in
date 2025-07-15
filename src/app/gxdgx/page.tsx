@@ -94,6 +94,7 @@ export default function AdminPage() {
 
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const filteredSubmissions = useMemo(() => {
@@ -180,6 +181,9 @@ export default function AdminPage() {
                 {!isLoading && items.length === 0 && <p className="text-muted-foreground text-center p-4">No {type === 'chat' ? 'chats' : 'forms'} found.</p>}
                 {items.map(sub => {
                     const lastMessage = sub.source === 'Chatbot Lead' ? sub.messages.filter(m => m.sender === 'user').slice(-1)[0]?.text : sub.message;
+                    const title = sub.source === 'Chatbot Lead' ? sub.name : sub.fullName;
+                    const contactInfo = sub.source === 'Chatbot Lead' ? sub.number : sub.email;
+
                     return (
                         <div
                             key={sub.id}
@@ -189,14 +193,14 @@ export default function AdminPage() {
                             <div className="flex justify-between items-start">
                                 <p className="font-semibold flex items-center gap-2 text-sm">
                                    {type === 'chat' ? <MessageSquare className="w-4 h-4 text-primary" /> : <FileText className="w-4 h-4 text-primary" />}
-                                   {sub.source === 'Chatbot Lead' ? sub.name : sub.fullName}
+                                   {title}
                                 </p>
                                 <span className="text-xs text-muted-foreground">
                                     {format(parseISO(sub.createdAt), "MMM d")}
                                 </span>
                             </div>
                             <p className="text-xs text-muted-foreground mt-1 pl-6 truncate">
-                                {lastMessage}
+                                {contactInfo}
                             </p>
                         </div>
                     )
@@ -220,7 +224,7 @@ export default function AdminPage() {
             const session = selectedSubmission as ChatSession;
             return (
                  <div className="flex flex-col h-full">
-                    <div className="p-4 border-b">
+                    <div className="p-4 border-b flex-shrink-0">
                          <h3 className="font-bold text-lg">{session.name}</h3>
                          <p className="text-sm text-muted-foreground">{session.number}</p>
                     </div>
@@ -231,7 +235,7 @@ export default function AdminPage() {
                             ))}
                         </div>
                     </ScrollArea>
-                    <div className="p-4 border-t bg-background/50">
+                    <div className="p-4 border-t bg-background/50 flex-shrink-0">
                         <form onSubmit={handleReplySubmit} className="flex items-center gap-2">
                             <Input 
                                 placeholder="Type your reply..." 
@@ -258,7 +262,7 @@ export default function AdminPage() {
             );
             return (
                  <div className="flex flex-col h-full">
-                     <div className="p-4 border-b">
+                     <div className="p-4 border-b flex-shrink-0">
                          <h3 className="font-bold text-lg">{form.fullName}</h3>
                          <a href={`mailto:${form.email}`} className="text-sm text-primary hover:underline">{form.email}</a>
                     </div>

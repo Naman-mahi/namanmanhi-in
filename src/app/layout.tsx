@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: 'Naman Mahi - Innovative Digital Solutions',
-  description: 'Naman Mahi specializes in Blockchain, AI/ML, Metaverse, and Web/Mobile development to build the future of digital experiences.',
+  title: 'NamanMahi.in - Innovative Digital Solutions',
+  description: 'NamanMahi.in specializes in Blockchain, AI/ML, Metaverse, and Web/Mobile development to build the future of digital experiences.',
 };
 
 export default function RootLayout({

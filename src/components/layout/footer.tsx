@@ -26,10 +26,10 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="#services" className="text-muted-foreground hover:text-primary">Services</Link></li>
-              <li><Link href="#industries" className="text-muted-foreground hover:text-primary">Industries</Link></li>
-              <li><Link href="#about" className="text-muted-foreground hover:text-primary">About Us</Link></li>
-              <li><Link href="#contact" className="text-muted-foreground hover:text-primary">Contact</Link></li>
+              <li><Link href="/#services" className="text-muted-foreground hover:text-primary">Services</Link></li>
+              <li><Link href="/#industries" className="text-muted-foreground hover:text-primary">Industries</Link></li>
+              <li><Link href="/#about" className="text-muted-foreground hover:text-primary">About Us</Link></li>
+              <li><Link href="/#contact" className="text-muted-foreground hover:text-primary">Contact</Link></li>
             </ul>
           </div>
 
@@ -37,7 +37,7 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Contact Us</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>info@namanmahi.com</li>
+              <li>info@namanmahi.in</li>
               <li>+1 (555) 123-4567</li>
               <li>123 Tech Avenue, Silicon Valley, CA</li>
             </ul>
@@ -55,7 +55,7 @@ export function Footer() {
         </div>
         
         <div className="mt-12 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Naman Mahi. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} NamanMahi.in. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

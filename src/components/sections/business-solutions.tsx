@@ -23,7 +23,7 @@ const solutions = [
 
 export function BusinessSolutions() {
   return (
-    <section className="py-20 lg:py-24 bg-background">
+    <section className="py-20 lg:py-24 bg-secondary/30">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-3 gap-12 items-start">
             <div className="lg:col-span-2">
@@ -32,27 +32,27 @@ export function BusinessSolutions() {
                         Building Smarter Business through Better Tech Experience
                     </h2>
                     <div className="w-24 h-1 bg-primary"></div>
-                    <p className="text-muted-foreground mt-6">
-                        As a leading app development company in the GCC and India, we have worked with 2700+ businesses whether it is a start-up or enterprise, and deliver the best solution in the industry. At Invertio Solutions, we offer a broad range of IT consulting services based on business requirements.
+                    <p className="text-muted-foreground mt-6 text-lg">
+                        As a leading app development company in the GCC and India, we have worked with 2700+ businesses whether it is a start-up or enterprise, and deliver the best solution in the industry. At NamanMahi.in, we offer a broad range of IT consulting services based on business requirements.
                     </p>
                 </div>
-                <div className="grid sm:grid-cols-2 gap-x-8 gap-y-12">
+                <div className="grid sm:grid-cols-2 gap-8">
                     {solutions.map((solution, index) => (
-                        <div key={index} className="border-t pt-6">
-                            <div className="flex items-start gap-4">
-                                <span className="text-4xl font-bold text-muted-foreground opacity-50">0{index + 1}.</span>
-                                <div>
-                                    <h3 className="text-2xl font-bold mb-2">{solution.title}</h3>
+                        <Card key={index} className="bg-card shadow-lg hover:shadow-primary/10 transition-all duration-300 group p-6 border-l-4 border-primary/20 hover:border-primary">
+                           <div className="flex flex-col h-full">
+                                <div className="flex-grow">
+                                    <span className="text-5xl font-bold text-primary/70 group-hover:text-primary transition-colors">0{index + 1}</span>
+                                    <h3 className="text-2xl font-bold mt-4 mb-2">{solution.title}</h3>
                                     <p className="text-muted-foreground">{solution.description}</p>
                                 </div>
-                            </div>
-                        </div>
+                           </div>
+                        </Card>
                     ))}
                 </div>
             </div>
             
-            <div className="lg:col-span-1">
-                <Card className="bg-secondary/50 p-8 rounded-lg">
+            <div className="lg:col-span-1 sticky top-24">
+                <Card className="bg-card p-8 rounded-lg shadow-xl">
                     <CardContent className="p-0">
                         <p className="text-primary font-semibold text-sm mb-2">Contact Us</p>
                         <h3 className="text-2xl font-bold mb-4">Bring Innovation Together!</h3>
@@ -60,7 +60,7 @@ export function BusinessSolutions() {
                             Reach out to the team of the most innovative IT transformation Team and bring the transformation you need.
                         </p>
                         <Link href="#contact" className="group inline-flex items-center font-semibold text-foreground">
-                            <span className="flex items-center justify-center h-12 w-12 rounded-full border border-border group-hover:border-primary transition-colors mr-4">
+                            <span className="flex items-center justify-center h-12 w-12 rounded-full border border-border group-hover:border-primary transition-colors mr-4 bg-secondary/50 group-hover:bg-primary/10">
                                 <ArrowRight className="h-5 w-5 transform group-hover:translate-x-1 transition-transform" />
                             </span>
                             Drop Your Queries

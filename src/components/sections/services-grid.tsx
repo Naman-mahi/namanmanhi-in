@@ -37,7 +37,7 @@ export function ServicesGrid() {
 
   return (
     <>
-      <section id="services" className="py-20 lg:py-32 bg-secondary">
+      <section id="services" className="py-20 lg:py-32 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold">Our Core Services</h2>
@@ -54,12 +54,10 @@ export function ServicesGrid() {
               <motion.div
                 key={service.title}
                 variants={itemVariants}
-                whileHover={{ scale: 1.05, y: -5 }}
-                transition={{ type: 'spring', stiffness: 300 }}
                 onClick={() => setSelectedService(service)}
                 className="cursor-pointer"
               >
-                <Card className="h-full group overflow-hidden shadow-lg border-2 border-transparent hover:border-primary transition-all duration-300">
+                <Card className="h-full group overflow-hidden bg-card shadow-lg border-2 border-transparent hover:border-primary transition-all duration-300 hover:-translate-y-2">
                   <CardHeader className="flex flex-row items-center gap-4">
                     <service.icon className="h-10 w-10 text-primary" />
                     <CardTitle>{service.title}</CardTitle>
@@ -78,7 +76,7 @@ export function ServicesGrid() {
       </section>
 
       <Dialog open={!!selectedService} onOpenChange={() => setSelectedService(null)}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] bg-card">
           {selectedService && (
             <>
               <DialogHeader>
@@ -86,7 +84,7 @@ export function ServicesGrid() {
                     <selectedService.icon className="h-8 w-8 text-primary"/>
                     {selectedService.title}
                 </DialogTitle>
-                <DialogDescription className="pt-4">
+                <DialogDescription className="pt-4 text-muted-foreground">
                   This is a detailed look at our {selectedService.title} services. We leverage cutting-edge technologies to deliver robust and scalable solutions tailored to your specific needs. From initial concept to final deployment, our team ensures a seamless development process and a high-quality end product.
                 </DialogDescription>
               </DialogHeader>

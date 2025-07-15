@@ -34,7 +34,7 @@ export function CompanyOverview() {
           
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {stats.map((stat, index) => (
-              <Card key={index} className="text-center shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
+              <Card key={index} className="text-center bg-card shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
                 <CardHeader className="items-center pb-2">
                   <stat.icon className="h-10 w-10 text-primary mb-2" />
                   <CardTitle className="text-4xl font-bold">

@@ -41,7 +41,7 @@ export function Header() {
             <Logo className="h-9 w-auto" />
           </Link>
 
-          <nav className="hidden lg:flex items-center space-x-6">
+          <nav className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
@@ -54,7 +54,9 @@ export function Header() {
           </nav>
 
           <div className="hidden lg:flex items-center space-x-4">
-            <Button>Get a Free Quote</Button>
+            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+              Get a Quote
+            </Button>
           </div>
 
           <div className="lg:hidden">
@@ -87,7 +89,7 @@ export function Header() {
                     ))}
                   </nav>
                   <div className="p-4 border-t">
-                    <Button className="w-full">Get a Free Quote</Button>
+                    <Button className="w-full">Get a Quote</Button>
                   </div>
                 </div>
               </SheetContent>

@@ -11,7 +11,8 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { format, parseISO } from 'date-fns';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageSquare, User, FileText } from 'lucide-react';
+import { MessageSquare, User, FileText, Loader2, Inbox } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 type Message = {
     id: string;
@@ -51,6 +52,7 @@ export default function AdminPage() {
     const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('chat');
 
     useEffect(() => {
         async function fetchData() {
@@ -58,7 +60,18 @@ export default function AdminPage() {
             try {
                 const response = await fetch('/api/contact');
                 const { data } = await response.json();
-                setSubmissions(data.sort((a: Submission, b: Submission) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+                const sortedData = data.sort((a: Submission, b: Submission) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                setSubmissions(sortedData);
+                if(sortedData.length > 0) {
+                   const firstChat = sortedData.find(s => s.source === 'Chatbot Lead');
+                   if (firstChat) {
+                       setSelectedSubmission(firstChat);
+                       setActiveTab('chat');
+                   } else {
+                       setSelectedSubmission(sortedData[0]);
+                       setActiveTab('forms');
+                   }
+                }
             } catch (error) {
                 console.error("Failed to fetch submissions:", error);
             } finally {
@@ -70,13 +83,13 @@ export default function AdminPage() {
 
     const filteredSubmissions = useMemo(() => {
         if (!searchTerm) return submissions;
+        const term = searchTerm.toLowerCase();
         return submissions.filter(sub => {
-            const term = searchTerm.toLowerCase();
             if (sub.source === 'Chatbot Lead') {
-                return sub.number.includes(term) || sub.name.toLowerCase().includes(term);
+                return sub.number.includes(term) || sub.name.toLowerCase().includes(term) || sub.messages.some(m => m.text.toLowerCase().includes(term));
             }
             if (sub.source === 'Contact Form') {
-                return sub.contact.includes(term) || sub.fullName.toLowerCase().includes(term) || sub.email.toLowerCase().includes(term);
+                return sub.contact.includes(term) || sub.fullName.toLowerCase().includes(term) || sub.email.toLowerCase().includes(term) || sub.message.toLowerCase().includes(term);
             }
             return false;
         });
@@ -90,39 +103,45 @@ export default function AdminPage() {
     const handleSubmissionSelect = (submission: Submission) => {
         setSelectedSubmission(submission);
     }
-
-    const renderSubmissionList = (items: Submission[], type: 'chat' | 'form') => (
+    
+    const SubmissionList = ({ items, type }: { items: Submission[], type: 'chat' | 'form' }) => (
         <ScrollArea className="h-full">
-            <div className="p-4 space-y-2">
-                {isLoading && <p className="text-muted-foreground text-center">Loading...</p>}
-                {!isLoading && items.length === 0 && <p className="text-muted-foreground text-center">No submissions found.</p>}
-                {items.map(sub => (
-                    <div
-                        key={sub.id}
-                        onClick={() => handleSubmissionSelect(sub)}
-                        className={`p-3 rounded-lg cursor-pointer transition-colors ${selectedSubmission?.id === sub.id ? 'bg-primary/10' : 'hover:bg-secondary'}`}
-                    >
-                        <div className="flex justify-between items-center">
-                            <p className="font-semibold flex items-center gap-2">
-                               {type === 'chat' ? <MessageSquare className="w-4 h-4 text-primary" /> : <FileText className="w-4 h-4 text-primary" />}
-                               {sub.source === 'Chatbot Lead' ? sub.name : sub.fullName}
+            <div className="p-2 space-y-1">
+                {!isLoading && items.length === 0 && <p className="text-muted-foreground text-center p-4">No {type === 'chat' ? 'chats' : 'forms'} found.</p>}
+                {items.map(sub => {
+                    const lastMessage = sub.source === 'Chatbot Lead' ? sub.messages.filter(m => m.sender === 'user').slice(-1)[0]?.text : sub.message;
+                    return (
+                        <div
+                            key={sub.id}
+                            onClick={() => handleSubmissionSelect(sub)}
+                            className={`p-3 rounded-lg cursor-pointer transition-colors border border-transparent ${selectedSubmission?.id === sub.id ? 'bg-primary/10 border-primary/20' : 'hover:bg-secondary'}`}
+                        >
+                            <div className="flex justify-between items-start">
+                                <p className="font-semibold flex items-center gap-2 text-sm">
+                                   {type === 'chat' ? <MessageSquare className="w-4 h-4 text-primary" /> : <FileText className="w-4 h-4 text-primary" />}
+                                   {sub.source === 'Chatbot Lead' ? sub.name : sub.fullName}
+                                </p>
+                                <span className="text-xs text-muted-foreground">
+                                    {format(parseISO(sub.createdAt), "MMM d")}
+                                </span>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1 pl-6 truncate">
+                                {lastMessage}
                             </p>
-                            <Badge variant="outline">{sub.source === 'Chatbot Lead' ? sub.number : sub.contact}</Badge>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1 pl-6">
-                            {format(parseISO(sub.createdAt), "MMM d, yyyy 'at' h:mm a")}
-                        </p>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
         </ScrollArea>
     );
-    
-    const renderSubmissionDetails = () => {
+
+    const SubmissionDetails = () => {
         if (!selectedSubmission) {
             return (
-                <div className="flex items-center justify-center h-full">
-                    <p className="text-muted-foreground">Select a submission from the left to view details.</p>
+                <div className="hidden lg:flex flex-col items-center justify-center h-full text-center p-8">
+                    <Inbox className="w-16 h-16 text-muted-foreground/50 mb-4"/>
+                    <h3 className="text-xl font-semibold">Select an item to view</h3>
+                    <p className="text-muted-foreground">No submission selected. Please choose one from the list on the left.</p>
                 </div>
             );
         }
@@ -130,110 +149,103 @@ export default function AdminPage() {
         if (selectedSubmission.source === 'Chatbot Lead') {
             const session = selectedSubmission as ChatSession;
             return (
-                <ScrollArea className="h-full">
-                    <div className="p-4 space-y-4">
-                        {session.messages.filter(msg => msg.sender !== 'options').map(msg => (
-                            <ChatMessage key={msg.id} message={msg} onOptionSelect={() => {}} />
-                        ))}
+                 <div className="flex flex-col h-full">
+                    <div className="p-4 border-b">
+                         <h3 className="font-bold text-lg">{session.name}</h3>
+                         <p className="text-sm text-muted-foreground">{session.number}</p>
                     </div>
-                </ScrollArea>
+                    <ScrollArea className="flex-grow">
+                        <div className="p-4 space-y-4">
+                            {session.messages.filter(msg => msg.sender !== 'options' && msg.text).map(msg => (
+                                <ChatMessage key={msg.id} message={msg} onOptionSelect={() => {}} />
+                            ))}
+                        </div>
+                    </ScrollArea>
+                </div>
             );
         }
 
         if (selectedSubmission.source === 'Contact Form') {
             const form = selectedSubmission as ContactSubmission;
+            const DetailItem = ({ label, value, className = '' }: { label: string, value: React.ReactNode, className?: string }) => (
+                <div>
+                    <p className="text-sm font-medium text-muted-foreground">{label}</p>
+                    <p className={`text-base ${className}`}>{value}</p>
+                </div>
+            );
             return (
-                <ScrollArea className="h-full">
-                    <div className="p-6 space-y-4">
-                        <div className="space-y-1">
-                            <p className="text-sm font-medium text-muted-foreground">Full Name</p>
-                            <p className="text-lg">{form.fullName}</p>
-                        </div>
-                        <div className="space-y-1">
-                            <p className="text-sm font-medium text-muted-foreground">Email</p>
-                            <p className="text-lg text-primary">{form.email}</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-1">
-                                <p className="text-sm font-medium text-muted-foreground">Contact No.</p>
-                                <p className="text-lg">{form.contact}</p>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-sm font-medium text-muted-foreground">WhatsApp</p>
-                                <p className="text-lg">{form.whatsapp}</p>
-                            </div>
-                        </div>
-                        <div className="space-y-1">
-                            <p className="text-sm font-medium text-muted-foreground">Location</p>
-                            <p className="text-lg">{form.location}</p>
-                        </div>
-                        {form.budget && (
-                            <div className="space-y-1">
-                                <p className="text-sm font-medium text-muted-foreground">Project Budget</p>
-                                <p className="text-lg font-semibold text-green-600">${new Intl.NumberFormat('en-US').format(form.budget)}</p>
-                            </div>
-                        )}
-                        <div className="space-y-1 pt-2 border-t mt-4">
-                            <p className="text-sm font-medium text-muted-foreground">Message</p>
-                            <p className="text-base whitespace-pre-wrap">{form.message}</p>
-                        </div>
+                 <div className="flex flex-col h-full">
+                     <div className="p-4 border-b">
+                         <h3 className="font-bold text-lg">{form.fullName}</h3>
+                         <a href={`mailto:${form.email}`} className="text-sm text-primary hover:underline">{form.email}</a>
                     </div>
-                </ScrollArea>
+                    <ScrollArea className="flex-grow">
+                        <div className="p-6 space-y-5">
+                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <DetailItem label="Contact No." value={form.contact} />
+                                <DetailItem label="WhatsApp" value={form.whatsapp} />
+                            </div>
+                            <DetailItem label="Location" value={form.location} />
+                            {form.budget && (
+                                <DetailItem label="Project Budget" value={`$${new Intl.NumberFormat('en-US').format(form.budget)}`} className="font-semibold text-green-600" />
+                            )}
+                            <Separator />
+                            <DetailItem label="Message" value={<p className="whitespace-pre-wrap">{form.message}</p>} />
+                        </div>
+                    </ScrollArea>
+                </div>
             );
         }
         return null;
     };
 
     return (
-        <div className="bg-background text-foreground">
+        <div className="bg-background text-foreground flex flex-col min-h-screen">
             <Header variant="inline" />
-            <main className="container mx-auto px-4 py-8 mt-20">
+            <main className="flex-grow container mx-auto px-4 py-8 mt-16">
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold">Admin Panel</h1>
                     <p className="text-muted-foreground">Review and manage customer interactions.</p>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-8 h-[calc(100vh-250px)]">
-                    <Card className="md:col-span-1 flex flex-col">
-                        <CardHeader>
-                            <CardTitle>Submissions</CardTitle>
+                <div className="border rounded-xl shadow-sm overflow-hidden grid lg:grid-cols-3">
+                    <div className="lg:col-span-1 border-r flex flex-col">
+                        <div className="p-4 border-b">
                              <Input
-                                placeholder="Filter by name, number, or email..."
+                                placeholder="Filter by name, number, email..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="mt-2"
                             />
-                        </CardHeader>
-                        <CardContent className="flex-grow p-0">
-                           <Tabs defaultValue="chat" className="h-full flex flex-col">
-                                <TabsList className="mx-4">
-                                    <TabsTrigger value="chat" className="flex-1 gap-2"><MessageSquare className="w-4 h-4" /> Chats ({chatLeads.length})</TabsTrigger>
-                                    <TabsTrigger value="forms" className="flex-1 gap-2"><FileText className="w-4 h-4" /> Forms ({formSubmissions.length})</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value="chat" className="flex-grow">
-                                    {renderSubmissionList(chatLeads, 'chat')}
-                                </TabsContent>
-                                <TabsContent value="forms" className="flex-grow">
-                                    {renderSubmissionList(formSubmissions, 'form')}
-                                </TabsContent>
-                           </Tabs>
-                        </CardContent>
-                    </Card>
+                        </div>
+                        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col">
+                            <TabsList className="m-2">
+                                <TabsTrigger value="chat" className="flex-1 gap-2"><MessageSquare className="w-4 h-4" /> Chats ({chatLeads.length})</TabsTrigger>
+                                <TabsTrigger value="forms" className="flex-1 gap-2"><FileText className="w-4 h-4" /> Forms ({formSubmissions.length})</TabsTrigger>
+                            </TabsList>
+                            {isLoading ? (
+                                <div className="flex-grow flex items-center justify-center">
+                                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                                </div>
+                            ) : (
+                                <>
+                                    <TabsContent value="chat" className="flex-grow h-0">
+                                        <SubmissionList items={chatLeads} type='chat' />
+                                    </TabsContent>
+                                    <TabsContent value="forms" className="flex-grow h-0">
+                                        <SubmissionList items={formSubmissions} type='form' />
+                                    </TabsContent>
+                                </>
+                            )}
+                       </Tabs>
+                    </div>
 
-                    <Card className="md:col-span-2 flex flex-col">
-                        <CardHeader>
-                            <CardTitle>Details</CardTitle>
-                            <CardDescription>
-                                {selectedSubmission?.source === 'Chatbot Lead' ? `Chat with ${selectedSubmission.name}` : selectedSubmission?.source === 'Contact Form' ? `Form from ${selectedSubmission.fullName}` : 'No submission selected'}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="flex-grow p-0">
-                            {renderSubmissionDetails()}
-                        </CardContent>
-                    </Card>
+                    <div className="lg:col-span-2">
+                        <SubmissionDetails />
+                    </div>
                 </div>
             </main>
             <Footer />
         </div>
     );
-}
+
+    

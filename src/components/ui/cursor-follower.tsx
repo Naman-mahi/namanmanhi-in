@@ -26,7 +26,7 @@ export function CursorFollower() {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 w-8 h-8 rounded-full bg-primary/20 pointer-events-none z-[9999]"
+      className="fixed top-0 left-0 w-3 h-3 rounded-full bg-foreground/50 pointer-events-none z-[9999]"
       style={{
         translateX: '-50%',
         translateY: '-50%',
@@ -37,8 +37,8 @@ export function CursorFollower() {
       }}
       transition={{
         type: 'spring',
-        damping: 25,
-        stiffness: 200,
+        damping: 30,
+        stiffness: 500,
         mass: 0.5,
       }}
     />

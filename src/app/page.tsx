@@ -12,8 +12,8 @@ export default function Home() {
       <main>
         <HeroSection />
         <ServicesGrid />
-        <IndustriesCarousel />
         <CompanyOverview />
+        <IndustriesCarousel />
       </main>
       <Footer />
     </div>

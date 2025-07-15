@@ -21,7 +21,7 @@ export function ChatbotIcon({ isOpen, onClick }: ChatbotIconProps) {
                 <Button
                     onClick={onClick}
                     size="icon"
-                    className="w-16 h-16 rounded-full shadow-2xl bg-primary hover:bg-primary/90 text-primary-foreground"
+                    className="w-14 h-14 rounded-full shadow-2xl bg-primary hover:bg-primary/90 text-primary-foreground"
                     aria-label={isOpen ? "Close chat" : "Open chat"}
                 >
                     <motion.div
@@ -30,7 +30,7 @@ export function ChatbotIcon({ isOpen, onClick }: ChatbotIconProps) {
                         transition={{ duration: 0.3 }}
                         style={{ position: 'absolute' }}
                     >
-                        {isOpen ? <X size={32} /> : <MessageSquare size={32} />}
+                        {isOpen ? <X size={28} /> : <MessageSquare size={28} />}
                     </motion.div>
                 </Button>
             </motion.div>

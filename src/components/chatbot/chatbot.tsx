@@ -6,7 +6,7 @@ import { AnimatePresence } from "framer-motion";
 import { ChatbotIcon } from "./chatbot-icon";
 import { ChatWindow } from "./chat-window";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { getChatbotResponse } from "@/ai/flows/chatbot-flow";
+// import { getChatbotResponse } from "@/ai/flows/chatbot-flow";
 
 const predefinedQuestions = [
     { question: "What services do you offer?", answer: "We offer a wide range of services including AI & ML, Blockchain, Web Development, Mobile Apps, and more. You can see a full list on our [Services section](/)." },
@@ -143,6 +143,31 @@ export function Chatbot() {
 
     const handleUserQuery = async (query: string) => {
         setIsTyping(true);
+        // Look for a predefined answer first
+        const predefined = predefinedQuestions.find(p => p.question.toLowerCase() === query.toLowerCase());
+
+        setTimeout(() => {
+            if (predefined) {
+                addMessage({ text: predefined.answer, sender: 'bot' });
+            } else {
+                // Fallback to Genkit (currently commented out)
+                addMessage({ text: "I'm sorry, I'm not sure how to answer that. Is there anything else I can help with?", sender: 'bot' });
+            }
+
+            // Always show options for next steps
+            const filteredQuestions = predefinedQuestions.filter(q => q.question.toLowerCase() !== query.toLowerCase());
+            addMessage({ text: 'What else can I help you with?', sender: 'bot' });
+            addMessage({ 
+                text: '', 
+                sender: 'options', 
+                options: filteredQuestions.map(q => q.question) 
+            });
+
+            setIsTyping(false);
+        }, 1000);
+        
+        /*
+        // Genkit implementation is commented out as requested
         try {
             const botResponse = await getChatbotResponse({ query, history: messages.slice(-5).map(m => `${m.sender}: ${m.text}`) });
             addMessage({ text: botResponse.answer, sender: 'bot' });
@@ -176,6 +201,7 @@ export function Chatbot() {
         } finally {
             setIsTyping(false);
         }
+        */
     }
     
     const toggleOpen = () => {

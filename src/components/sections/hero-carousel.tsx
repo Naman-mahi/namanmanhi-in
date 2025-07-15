@@ -45,7 +45,7 @@ const slides = [
 
 export function HeroCarousel() {
   return (
-    <section className="relative w-full overflow-hidden bg-background">
+    <section className="relative w-full overflow-hidden">
       <Particles className="absolute inset-0 -z-10" />
       <Carousel
         opts={{ loop: true }}

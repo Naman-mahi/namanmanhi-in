@@ -42,9 +42,9 @@ export function WhyHireUsSection() {
                     <div>
                         <h3 className="text-2xl font-bold mb-4">The Dedicated Development Team of NamanMahi.in Offering Reasons to Be The Best</h3>
                         <p className="text-muted-foreground mb-6">The dedicated developers of the NamanMahi.in offer shortcuts way of success for global businesses.</p>
-                        <ul className="space-y-3">
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {whyHireUsReasons.map(reason => (
-                                <li key={reason} className="flex items-start gap-3">
+                                <li key={reason} className="flex items-start gap-3 p-4 border rounded-lg shadow-sm bg-background transition-all duration-300 hover:shadow-primary/20 hover:border-primary/50 hover:-translate-y-1">
                                     <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                                     <span className="text-muted-foreground">{reason}</span>
                                 </li>

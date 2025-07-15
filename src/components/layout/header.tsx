@@ -9,11 +9,12 @@ import { Logo } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { name: "Home", href: "#home" },
-  { name: "Services", href: "#services" },
-  { name: "Industries", href: "#industries" },
-  { name: "About Us", href: "#about" },
-  { name: "Contact", href: "#contact" },
+  { name: "Home", href: "/" },
+  { name: "Services", href: "/#services" },
+  { name: "Industries", href: "/#industries" },
+  { name: "About Us", href: "/#about" },
+  { name: "Hire Developers", href: "/hire-developers" },
+  { name: "Contact", href: "/#contact" },
 ];
 
 export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }) {
@@ -46,7 +47,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
     <header className={headerClasses[variant]}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
-          <Link href="#home" className="flex items-center">
+          <Link href="/" className="flex items-center">
             <Logo className="h-9 w-auto" />
           </Link>
 

@@ -1,12 +1,45 @@
+"use client";
+
 import Link from "next/link";
 import { Logo } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Github, Twitter, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+    },
+  },
+};
 
 export function Footer() {
   return (
-    <footer className="bg-card text-foreground" id="contact">
+    <motion.footer 
+      className="bg-card text-foreground" 
+      id="contact"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+      variants={containerVariants}
+    >
       <div className="relative">
         <div className="absolute inset-x-0 top-0 -translate-y-1/2">
             <svg viewBox="0 0 1440 120" className="w-full h-auto text-secondary/50 fill-current">
@@ -15,28 +48,31 @@ export function Footer() {
         </div>
       </div>
       <div className="relative container mx-auto px-4 pt-24 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
+          variants={containerVariants}
+        >
           {/* Column 1: Logo and About */}
-          <div className="space-y-6">
+          <motion.div className="space-y-6" variants={itemVariants}>
             <Logo className="h-10 w-auto" />
             <p className="text-sm text-muted-foreground">
               Innovating with cutting-edge technology to build the future of digital experiences.
             </p>
             <div className="flex space-x-2">
-              <Link href="#" className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-transform hover:-translate-y-1">
+              <motion.a href="#" whileHover={{ y: -4, scale: 1.1 }} className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
                 <Twitter size={20} />
-              </Link>
-              <Link href="#" className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-transform hover:-translate-y-1">
+              </motion.a>
+              <motion.a href="#" whileHover={{ y: -4, scale: 1.1 }} className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
                 <Github size={20} />
-              </Link>
-              <Link href="#" className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-transform hover:-translate-y-1">
+              </motion.a>
+              <motion.a href="#" whileHover={{ y: -4, scale: 1.1 }} className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
                 <Linkedin size={20} />
-              </Link>
+              </motion.a>
             </div>
-          </div>
+          </motion.div>
           
           {/* Column 2: Quick Links */}
-          <div className="space-y-6">
+          <motion.div className="space-y-6" variants={itemVariants}>
             <h3 className="text-xl font-bold tracking-tight">Quick Links</h3>
             <ul className="space-y-3 text-sm">
               <li><Link href="/#services" className="text-muted-foreground hover:text-primary transition-colors">Services</Link></li>
@@ -44,10 +80,10 @@ export function Footer() {
               <li><Link href="/#about" className="text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
               <li><Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</Link></li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Column 3: Contact Info */}
-          <div className="space-y-6">
+          <motion.div className="space-y-6" variants={itemVariants}>
             <h3 className="text-xl font-bold tracking-tight">Contact Us</h3>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li className="flex items-start gap-3 group">
@@ -63,23 +99,29 @@ export function Footer() {
                 <span className="group-hover:text-primary transition-colors">123 Tech Avenue, Silicon Valley, CA</span>
               </li>
             </ul>
-          </div>
+          </motion.div>
           
           {/* Column 4: Newsletter */}
-          <div className="space-y-6">
+          <motion.div className="space-y-6" variants={itemVariants}>
             <h3 className="text-xl font-bold tracking-tight">Subscribe to our Newsletter</h3>
             <p className="text-sm text-muted-foreground">Get the latest updates on tech trends and our services.</p>
             <form className="flex space-x-2">
               <Input type="email" placeholder="Your Email" className="bg-background border-border" required/>
               <Button>Subscribe</Button>
             </form>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
         
-        <div className="mt-16 border-t border-border pt-8 text-center text-sm text-muted-foreground">
+        <motion.div 
+          className="mt-16 border-t border-border pt-8 text-center text-sm text-muted-foreground"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5 }}
+        >
           <p>&copy; {new Date().getFullYear()} NamanMahi.in. All Rights Reserved.</p>
-        </div>
+        </motion.div>
       </div>
-    </footer>
+    </motion.footer>
   );
 }

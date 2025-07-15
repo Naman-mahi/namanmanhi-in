@@ -142,7 +142,7 @@ export function CompanyOverview() {
   return (
     <section id="about" className="py-20 lg:py-24 bg-secondary/50">
       <div className="container mx-auto px-4">
-        <div className="text-center max-w-3xl mx-auto mb-12">
+        <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground relative inline-block">
             NamanMahi.in Solutions Bring Transformation For Global Businesses
             <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-primary"></span>
@@ -152,16 +152,16 @@ export function CompanyOverview() {
           </p>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
             <Card key={index} className="bg-card shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl overflow-hidden">
-              <CardContent className="flex items-center gap-4 p-6">
+              <CardContent className="flex flex-col sm:flex-row items-center gap-6 p-6">
                 <stat.icon className="h-12 w-12 flex-shrink-0" />
-                <div className="flex flex-col">
+                <div className="flex flex-col text-center sm:text-left">
                   <p className="text-3xl font-bold text-foreground">
                     <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                   </p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-sm text-muted-foreground whitespace-nowrap">{stat.label}</p>
                 </div>
               </CardContent>
             </Card>

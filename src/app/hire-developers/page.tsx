@@ -149,12 +149,14 @@ export default function HireDevelopersPage() {
                         </div>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {talent.map(item => (
-                                <Card key={item.title} className="p-6">
+                                <Card key={item.title} className="p-6 transition-all hover:shadow-lg hover:-translate-y-1">
                                     <div className="flex items-center gap-4">
-                                        <Image src={item.image} alt={item.title} width={80} height={80} className="rounded-full object-cover" data-ai-hint={item.hint} />
-                                        <h3 className="text-xl font-bold">{item.title}</h3>
+                                        <Image src={item.image} alt={item.title} width={64} height={64} className="w-16 h-16 rounded-full object-cover flex-shrink-0" data-ai-hint={item.hint} />
+                                        <div>
+                                            <h3 className="text-xl font-bold">{item.title}</h3>
+                                        </div>
                                     </div>
-                                    <p className="text-muted-foreground mt-4">{item.description}</p>
+                                    <p className="text-muted-foreground mt-4 text-sm">{item.description}</p>
                                 </Card>
                             ))}
                         </div>

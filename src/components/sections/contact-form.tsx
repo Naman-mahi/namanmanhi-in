@@ -16,13 +16,13 @@ import { Loader2 } from "lucide-react";
 const formSchema = z.object({
   fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
-  contact: z.string().optional(),
-  whatsapp: z.string().optional(),
-  skype: z.string().optional(),
-  location: z.string().optional(),
+  contact: z.string().min(1, { message: "Contact number is required." }),
+  whatsapp: z.string().min(1, { message: "WhatsApp number is required." }),
+  skype: z.string().min(1, { message: "Skype ID is required." }),
+  location: z.string().min(1, { message: "Location is required." }),
   budget: z.number().min(1000),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
-  file: z.any().optional(),
+  file: z.any().refine(file => file, { message: "File attachment is required." }),
 });
 
 export function ContactForm() {
@@ -101,7 +101,7 @@ export function ContactForm() {
                                     name="contact"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Contact No. (Optional)</FormLabel>
+                                            <FormLabel>Contact No.</FormLabel>
                                             <FormControl>
                                                 <Input type="tel" placeholder="+1 (555) 123-4567" {...field} />
                                             </FormControl>
@@ -114,7 +114,7 @@ export function ContactForm() {
                                     name="whatsapp"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>WhatsApp (Optional)</FormLabel>
+                                            <FormLabel>WhatsApp</FormLabel>
                                             <FormControl>
                                                 <Input type="tel" placeholder="Enter WhatsApp No." {...field} />
                                             </FormControl>
@@ -127,7 +127,7 @@ export function ContactForm() {
                                     name="skype"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Skype (Optional)</FormLabel>
+                                            <FormLabel>Skype</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="your.skype.id" {...field} />
                                             </FormControl>
@@ -140,7 +140,7 @@ export function ContactForm() {
                                     name="location"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Location (Optional)</FormLabel>
+                                            <FormLabel>Location</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="City, Country" {...field} />
                                             </FormControl>
@@ -154,7 +154,7 @@ export function ContactForm() {
                                     render={({ field }) => (
                                         <FormItem className="md:col-span-2">
                                             <div className="flex justify-between items-center">
-                                                <FormLabel>Project Budget</FormLabel>
+                                                <FormLabel>Project Budget (Optional)</FormLabel>
                                                 <span className="font-semibold text-primary">${new Intl.NumberFormat('en-US').format(budget)}</span>
                                             </div>
                                             <FormControl>
@@ -178,7 +178,7 @@ export function ContactForm() {
                                     name="file"
                                     render={({ field }) => (
                                         <FormItem className="md:col-span-2">
-                                            <FormLabel>Attach File (Optional)</FormLabel>
+                                            <FormLabel>Attach File</FormLabel>
                                             <FormControl>
                                                 <Input 
                                                     id="file" 

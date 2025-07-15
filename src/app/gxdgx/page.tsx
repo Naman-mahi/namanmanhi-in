@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { Submission } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 export default function AdminPage() {
     const [submissions, setSubmissions] = useState<Submission[]>([]);

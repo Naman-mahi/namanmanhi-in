@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ChatMessage } from '@/components/chatbot/chat-message';
-import { Inbox, Loader2, Send, Save, User, Mail, Phone, MapPin, DollarSign, MessageSquare, StickyNote } from 'lucide-react';
+import { Inbox, Loader2, Send, Save, User, Mail, Phone, MapPin, DollarSign, MessageSquare, StickyNote, Copy } from 'lucide-react';
 import { Textarea } from '../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useToast } from '@/hooks/use-toast';
@@ -20,15 +20,41 @@ interface SubmissionDetailsProps {
   onSubmissionUpdate: () => Promise<void>;
 }
 
-const DetailItem = ({ icon: Icon, label, value, className = '' }: { icon: React.ElementType, label: string, value: React.ReactNode, className?: string }) => (
-    <div className="flex items-start gap-4">
-        <Icon className="h-5 w-5 text-muted-foreground mt-1" />
-        <div className={`flex-1 ${className}`}>
-            <p className="text-sm font-medium text-muted-foreground">{label}</p>
-            <div className="text-base text-foreground">{value}</div>
+const DetailItem = ({ icon: Icon, label, value, copyValue, className = '' }: { icon: React.ElementType, label: string, value: React.ReactNode, copyValue?: string, className?: string }) => {
+    const { toast } = useToast();
+
+    const handleCopy = () => {
+        if (!copyValue) return;
+        navigator.clipboard.writeText(copyValue);
+        toast({
+            title: "Copied to clipboard!",
+            description: `${label} has been copied.`,
+        });
+    };
+
+    return (
+        <div className="flex items-start gap-4 group">
+            <Icon className="h-5 w-5 text-muted-foreground mt-1" />
+            <div className={`flex-1 ${className}`}>
+                <p className="text-sm font-medium text-muted-foreground">{label}</p>
+                <div className="text-base text-foreground flex items-center justify-between">
+                    <span>{value}</span>
+                    {copyValue && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={handleCopy}
+                        >
+                            <Copy className="h-4 w-4" />
+                            <span className="sr-only">Copy {label}</span>
+                        </Button>
+                    )}
+                </div>
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 const FormDetails = ({ form, onUpdate }: { form: ContactSubmission, onUpdate: () => void }) => {
     const [status, setStatus] = useState(form.status || 'New');
@@ -44,7 +70,7 @@ const FormDetails = ({ form, onUpdate }: { form: ContactSubmission, onUpdate: ()
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            const response = await fetch('/api/contact', {
+            const response = await fetch('/api/contact?source=forms', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...form, status, notes, source: 'Contact Form' }),
@@ -79,9 +105,9 @@ const FormDetails = ({ form, onUpdate }: { form: ContactSubmission, onUpdate: ()
                     <div className="p-6 space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                             <DetailItem icon={User} label="Full Name" value={form.fullName} />
-                            <DetailItem icon={Mail} label="Email" value={<a href={`mailto:${form.email}`} className="text-primary hover:underline">{form.email}</a>} />
-                            <DetailItem icon={Phone} label="Contact No." value={form.contact} />
-                            <DetailItem icon={Phone} label="WhatsApp" value={form.whatsapp} />
+                            <DetailItem icon={Mail} label="Email" value={<a href={`mailto:${form.email}`} className="text-primary hover:underline">{form.email}</a>} copyValue={form.email} />
+                            <DetailItem icon={Phone} label="Contact No." value={form.contact} copyValue={form.contact} />
+                            <DetailItem icon={Phone} label="WhatsApp" value={form.whatsapp} copyValue={form.whatsapp} />
                             <DetailItem icon={MapPin} label="Location" value={form.location} />
                             {form.budget && (
                                 <DetailItem icon={DollarSign} label="Project Budget" value={`$${new Intl.NumberFormat('en-US').format(form.budget)}`} />
@@ -125,7 +151,6 @@ const FormDetails = ({ form, onUpdate }: { form: ContactSubmission, onUpdate: ()
 const ChatDetails = ({ session, onReplySubmit }: { session: ChatSession, onReplySubmit: (text: string) => Promise<void> }) => {
     const [reply, setReply] = useState("");
     const [isSending, setIsSending] = useState(false);
-    const scrollAreaRef = useRef<HTMLDivElement>(null);
     const viewportRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {

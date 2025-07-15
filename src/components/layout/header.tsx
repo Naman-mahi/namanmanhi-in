@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Logo } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "../theme-toggle";
+import { Separator } from "../ui/separator";
 
 const navLinks = [
   { name: "About Us", href: "/about" },
@@ -81,7 +82,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background p-0">
+              <SheetContent side="right" className="w-[300px] sm:w-[320px] bg-background p-0 flex flex-col">
                 <SheetHeader className="flex flex-row justify-between items-center p-4 border-b">
                    <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                    <Logo className="h-9 w-auto" />
@@ -90,22 +91,23 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                       <span className="sr-only">Close menu</span>
                   </Button>
                 </SheetHeader>
-                <div className="flex flex-col h-full">
-                  <nav className="flex-grow flex flex-col items-center justify-center space-y-6">
+                <div className="flex flex-col h-full p-6">
+                  <nav className="flex flex-col space-y-4">
                     {navLinks.map((link) => (
                       <Link
                         key={link.name}
                         href={link.href}
-                        className="text-2xl font-semibold text-foreground hover:text-primary transition-colors"
+                        className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {link.name}
                       </Link>
                     ))}
                   </nav>
-                  <div className="p-4 border-t">
-                    <Button asChild className="w-full">
-                        <Link href="/get-a-quote">Get a Quote</Link>
+                  <Separator className="my-6" />
+                  <div className="mt-auto flex flex-col gap-4">
+                    <Button asChild size="lg" className="w-full">
+                        <Link href="/get-a-quote" onClick={() => setIsMobileMenuOpen(false)}>Get a Quote</Link>
                     </Button>
                   </div>
                 </div>

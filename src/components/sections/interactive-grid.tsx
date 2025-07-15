@@ -24,7 +24,7 @@ export function InteractiveGrid({ className, ...props }: InteractiveGridProps) {
     let mouseY = 0;
 
     const spacing = 35;
-    const dotRadius = 2.5;
+    const dotRadius = 2.8;
     const maxDistortion = 30;
     const dampening = 0.08;
 
@@ -132,7 +132,7 @@ export function InteractiveGrid({ className, ...props }: InteractiveGridProps) {
 
         const lineColor = isDark ? `rgba(255, 255, 255, 0.5)` : `rgba(0, 0, 0, 0.5)`;
         ctx.strokeStyle = lineColor;
-        ctx.lineWidth = 0.5;
+        ctx.lineWidth = 0.2;
 
         if (i < dots.length - 1 && (i + 1) % cols !== 0) {
           const nextDot = dots[i + 1];

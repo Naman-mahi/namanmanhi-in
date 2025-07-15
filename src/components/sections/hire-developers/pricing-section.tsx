@@ -71,8 +71,8 @@ export function PricingSection() {
                                     ))}
                                 </ul>
                                  <Button asChild className="w-full" variant={tier.popular ? 'default' : 'outline'}>
-                                    <Link href="#contact-form">Hire Now</Link>
-                                </Button>
+                                    <Link href="/get-a-quote">Hire Now</Link>
+                                 </Button>
                             </CardContent>
                             <p className="text-xs text-muted-foreground mt-4 text-center p-4">We sign an NDA for all our projects.</p>
                         </Card>

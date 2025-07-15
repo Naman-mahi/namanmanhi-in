@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { Particles } from './particles';
+import Link from 'next/link';
 
 export function HeroSection() {
   return (
@@ -27,7 +28,7 @@ export function HeroSection() {
                     <div className="w-12 h-12 rounded-full border border-muted-foreground/50 flex items-center justify-center group-hover:border-primary transition-colors">
                         <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors"/>
                     </div>
-                    <a href="#contact" className="font-semibold text-muted-foreground group-hover:text-primary transition-colors">Drop Your Queries</a>
+                    <Link href="/contact" className="font-semibold text-muted-foreground group-hover:text-primary transition-colors">Drop Your Queries</Link>
                 </div>
             </div>
           </div>

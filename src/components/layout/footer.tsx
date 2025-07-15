@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -59,13 +60,13 @@ export function Footer() {
               Innovating with cutting-edge technology to build the future of digital experiences.
             </p>
             <div className="flex space-x-2">
-              <motion.a href="#" whileHover={{ y: -4, scale: 1.1 }} className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
+              <motion.a href="https://twitter.com" target="_blank" rel="noopener noreferrer" whileHover={{ y: -4, scale: 1.1 }} className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
                 <Twitter size={20} />
               </motion.a>
-              <motion.a href="#" whileHover={{ y: -4, scale: 1.1 }} className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
+              <motion.a href="https://github.com" target="_blank" rel="noopener noreferrer" whileHover={{ y: -4, scale: 1.1 }} className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
                 <Github size={20} />
               </motion.a>
-              <motion.a href="#" whileHover={{ y: -4, scale: 1.1 }} className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
+              <motion.a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" whileHover={{ y: -4, scale: 1.1 }} className="p-2 rounded-full bg-background/50 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
                 <Linkedin size={20} />
               </motion.a>
             </div>

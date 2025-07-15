@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
 import { ChatbotIcon } from "./chatbot-icon";
 import { ChatWindow } from "./chat-window";
@@ -17,6 +17,8 @@ const predefinedQuestions = [
     { question: "Can you tell me about your experience?", answer: "We have over 20 years of experience in the industry, with a team of over 700 developers. We have successfully completed hundreds of projects for clients across the globe." }
 ];
 
+const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+
 export function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{ id: number; text: string; sender: 'bot' | 'user' | 'options'; options?: string[] }[]>([]);
@@ -25,6 +27,44 @@ export function Chatbot() {
     const [isTyping, setIsTyping] = useState(false);
     const [lastQuestion, setLastQuestion] = useState('');
     const isMobile = useIsMobile();
+    const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+    const initializeChat = useCallback(() => {
+        setMessages([{ id: 1, text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' }]);
+        setStep('collecting');
+        setUserDetails({ name: '', number: '' });
+        setLastQuestion('');
+        localStorage.removeItem('chatbotState');
+    }, []);
+
+    const resetInactivityTimer = useCallback(() => {
+        if (inactivityTimerRef.current) {
+            clearTimeout(inactivityTimerRef.current);
+        }
+        inactivityTimerRef.current = setTimeout(() => {
+            setIsOpen(prev => {
+                if (prev) {
+                    initializeChat();
+                    addMessage({ text: "It looks like you've been inactive for a while. Let's start over. What is your name?", sender: 'bot' });
+                }
+                return prev;
+            });
+        }, INACTIVITY_TIMEOUT);
+    }, [initializeChat]);
+
+    useEffect(() => {
+        if (isOpen) {
+            resetInactivityTimer();
+        } else if (inactivityTimerRef.current) {
+            clearTimeout(inactivityTimerRef.current);
+        }
+
+        return () => {
+            if (inactivityTimerRef.current) {
+                clearTimeout(inactivityTimerRef.current);
+            }
+        };
+    }, [isOpen, resetInactivityTimer]);
 
     useEffect(() => {
         // Load state from localStorage on initial render
@@ -47,7 +87,7 @@ export function Chatbot() {
             console.error("Failed to parse chatbot state from localStorage", error);
             initializeChat();
         }
-    }, []);
+    }, [initializeChat]);
     
     useEffect(() => {
         // Save state to localStorage whenever it changes
@@ -55,18 +95,12 @@ export function Chatbot() {
              try {
                 const stateToSave = { messages, step, userDetails, lastQuestion };
                 localStorage.setItem('chatbotState', JSON.stringify(stateToSave));
+                resetInactivityTimer();
             } catch (error) {
                 console.error("Failed to save chatbot state to localStorage", error);
             }
         }
-    }, [messages, step, userDetails, lastQuestion]);
-
-    const initializeChat = () => {
-        setMessages([{ id: 1, text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' }]);
-        setStep('collecting');
-        setUserDetails({ name: '', number: '' });
-        setLastQuestion('');
-    };
+    }, [messages, step, userDetails, lastQuestion, resetInactivityTimer]);
 
     const addMessage = (message: Omit<typeof messages[0], 'id'>) => {
         setMessages(prev => [...prev, { ...message, id: Date.now() }]);

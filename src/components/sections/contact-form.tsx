@@ -59,12 +59,12 @@ export function ContactForm() {
     }
 
     return (
-        <section id="contact-form" className="py-20 lg:py-24 bg-background">
+        <section id="contact-form" className="py-20 lg:py-24 bg-secondary/30">
             <div className="container mx-auto px-4">
-                <Card className="max-w-4xl mx-auto bg-card shadow-lg overflow-hidden rounded-xl border">
-                    <CardHeader className="p-6 md:p-8 bg-secondary/30">
-                        <CardTitle className="text-3xl">Get in Touch</CardTitle>
-                        <CardDescription>Fill out the form below and we'll get back to you as soon as possible.</CardDescription>
+                <Card className="max-w-4xl mx-auto bg-card shadow-xl overflow-hidden rounded-2xl border-0">
+                    <CardHeader className="p-6 md:p-8 text-center bg-card-foreground text-background">
+                        <CardTitle className="text-3xl font-bold">Get in Touch</CardTitle>
+                        <CardDescription className="text-muted/80">Fill out the form below and we'll get back to you as soon as possible.</CardDescription>
                     </CardHeader>
                     <CardContent className="p-6 md:p-8">
                         <Form {...form}>
@@ -121,11 +121,11 @@ export function ContactForm() {
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
+                                 <FormField
                                     control={form.control}
                                     name="location"
                                     render={({ field }) => (
-                                        <FormItem>
+                                        <FormItem className="md:col-span-2">
                                             <FormLabel>Location</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="City, Country" {...field} />
@@ -138,8 +138,8 @@ export function ContactForm() {
                                     control={form.control}
                                     name="budget"
                                     render={({ field }) => (
-                                        <FormItem>
-                                            <div className="flex justify-between items-center">
+                                        <FormItem className="md:col-span-2">
+                                            <div className="flex justify-between items-center mb-2">
                                                 <FormLabel>Project Budget (Optional)</FormLabel>
                                                 <span className="font-semibold text-primary">${new Intl.NumberFormat('en-US').format(budget)}</span>
                                             </div>

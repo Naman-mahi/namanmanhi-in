@@ -1,8 +1,10 @@
+
 "use client";
 
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 interface ChatMessageProps {
     message: { id: number; text: string; sender: 'bot' | 'user' | 'options', options?: string[] };
@@ -16,6 +18,30 @@ export function ChatMessage({ message, onOptionSelect }: ChatMessageProps) {
     const messageVariants = {
         hidden: { opacity: 0, y: 10 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+    };
+    
+    const renderTextWithLinks = (text: string) => {
+        const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+        const parts = text.split(linkRegex);
+
+        return parts.map((part, index) => {
+            if (index % 3 === 1) {
+                // This is the link text
+                const linkText = part;
+                const linkUrl = parts[index + 1];
+                return (
+                    <Link href={linkUrl} key={index} className="text-primary underline hover:opacity-80">
+                        {linkText}
+                    </Link>
+                );
+            } else if (index % 3 === 2) {
+                // This is the link URL, which we've already used
+                return null;
+            } else {
+                // This is a regular text part
+                return part;
+            }
+        });
     };
 
     if (isOptions) {
@@ -58,7 +84,7 @@ export function ChatMessage({ message, onOptionSelect }: ChatMessageProps) {
                         : "bg-primary text-primary-foreground rounded-br-none"
                 )}
             >
-                {message.text}
+                {isBot ? renderTextWithLinks(message.text) : message.text}
             </div>
         </motion.div>
     );

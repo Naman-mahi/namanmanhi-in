@@ -6,26 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { CompanyOverview } from "@/components/sections/company-overview";
-import {
-    Activity,
-    Users,
-    Award,
-    Code,
-    Cpu,
-    Briefcase,
-    LayoutTemplate,
-    Palette,
-    PenTool,
-    CheckCircle,
-    Server,
-    Database,
-    Cloud,
-    Smartphone,
-    GitBranch,
-    TestTube2,
-    BarChart,
-    Settings
-} from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
+import Image from "next/image";
 
 const stats = [
     { value: "20+", label: "Years of Experience" },
@@ -40,12 +22,12 @@ const pricingTiers = [
 ];
 
 const talent = [
-    { icon: Users, title: "Junior Developers", description: "Our Junior Developers with 1 to 2 years of experience understand the client's needs and ensure that the entire process matches requirements." },
-    { icon: Users, title: "Senior Developers", description: "Senior Developers having 2 to 8 years of experience are highly skilled and proficient throughout the development process." },
-    { icon: Briefcase, title: "Project Managers", description: "Our project managers are well aware of how to handle and execute projects and keep an eye on every minor detail." },
-    { icon: Palette, title: "UI/UX Designers", description: "Our web developers have expertise in all the latest web technologies and deliver exceptional web design and development services." },
-    { icon: PenTool, title: "Web Designers", description: "Our skilled web designers have several years of experience and a futuristic vision of web development." },
-    { icon: CheckCircle, title: "Testers", description: "Our QA team checks every project we work on and helps us deliver bug-free solutions to our clients." },
+    { image: "https://placehold.co/80x80.png", hint: "developer code", title: "Junior Developers", description: "Our Junior Developers with 1 to 2 years of experience understand the client's needs and ensure that the entire process matches requirements." },
+    { image: "https://placehold.co/80x80.png", hint: "senior developer", title: "Senior Developers", description: "Senior Developers having 2 to 8 years of experience are highly skilled and proficient throughout the development process." },
+    { image: "https://placehold.co/80x80.png", hint: "project manager", title: "Project Managers", description: "Our project managers are well aware of how to handle and execute projects and keep an eye on every minor detail." },
+    { image: "https://placehold.co/80x80.png", hint: "ui ux", title: "UI/UX Designers", description: "Our web developers have expertise in all the latest web technologies and deliver exceptional web design and development services." },
+    { image: "https://placehold.co/80x80.png", hint: "web design", title: "Web Designers", description: "Our skilled web designers have several years of experience and a futuristic vision of web development." },
+    { image: "https://placehold.co/80x80.png", hint: "quality assurance", title: "Testers", description: "Our QA team checks every project we work on and helps us deliver bug-free solutions to our clients." },
 ];
 
 const onDemandFeatures = [
@@ -69,16 +51,16 @@ const techSkills = {
 };
 
 const hiringProcess = [
-    { title: "Interact with Our Developers", description: "Reach out to our development professionals and discuss your development requirements to discuss your development goals and working methods." },
-    { title: "Team Allocation", description: "Based on your development requirements we will share the profiles of a few developers so that you can assess and shortlist the most suitable ones." },
-    { title: "Schedule Interview", description: "You can interview the shortlisted developers to test their development proficiency and make sure you acquire the best development team working for you." },
-    { title: "Team Onboarding Process", description: "Once you get the most satisfying Developers, you can access their technical skills at the best with real-time progress monitoring accessibility." }
+    { image: "https://placehold.co/100x100.png", hint: "discussion meeting", title: "Interact with Our Developers", description: "Reach out to our development professionals and discuss your development requirements to discuss your development goals and working methods." },
+    { image: "https://placehold.co/100x100.png", hint: "team chart", title: "Team Allocation", description: "Based on your development requirements we will share the profiles of a few developers so that you can assess and shortlist the most suitable ones." },
+    { image: "https://placehold.co/100x100.png", hint: "job interview", title: "Schedule Interview", description: "You can interview the shortlisted developers to test their development proficiency and make sure you acquire the best development team working for you." },
+    { image: "https://placehold.co/100x100.png", hint: "team onboarding", title: "Team Onboarding Process", description: "Once you get the most satisfying Developers, you can access their technical skills at the best with real-time progress monitoring accessibility." }
 ];
 
 const engagementModels = [
-    { icon: Users, title: "Dedicated Development Team", description: "Hire a Dedicated development team that holds knowledge about complex development technologies to deliver top-notch results." },
-    { icon: Users, title: "Team Extension", description: "Hire dedicated developers who can help you enhance the capabilities of your development team by leveraging the technical proficiency required for the projects." },
-    { icon: Code, title: "Fix Cost Model", description: "Hire highly skilled developers who hold the proficiency to work on your simplest to most complex custom projects at a fixed cost." },
+    { image: "https://placehold.co/80x80.png", hint: "team collaboration", title: "Dedicated Development Team", description: "Hire a Dedicated development team that holds knowledge about complex development technologies to deliver top-notch results." },
+    { image: "https://placehold.co/80x80.png", hint: "team extension", title: "Team Extension", description: "Hire dedicated developers who can help you enhance the capabilities of your development team by leveraging the technical proficiency required for the projects." },
+    { image: "https://placehold.co/80x80.png", hint: "fixed price", title: "Fix Cost Model", description: "Hire highly skilled developers who hold the proficiency to work on your simplest to most complex custom projects at a fixed cost." },
 ];
 
 const whyHireUsStats = [
@@ -171,7 +153,7 @@ export default function HireDevelopersPage() {
                             {talent.map(item => (
                                 <Card key={item.title} className="p-6">
                                     <div className="flex items-center gap-4">
-                                        <item.icon className="w-10 h-10 text-primary"/>
+                                        <Image src={item.image} alt={item.title} width={80} height={80} className="rounded-full" data-ai-hint={item.hint} />
                                         <h3 className="text-xl font-bold">{item.title}</h3>
                                     </div>
                                     <p className="text-muted-foreground mt-4">{item.description}</p>
@@ -232,7 +214,8 @@ export default function HireDevelopersPage() {
                              <div className="grid md:grid-cols-4 gap-8">
                                 {hiringProcess.map((step, index) => (
                                     <div key={step.title} className="text-center p-4 relative">
-                                        <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary text-primary-foreground font-bold text-2xl z-10 relative border-4 border-background">
+                                        <Image src={step.image} alt={step.title} width={100} height={100} className="rounded-full mx-auto mb-4 border-4 border-background shadow-lg" data-ai-hint={step.hint} />
+                                        <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary text-primary-foreground font-bold text-2xl z-10 relative border-4 border-background -mt-12">
                                             {index + 1}
                                         </div>
                                         <h3 className="text-xl font-bold mb-2">{step.title}</h3>
@@ -253,7 +236,7 @@ export default function HireDevelopersPage() {
                         <div className="grid md:grid-cols-3 gap-8">
                             {engagementModels.map(model => (
                                 <Card key={model.title} className="p-6 text-center">
-                                    <model.icon className="w-12 h-12 text-primary mx-auto mb-4"/>
+                                    <Image src={model.image} alt={model.title} width={80} height={80} className="mx-auto mb-4 rounded-full" data-ai-hint={model.hint} />
                                     <h3 className="text-xl font-bold mb-2">{model.title}</h3>
                                     <p className="text-muted-foreground">{model.description}</p>
                                 </Card>

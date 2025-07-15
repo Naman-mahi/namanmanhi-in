@@ -22,29 +22,30 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (variant !== "sticky") return;
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Set initial state
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [variant]);
+  }, []);
 
-  const headerClasses = {
-    sticky: cn(
-      "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-      isScrolled ? "bg-background/80 shadow-md backdrop-blur-sm" : "bg-transparent"
-    ),
-    inline: "absolute top-0 left-0 right-0 z-50 bg-transparent text-white",
-  };
+  const isSticky = variant === "sticky";
 
-  const linkClasses = {
-    sticky: "text-sm font-medium text-foreground/80 hover:text-primary transition-colors",
-    inline: "text-sm font-medium text-white/80 hover:text-white transition-colors",
-  }
+  const headerClasses = cn(
+    "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+    isSticky && isScrolled ? "bg-background/80 shadow-md backdrop-blur-sm" : "bg-transparent"
+  );
+  
+  const linkClasses = cn(
+    "text-sm font-medium transition-colors",
+    isSticky && isScrolled ? "text-foreground/80 hover:text-primary" : "text-foreground/80 hover:text-primary"
+  );
+  
+  const mobileMenuIconColor = isSticky && isScrolled ? "text-foreground" : "text-foreground";
 
   return (
-    <header className={headerClasses[variant]}>
+    <header className={headerClasses}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center">
@@ -56,7 +57,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
               <Link
                 key={link.name}
                 href={link.href}
-                className={linkClasses[variant]}
+                className={linkClasses}
               >
                 {link.name}
               </Link>
@@ -65,7 +66,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
 
           <div className="hidden lg:flex items-center space-x-4">
             <Button variant="outline" className={cn(
-                variant === 'inline' ? "border-white text-white hover:bg-white hover:text-primary" : "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                (isSticky && isScrolled) ? "border-primary text-primary hover:bg-primary hover:text-primary-foreground" : "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
             )}>
               Get a Quote
             </Button>
@@ -74,7 +75,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
           <div className="lg:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className={cn(variant === 'inline' && "text-white hover:text-white hover:bg-white/10")}>
+                <Button variant="ghost" size="icon" className={mobileMenuIconColor}>
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Open menu</span>
                 </Button>

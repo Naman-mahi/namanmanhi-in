@@ -19,8 +19,8 @@ const slides = [
     ),
     description: "We craft innovative solutions in Blockchain, AI/ML, and Web/Mobile Development to elevate your business in the digital era.",
     image: {
-      src: "https://placehold.co/1920x1080.png",
-      hint: "digital technology"
+      src: "https://placehold.co/800x600.png",
+      hint: "digital technology abstract"
     },
   },
   {
@@ -31,8 +31,8 @@ const slides = [
     ),
     description: "Our expertise in cutting-edge tech helps you stay ahead of the curve and deliver exceptional user experiences.",
     image: {
-      src: "https://placehold.co/1920x1080.png",
-      hint: "futuristic cityscape"
+      src: "https://placehold.co/800x600.png",
+      hint: "futuristic cityscape night"
     },
   },
   {
@@ -43,16 +43,16 @@ const slides = [
     ),
     description: "From concept to launch, we are your dedicated partners in turning ambitious ideas into reality.",
     image: {
-      src: "https://placehold.co/1920x1080.png",
-      hint: "team brainstorming"
+      src: "https://placehold.co/800x600.png",
+      hint: "team brainstorming office"
     },
   },
 ];
 
 export function HeroCarousel() {
   return (
-    <section id="home" className="relative h-screen w-full overflow-hidden">
-       <Header variant="inline" />
+    <section id="home" className="relative h-screen w-full overflow-hidden bg-background">
+       <Header variant="sticky" />
       <Carousel
         opts={{ loop: true }}
         plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
@@ -61,27 +61,31 @@ export function HeroCarousel() {
         <CarouselContent>
           {slides.map((slide, index) => (
             <CarouselItem key={index} className="h-full w-full">
-              <div className="relative h-full w-full flex items-center justify-center text-center">
-                <div className="absolute inset-0 bg-black/60 z-10" />
-                <Image
-                  src={slide.image.src}
-                  alt="Hero background"
-                  fill
-                  className="object-cover"
-                  data-ai-hint={slide.image.hint}
-                  priority={index === 0}
-                />
-                <div className="relative z-20 flex flex-col items-center text-white container mx-auto px-4">
-                  <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight">
-                    {slide.title}
-                  </h1>
-                  <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-white/80">
-                    {slide.description}
-                  </p>
-                  <div className="mt-8">
-                    <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                      Let's Build Together
-                    </Button>
+              <div className="container mx-auto h-full w-full flex items-center">
+                <div className="grid md:grid-cols-2 items-center gap-12">
+                  <div className="flex flex-col items-start text-left">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground">
+                      {slide.title}
+                    </h1>
+                    <p className="mt-4 max-w-xl text-lg md:text-xl text-muted-foreground">
+                      {slide.description}
+                    </p>
+                    <div className="mt-8">
+                      <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                        Let's Build Together
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="hidden md:block">
+                     <Image
+                        src={slide.image.src}
+                        alt="Hero background"
+                        width={800}
+                        height={600}
+                        className="object-cover rounded-lg shadow-2xl"
+                        data-ai-hint={slide.image.hint}
+                        priority={index === 0}
+                      />
                   </div>
                 </div>
               </div>

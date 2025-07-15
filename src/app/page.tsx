@@ -1,4 +1,3 @@
-import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HeroCarousel } from "@/components/sections/hero-carousel";
 import { ServicesGrid } from "@/components/sections/services-grid";

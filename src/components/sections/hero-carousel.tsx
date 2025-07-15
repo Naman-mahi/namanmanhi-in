@@ -37,7 +37,7 @@ const slides = [
     descriptionLine1: "High-performance applications for",
     descriptionLine2: "both iOS and Android.",
     image: {
-      src: "https://placehold.co/550x550.png",
+      src: "/mobile-app-dev.png",
       hint: "mobile app interface"
     },
   },

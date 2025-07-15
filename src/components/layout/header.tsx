@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Logo } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "../theme-toggle";
@@ -80,15 +80,16 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background">
+              <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background p-0">
+                <SheetHeader className="flex flex-row justify-between items-center p-4 border-b">
+                   <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                   <Logo className="h-9 w-auto" />
+                  <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
+                      <X className="h-6 w-6"/>
+                      <span className="sr-only">Close menu</span>
+                  </Button>
+                </SheetHeader>
                 <div className="flex flex-col h-full">
-                  <div className="flex justify-between items-center p-4 border-b">
-                     <Logo className="h-9 w-auto" />
-                    <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
-                        <X className="h-6 w-6"/>
-                        <span className="sr-only">Close menu</span>
-                    </Button>
-                  </div>
                   <nav className="flex-grow flex flex-col items-center justify-center space-y-6">
                     {navLinks.map((link) => (
                       <Link

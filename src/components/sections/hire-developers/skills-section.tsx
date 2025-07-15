@@ -1,7 +1,9 @@
 "use client";
 
 import { CheckCircle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const techSkills = {
     "Front-end": ["Angular", "ReactJS", "VueJS", "JavaScript", "TypeScript", "NextJS", "NuxtJS", "CSS3", "HTML5", "jQuery", "Bootstrap", "D3 JS", "Ember.js"],
@@ -23,36 +25,42 @@ export function SkillsSection() {
     return (
         <section className="py-20 lg:py-24 bg-background">
             <div className="container mx-auto px-4">
-                <Tabs defaultValue={categories[0]} className="grid lg:grid-cols-4 gap-12 items-start">
-                    <div className="lg:col-span-1 text-left lg:sticky lg:top-24">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Tech Expertise</h2>
-                        <p className="text-muted-foreground mb-6">
-                            Leveraging technical proficiency to unlock the full potential of quality services across various domains.
-                        </p>
-                        <TabsList className="flex-col h-auto items-stretch bg-transparent p-0 space-y-2">
-                            {categories.map((category) => (
-                                <TabsTrigger 
-                                    key={category} 
-                                    value={category}
-                                    className="w-full justify-start text-left rounded-lg text-base p-4 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg"
-                                >
-                                    {category}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
+                <div className="text-center mb-12">
+                    <h2 className="text-3xl md:text-4xl font-bold">Our Tech Expertise</h2>
+                    <p className="mt-4 text-muted-foreground max-w-3xl mx-auto">
+                        Leveraging technical proficiency to unlock the full potential of quality services across various domains.
+                    </p>
+                </div>
+                
+                <Tabs defaultValue={categories[0]} className="w-full">
+                    <div className="flex justify-center">
+                        <ScrollArea className="max-w-full pb-4 whitespace-nowrap">
+                            <TabsList>
+                                {categories.map((category) => (
+                                    <TabsTrigger key={category} value={category}>
+                                        {category}
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                            <ScrollBar orientation="horizontal" />
+                        </ScrollArea>
                     </div>
 
-                    <div className="lg:col-span-3">
+                    <div className="mt-8">
                         {categories.map((category) => (
-                            <TabsContent key={category} value={category} className="mt-0">
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-4">
-                                    {(techSkills[category as keyof typeof techSkills]).map(skill => (
-                                        <div key={skill} className="flex items-center gap-2 group">
-                                            <CheckCircle className="w-4 h-4 text-primary/70 group-hover:text-primary transition-colors" />
-                                            <span className="text-muted-foreground group-hover:text-foreground transition-colors">{skill}</span>
+                            <TabsContent key={category} value={category}>
+                                <Card className="bg-secondary/30 border-0">
+                                    <CardContent className="p-6 md:p-8">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-4">
+                                            {(techSkills[category as keyof typeof techSkills]).map(skill => (
+                                                <div key={skill} className="flex items-center gap-3 group">
+                                                    <CheckCircle className="w-4 h-4 text-primary/80 group-hover:text-primary transition-colors flex-shrink-0" />
+                                                    <span className="text-muted-foreground group-hover:text-foreground transition-colors text-sm">{skill}</span>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
+                                    </CardContent>
+                                </Card>
                             </TabsContent>
                         ))}
                     </div>

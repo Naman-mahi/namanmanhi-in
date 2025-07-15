@@ -43,19 +43,19 @@ const hiringProcess = [
 export function HiringProcessSection() {
     return (
         <section className="py-20 lg:py-24 bg-secondary/30">
-            <div className="container mx-auto px-4">
-                <div className="text-center mb-16">
+            <div className="w-full px-4 md:px-8">
+                <div className="text-center mb-16 max-w-3xl mx-auto">
                     <h2 className="text-3xl md:text-4xl font-bold">A Well-Defined Hiring Process</h2>
-                    <p className="mt-4 text-muted-foreground max-w-3xl mx-auto">Need to augment your team? Follow our quick and transparent steps to onboard top talent for your project.</p>
+                    <p className="mt-4 text-muted-foreground">Need to augment your team? Follow our quick and transparent steps to onboard top talent for your project.</p>
                 </div>
                 <Carousel
                     opts={{ align: "start", loop: true }}
                     plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
-                    className="w-full max-w-5xl mx-auto"
+                    className="w-full"
                 >
                     <CarouselContent className="-ml-4">
                         {hiringProcess.map((step, index) => (
-                            <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                            <CarouselItem key={index} className="sm:basis-1/2 md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-4">
                                 <div className="p-1 h-full">
                                     <Card className="h-full bg-card shadow-lg border-t-4 border-primary/20 hover:border-primary transition-all duration-300 group">
                                         <CardContent className="flex flex-col items-center text-center p-8">

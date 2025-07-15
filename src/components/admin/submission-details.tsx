@@ -1,8 +1,8 @@
 
 'use client';
 
-import type { Submission, ChatSession, ContactSubmission, Message } from '@/lib/types';
-import { useState } from 'react';
+import type { Submission, ChatSession, ContactSubmission } from '@/lib/types';
+import { useState, useEffect, useRef } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -48,6 +48,13 @@ const FormDetails = ({ form }: { form: ContactSubmission }) => (
 const ChatDetails = ({ session, onReplySubmit }: { session: ChatSession, onReplySubmit: (text: string) => Promise<void> }) => {
     const [reply, setReply] = useState("");
     const [isSending, setIsSending] = useState(false);
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (scrollAreaRef.current) {
+            scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+        }
+    }, [session.messages]);
 
     const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -70,13 +77,15 @@ const ChatDetails = ({ session, onReplySubmit }: { session: ChatSession, onReply
                  <h3 className="font-bold text-lg">{session.name}</h3>
                  <p className="text-sm text-muted-foreground">{session.number}</p>
             </div>
-            <ScrollArea className="flex-grow p-4 bg-secondary/20">
-                <div className="space-y-4">
-                    {session.messages.filter(msg => msg.sender !== 'options' && msg.text).map(msg => (
-                        <ChatMessage key={msg.id} message={msg} onOptionSelect={() => {}} perspective="admin" />
-                    ))}
-                </div>
-            </ScrollArea>
+            <div className="flex-grow h-0 bg-secondary/20">
+              <ScrollArea className="h-full p-4" viewportRef={scrollAreaRef}>
+                  <div className="space-y-4">
+                      {session.messages.filter(msg => msg.sender !== 'options' && msg.text).map(msg => (
+                          <ChatMessage key={msg.id} message={msg} onOptionSelect={() => {}} perspective="admin" />
+                      ))}
+                  </div>
+              </ScrollArea>
+            </div>
             <div className="p-4 border-t bg-background flex-shrink-0">
                 <form onSubmit={handleFormSubmit} className="flex items-center gap-2">
                     <Input
@@ -84,6 +93,7 @@ const ChatDetails = ({ session, onReplySubmit }: { session: ChatSession, onReply
                         value={reply}
                         onChange={(e) => setReply(e.target.value)}
                         disabled={isSending}
+                        autoComplete="off"
                     />
                     <Button type="submit" size="icon" aria-label="Send reply" disabled={isSending || !reply.trim()}>
                         {isSending ? <Loader2 size={20} className="animate-spin"/> : <Send size={20} />}

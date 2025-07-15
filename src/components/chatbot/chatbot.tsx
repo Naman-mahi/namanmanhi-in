@@ -7,7 +7,7 @@ import { ChatbotIcon } from "./chatbot-icon";
 import { ChatWindow } from "./chat-window";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
-// import { getChatbotResponse } from "@/ai/flows/chatbot-flow";
+import type { Message } from '@/lib/types';
 
 const predefinedQuestions = [
     { question: "What services do you offer?", answer: "We offer a wide range of services including AI & ML, Blockchain, Web Development, Mobile Apps, and more. You can see a full list on our [Services section](/)." },
@@ -31,7 +31,7 @@ const generateSessionId = () => {
 
 export function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState<{ id: string; text: string; sender: 'bot' | 'user' | 'options'; options?: string[] }[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [step, setStep] = useState<'collecting' | 'chatting'>('collecting');
     const [userDetails, setUserDetails] = useState({ name: '', number: '' });
     const [isTyping, setIsTyping] = useState(false);
@@ -40,31 +40,72 @@ export function Chatbot() {
     const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
     const { toast } = useToast();
 
+    const addMessage = useCallback((message: Omit<Message, 'id'>) => {
+        setMessages(prev => {
+            const newMessages = [...prev, { ...message, id: generateUniqueId() }];
+            return newMessages;
+        });
+    }, []);
+
+    const fetchLatestMessages = useCallback(async () => {
+        if (!sessionId || step !== 'chatting') return;
+        
+        try {
+            const response = await fetch('/api/contact');
+            const { data } = await response.json();
+            const currentSession = data.find((s: any) => s.sessionId === sessionId);
+            
+            if (currentSession && currentSession.messages.length > messages.length) {
+                const newMessages = currentSession.messages.slice(messages.length);
+                newMessages.forEach((msg: Message) => {
+                    // Check if message is from admin and not already present
+                    if (msg.sender === 'bot' && !messages.find(m => m.id === msg.id)) {
+                         setMessages(prev => [...prev, msg]);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error("Failed to fetch latest messages:", error);
+        }
+    }, [sessionId, messages, step]);
+
+     useEffect(() => {
+        if (isOpen && step === 'chatting') {
+            const intervalId = setInterval(fetchLatestMessages, 5000); // Poll every 5 seconds
+            return () => clearInterval(intervalId);
+        }
+    }, [isOpen, step, fetchLatestMessages]);
+
     const initializeChat = useCallback((clearStorage = false) => {
-        if (clearStorage) {
+        if (clearStorage && typeof window !== 'undefined') {
             localStorage.removeItem('chatbotState');
         }
-        setMessages([{ id: generateUniqueId(), text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' }]);
+        const initialMessage = { id: generateUniqueId(), text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' as const };
+        setMessages([initialMessage]);
         setStep('collecting');
         setUserDetails({ name: '', number: '' });
         const newSessionId = generateSessionId();
         setSessionId(newSessionId);
         
-        const initialState = {
-            messages: [{ id: generateUniqueId(), text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' }],
-            step: 'collecting',
-            userDetails: { name: '', number: '' },
-            sessionId: newSessionId,
-        };
-        localStorage.setItem('chatbotState', JSON.stringify(initialState));
+        if (typeof window !== 'undefined') {
+            const initialState = {
+                messages: [initialMessage],
+                step: 'collecting',
+                userDetails: { name: '', number: '' },
+                sessionId: newSessionId,
+            };
+            localStorage.setItem('chatbotState', JSON.stringify(initialState));
+        }
 
     }, []);
     
     const saveChatState = useCallback((currentState: object) => {
-        try {
-            localStorage.setItem('chatbotState', JSON.stringify(currentState));
-        } catch (error) {
-            console.error("Failed to save chat state to localStorage", error);
+        if (typeof window !== 'undefined') {
+            try {
+                localStorage.setItem('chatbotState', JSON.stringify(currentState));
+            } catch (error) {
+                console.error("Failed to save chat state to localStorage", error);
+            }
         }
     }, []);
     
@@ -102,12 +143,8 @@ export function Chatbot() {
                 return prev;
             });
         }, INACTIVITY_TIMEOUT);
-    }, [initializeChat]);
+    }, [initializeChat, addMessage]);
     
-    const addMessage = (message: Omit<typeof messages[0], 'id'>) => {
-        setMessages(prev => [...prev, { ...message, id: generateUniqueId() }]);
-    }
-
     useEffect(() => {
         if (isOpen) {
             resetInactivityTimer();
@@ -123,35 +160,35 @@ export function Chatbot() {
     }, [isOpen, resetInactivityTimer]);
 
     useEffect(() => {
-        // Load state from localStorage on initial render
-        try {
-            const savedState = localStorage.getItem('chatbotState');
-            if (savedState) {
-                const { messages: savedMessages, step: savedStep, userDetails: savedUserDetails, sessionId: savedSessionId } = JSON.parse(savedState);
-                if (savedMessages && savedMessages.length > 0 && savedSessionId) {
-                    setMessages(savedMessages);
-                    setStep(savedStep);
-                    setUserDetails(savedUserDetails);
-                    setSessionId(savedSessionId);
+        if (typeof window !== 'undefined') {
+            try {
+                const savedState = localStorage.getItem('chatbotState');
+                if (savedState) {
+                    const { messages: savedMessages, step: savedStep, userDetails: savedUserDetails, sessionId: savedSessionId } = JSON.parse(savedState);
+                    if (savedMessages && savedMessages.length > 0 && savedSessionId) {
+                        setMessages(savedMessages);
+                        setStep(savedStep);
+                        setUserDetails(savedUserDetails);
+                        setSessionId(savedSessionId);
+                    } else {
+                        initializeChat();
+                    }
                 } else {
                     initializeChat();
                 }
-            } else {
-                 initializeChat();
+            } catch (error) {
+                console.error("Failed to parse chatbot state from localStorage", error);
+                initializeChat();
             }
-        } catch (error) {
-            console.error("Failed to parse chatbot state from localStorage", error);
-            initializeChat();
         }
     }, [initializeChat]);
     
     useEffect(() => {
-        // Save state to localStorage whenever it changes
         if (messages.length > 0 && sessionId) {
              const stateToSave = { messages, step, userDetails, sessionId };
              saveChatState(stateToSave);
              resetInactivityTimer();
-             if (step === 'chatting' && userDetails.name && userDetails.number) {
+             if (userDetails.name && userDetails.number) {
                 saveChatToDatabase({
                     source: 'Chatbot Lead',
                     name: userDetails.name,
@@ -200,18 +237,15 @@ export function Chatbot() {
 
     const handleUserQuery = async (query: string) => {
         setIsTyping(true);
-        // Look for a predefined answer first
         const predefined = predefinedQuestions.find(p => p.question.toLowerCase() === query.toLowerCase());
 
         setTimeout(() => {
             if (predefined) {
                 addMessage({ text: predefined.answer, sender: 'bot' });
             } else {
-                // Fallback to Genkit (currently commented out)
                 addMessage({ text: "I'm sorry, I'm not sure how to answer that. Is there anything else I can help with?", sender: 'bot' });
             }
 
-            // Always show options for next steps
             const filteredQuestions = predefinedQuestions.filter(q => q.question.toLowerCase() !== query.toLowerCase());
             addMessage({ text: 'What else can I help you with?', sender: 'bot' });
             addMessage({ 
@@ -222,43 +256,6 @@ export function Chatbot() {
 
             setIsTyping(false);
         }, 1000);
-        
-        /*
-        // Genkit implementation is commented out as requested
-        try {
-            const botResponse = await getChatbotResponse({ query, history: messages.slice(-5).map(m => `${m.sender}: ${m.text}`) });
-            addMessage({ text: botResponse.answer, sender: 'bot' });
-            
-            if (botResponse.answer.includes("anything else")) {
-                 addMessage({ 
-                    text: 'Is there anything else I can help with?', 
-                    sender: 'bot' 
-                });
-                const filteredQuestions = predefinedQuestions.filter(q => q.question.toLowerCase() !== query.toLowerCase());
-                addMessage({ 
-                    text: '', 
-                    sender: 'options', 
-                    options: filteredQuestions.map(q => q.question) 
-                });
-            } else {
-                addMessage({ text: 'What else can I help you with?', sender: 'bot' });
-                 const filteredQuestions = predefinedQuestions.filter(q => q.question.toLowerCase() !== query.toLowerCase());
-                addMessage({ 
-                    text: '', 
-                    sender: 'options', 
-                    options: filteredQuestions.map(q => q.question) 
-                });
-            }
-        } catch (error) {
-            console.error("Error fetching AI response:", error);
-            addMessage({
-                text: "I'm sorry, I'm having a little trouble right now. Please try again in a moment.",
-                sender: 'bot'
-            });
-        } finally {
-            setIsTyping(false);
-        }
-        */
     }
     
     const toggleOpen = () => {

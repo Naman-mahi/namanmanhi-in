@@ -4,7 +4,6 @@ import { CompanyOverview } from "@/components/sections/company-overview";
 import { ContactForm } from "@/components/sections/contact-form";
 
 import { HeroSection } from "@/components/sections/hire-developers/hero-section";
-import { IntroSection } from "@/components/sections/hire-developers/intro-section";
 import { PricingSection } from "@/components/sections/hire-developers/pricing-section";
 import { TalentSection } from "@/components/sections/hire-developers/talent-section";
 import { OnDemandTeamsSection } from "@/components/sections/hire-developers/on-demand-teams-section";
@@ -20,7 +19,6 @@ export default function HireDevelopersPage() {
 
             <main>
                 <HeroSection />
-                <IntroSection />
                 <PricingSection />
                 <TalentSection />
                 <OnDemandTeamsSection />

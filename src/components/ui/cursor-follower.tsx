@@ -27,7 +27,7 @@ export function CursorFollower() {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 w-3 h-3 rounded-full bg-foreground/50 pointer-events-none z-[9999]"
+      className="fixed top-0 left-0 w-3 h-3 rounded-full bg-blue-500/50 pointer-events-none z-[9999]"
       style={{
         translateX: '-50%',
         translateY: '-50%',

@@ -46,6 +46,26 @@ const projects = [
         },
         tags: ["Mobile App", "React Native", "Firebase", "HIPAA"],
         link: "#"
+    },
+    {
+        title: "E-learning Platform",
+        description: "An online learning platform with interactive courses, video lectures, and progress tracking for students of all ages.",
+        image: {
+            src: "https://placehold.co/600x400.png",
+            hint: "online education"
+        },
+        tags: ["EdTech", "Next.js", "PostgreSQL", "Stripe"],
+        link: "#"
+    },
+    {
+        title: "Smart Home IoT Dashboard",
+        description: "A centralized dashboard to monitor and control various IoT devices in a smart home, from lighting to security cameras.",
+        image: {
+            src: "https://placehold.co/600x400.png",
+            hint: "smart home interface"
+        },
+        tags: ["IoT", "Vue.js", "MQTT", "Raspberry Pi"],
+        link: "#"
     }
 ];
 
@@ -60,7 +80,7 @@ export function ProjectsSection() {
                     </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-8">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {projects.map((project) => (
                         <Card key={project.title} className="bg-card group overflow-hidden shadow-lg hover:shadow-primary/20 transition-all duration-300 transform hover:-translate-y-2 flex flex-col">
                             <CardHeader className="p-0">
@@ -74,7 +94,7 @@ export function ProjectsSection() {
                                 />
                             </CardHeader>
                             <CardContent className="p-6 flex-grow">
-                                <CardTitle className="mb-3 text-2xl">{project.title}</CardTitle>
+                                <CardTitle className="mb-3 text-xl">{project.title}</CardTitle>
                                 <p className="text-muted-foreground text-sm mb-4">{project.description}</p>
                                 <div className="flex flex-wrap gap-2">
                                     {project.tags.map(tag => (

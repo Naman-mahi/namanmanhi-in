@@ -1,35 +1,83 @@
+"use client";
+
 import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { ClipboardList, Users, MessageSquare, Code, Rocket, Handshake } from 'lucide-react';
+import Autoplay from "embla-carousel-autoplay";
+
 
 const hiringProcess = [
-    { image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=100&auto=format&fit=crop", hint: "discussion meeting", title: "Interact with Our Developers", description: "Reach out to our development professionals and discuss your development requirements to discuss your development goals and working methods." },
-    { image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=100&auto=format&fit=crop", hint: "team chart", title: "Team Allocation", description: "Based on your development requirements we will share the profiles of a few developers so that you can assess and shortlist the most suitable ones." },
-    { image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=100&auto=format&fit=crop", hint: "job interview", title: "Schedule Interview", description: "You can interview the shortlisted developers to test their development proficiency and make sure you acquire the best development team working for you." },
-    { image: "https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=100&auto=format&fit=crop", hint: "team onboarding", title: "Team Onboarding Process", description: "Once you get the most satisfying Developers, you can access their technical skills at the best with real-time progress monitoring accessibility." }
+    { 
+        icon: ClipboardList, 
+        title: "Submit Your Requirements", 
+        description: "Reach out to our team and provide the details of your project. The more we know, the better we can assist you." 
+    },
+    { 
+        icon: Users, 
+        title: "Screening & Shortlisting", 
+        description: "Based on your needs, we will share profiles of our top developers for you to assess and shortlist the most suitable candidates." 
+    },
+    { 
+        icon: MessageSquare, 
+        title: "Schedule Interviews", 
+        description: "You can interview the shortlisted developers to test their technical proficiency and ensure they are the perfect fit for your team." 
+    },
+    { 
+        icon: Code, 
+        title: "Trial Period / Task", 
+        description: "Assign a small test project or conduct a trial period to see our developers in action before making a final commitment."
+    },
+    {
+        icon: Handshake,
+        title: "Finalize & Sign Agreement",
+        description: "Once you are satisfied, we'll finalize the terms and sign an agreement, including an NDA to protect your project idea."
+    },
+    { 
+        icon: Rocket, 
+        title: "Team Onboarding & Kick-off", 
+        description: "Your new dedicated developer or team is onboarded. You get full access to monitor progress and collaborate in real-time." 
+    }
 ];
 
 export function HiringProcessSection() {
     return (
         <section className="py-20 lg:py-24 bg-secondary/30">
             <div className="container mx-auto px-4">
-                <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold">The Well-defined Process to Hire Dedicated Developers</h2>
-                    <p className="mt-4 text-muted-foreground">Need some of our talents to glorify your development team? Follow quick and easy steps.</p>
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl md:text-4xl font-bold">A Well-Defined Hiring Process</h2>
+                    <p className="mt-4 text-muted-foreground max-w-3xl mx-auto">Need to augment your team? Follow our quick and transparent steps to onboard top talent for your project.</p>
                 </div>
-                <div className="relative">
-                    <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-border -translate-y-1/2"></div>
-                    <div className="grid md:grid-cols-4 gap-8">
+                <Carousel
+                    opts={{ align: "start", loop: true }}
+                    plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
+                    className="w-full max-w-5xl mx-auto"
+                >
+                    <CarouselContent className="-ml-4">
                         {hiringProcess.map((step, index) => (
-                            <div key={step.title} className="text-center p-4 relative">
-                                <Image src={step.image} alt={step.title} width={100} height={100} className="rounded-full mx-auto mb-4 border-4 border-background shadow-lg object-cover" data-ai-hint={step.hint} />
-                                <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary text-primary-foreground font-bold text-2xl z-10 relative border-4 border-background -mt-12">
-                                    {index + 1}
+                            <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                                <div className="p-1 h-full">
+                                    <Card className="h-full bg-card shadow-lg border-t-4 border-primary/20 hover:border-primary transition-all duration-300 group">
+                                        <CardContent className="flex flex-col items-center text-center p-8">
+                                            <div className="relative mb-6">
+                                                <div className="bg-primary/10 text-primary rounded-full w-20 h-20 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
+                                                    <step.icon className="w-10 h-10" />
+                                                </div>
+                                                <div className="absolute -top-2 -right-2 flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold text-lg border-4 border-background">
+                                                    {index + 1}
+                                                </div>
+                                            </div>
+                                            <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+                                            <p className="text-muted-foreground text-sm flex-grow">{step.description}</p>
+                                        </CardContent>
+                                    </Card>
                                 </div>
-                                <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                                <p className="text-muted-foreground">{step.description}</p>
-                            </div>
+                            </CarouselItem>
                         ))}
-                    </div>
-                </div>
+                    </CarouselContent>
+                    <CarouselPrevious className="hidden md:flex" />
+                    <CarouselNext className="hidden md:flex" />
+                </Carousel>
             </div>
         </section>
     );

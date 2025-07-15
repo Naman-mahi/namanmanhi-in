@@ -1,11 +1,13 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { CompanyOverview } from "@/components/sections/company-overview";
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle, ArrowRight, Clock, CalendarDays, CalendarClock, Star } from 'lucide-react';
 import Image from "next/image";
 import { ContactForm } from "@/components/sections/contact-form";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 const stats = [
     { value: "20+", label: "Years of Experience" },
@@ -14,9 +16,33 @@ const stats = [
 ];
 
 const pricingTiers = [
-    { title: "Hourly", price: "$23/ Hour", description: "Hire skilled developers from a top IT development company on an hourly basis for your short-term project." },
-    { title: "Monthly", price: "$2890.00/ Month", description: "Hire the best developers through our monthly hiring model to build a cost-friendly and long-term relationship with us." },
-    { title: "Quarterly", price: "$7999/ Quarter", description: "Hire dedicated developers on a quarterly basis to get all the support or guidance you need for your constantly changing development requirements." }
+    { 
+        icon: Clock,
+        title: "Hourly", 
+        price: "$23",
+        period: "/ hour",
+        description: "Ideal for short-term projects and specific tasks.",
+        features: ["Pay-as-you-go flexibility", "Quick start", "No long-term commitment"],
+        popular: false
+    },
+    { 
+        icon: CalendarDays,
+        title: "Monthly", 
+        price: "$2,890",
+        period: "/ month",
+        description: "Perfect for ongoing projects requiring dedicated support.",
+        features: ["Cost-effective for long-term", "Dedicated developer", "Stable team", "Priority support"],
+        popular: true
+    },
+    { 
+        icon: CalendarClock,
+        title: "Quarterly", 
+        price: "$7,999",
+        period: "/ quarter",
+        description: "Best value for long-term, large-scale development.",
+        features: ["Maximum cost savings", "Strategic partnership", "Deep integration with your team"],
+        popular: false
+    }
 ];
 
 const talent = [
@@ -120,21 +146,39 @@ export default function HireDevelopersPage() {
                 <section className="py-20 lg:py-24 bg-secondary/30">
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold">Approx Cost To Hire Dedicated Developers</h2>
-                            <p className="mt-4 text-muted-foreground">Hire Dedicated resources from NamanMahi.in Starts from,</p>
+                            <h2 className="text-3xl md:text-4xl font-bold">Cost To Hire Dedicated Developers</h2>
+                            <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">Flexible hiring models designed to fit your project scope and budget. NamanMahi.in offers transparent pricing to start building your team today.</p>
                         </div>
-                        <div className="grid md:grid-cols-3 gap-8">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-center">
                             {pricingTiers.map(tier => (
-                                <Card key={tier.title} className="text-center p-6">
-                                    <CardHeader>
+                                <Card key={tier.title} className={cn(
+                                    "rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-full",
+                                    tier.popular ? "border-2 border-primary scale-105 bg-card" : "bg-card"
+                                )}>
+                                    <CardHeader className="text-center relative">
+                                        {tier.popular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2"><Star className="w-3 h-3 mr-1" /> Most Popular</Badge>}
+                                        <div className={cn("mx-auto mb-4 w-16 h-16 rounded-full flex items-center justify-center", tier.popular ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary")}>
+                                          <tier.icon className="w-8 h-8"/>
+                                        </div>
                                         <CardTitle className="text-2xl">{tier.title}</CardTitle>
-                                        <p className="text-3xl font-bold text-primary pt-2">{tier.price}</p>
+                                        <CardDescription>{tier.description}</CardDescription>
                                     </CardHeader>
-                                    <CardContent>
-                                        <p className="text-muted-foreground mb-6">{tier.description}</p>
-                                        <Button>Hire Now</Button>
-                                        <p className="text-xs text-muted-foreground mt-4">We sign NDA for all our projects.</p>
+                                    <CardContent className="flex-grow flex flex-col justify-between">
+                                        <div className="text-center mb-8">
+                                          <span className="text-5xl font-bold">{tier.price}</span>
+                                          <span className="text-muted-foreground">{tier.period}</span>
+                                        </div>
+                                        <ul className="space-y-3 mb-8 text-muted-foreground">
+                                          {tier.features.map(feature => (
+                                              <li key={feature} className="flex items-center gap-3">
+                                                <CheckCircle className="w-5 h-5 text-primary" />
+                                                <span>{feature}</span>
+                                              </li>
+                                          ))}
+                                        </ul>
+                                        <Button className="w-full" variant={tier.popular ? 'default' : 'outline'}>Hire Now</Button>
                                     </CardContent>
+                                    <p className="text-xs text-muted-foreground mt-4 text-center p-4">We sign an NDA for all our projects.</p>
                                 </Card>
                             ))}
                         </div>
@@ -143,19 +187,19 @@ export default function HireDevelopersPage() {
                 
                 <section className="py-20 lg:py-24">
                     <div className="container mx-auto px-4">
-                        <div className="text-center mb-12">
+                         <div className="text-center mb-12">
                              <h2 className="text-3xl md:text-4xl font-bold">Leverage World-Class Talent</h2>
                              <p className="mt-4 text-muted-foreground max-w-3xl mx-auto">We have a team of experts who have a pool of expertise in their respective fields. Their approach is out-of-box, dynamic, and unique in the market.</p>
                         </div>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {talent.map(item => (
-                                <Card key={item.title} className="h-full group overflow-hidden bg-card shadow-lg border-2 border-transparent hover:border-primary transition-all duration-300 hover:-translate-y-2">
+                                <Card key={item.title} className="h-full group overflow-hidden bg-card shadow-lg border-l-4 border-transparent hover:border-primary transition-all duration-300 hover:-translate-y-1">
                                     <CardHeader>
-                                        <CardTitle>{item.title}</CardTitle>
+                                        <CardTitle className="text-xl">{item.title}</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-muted-foreground">{item.description}</p>
-                                        <div className="mt-4 flex items-center text-primary font-semibold">
+                                        <p className="text-muted-foreground text-sm">{item.description}</p>
+                                        <div className="mt-4 flex items-center text-primary font-semibold text-sm">
                                           Read More <ArrowRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
                                         </div>
                                     </CardContent>
@@ -194,8 +238,8 @@ export default function HireDevelopersPage() {
                                     <h3 className="font-bold text-lg mb-3 text-primary">{category}</h3>
                                     <ul className="space-y-2">
                                         {skills.map(skill => (
-                                            <li key={skill} className="text-muted-foreground flex items-center gap-2">
-                                                <CheckCircle className="w-4 h-4 text-primary/70" /> {skill}
+                                            <li key={skill} className="text-muted-foreground flex items-center gap-2 text-sm">
+                                                <CheckCircle className="w-4 h-4 text-primary/70 flex-shrink-0" /> <span>{skill}</span>
                                             </li>
                                         ))}
                                     </ul>

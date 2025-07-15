@@ -1,131 +1,61 @@
 "use client";
 import { Card, CardContent } from '@/components/ui/card';
 import { AnimatedCounter } from '@/components/animated-counter';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+    },
+  },
+};
 
 const AppIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <defs>
-      <linearGradient id="app" x1="24" y1="12" x2="24" y2="36" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#FF6B9B" />
-        <stop offset="1" stopColor="#E6396F" />
-      </linearGradient>
-    </defs>
-    <rect width="48" height="48" rx="8" fill="hsl(var(--card))" />
-    <rect x="12" y="12" width="24" height="24" rx="4" fill="url(#app)" />
-    <circle cx="21" cy="18" r="1" fill="white" />
-    <circle cx="27" cy="18" r="1" fill="white" />
-    <path d="M20 28C20 26.8954 20.8954 26 22 26H26C27.1046 26 28 26.8954 28 28V30H20V28Z" fill="white" fillOpacity="0.8" />
-  </svg>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M19 12C19 15.866 15.866 19 12 19C8.13401 19 5 15.866 5 12C5 8.13401 8.13401 5 12 5C15.866 5 19 8.13401 19 12Z" stroke="currentColor" strokeWidth="1.5"></path> <path d="M10 12L14 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M12 14L12 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
 );
 
 const DevIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <defs>
-      <linearGradient id="dev" x1="24" y1="16" x2="24" y2="32" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#21D4B4" />
-        <stop offset="1" stopColor="#15A68A" />
-      </linearGradient>
-    </defs>
-    <rect width="48" height="48" rx="8" fill="hsl(var(--card))" />
-    <rect x="12" y="16" width="24" height="16" rx="3" fill="url(#dev)" />
-    <path d="M20 25L17 22L20 19" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M28 25L31 22L28 19" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 8L3 12L7 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M17 8L21 12L17 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M14 4L10 20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
 );
 
 const WebsiteIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <defs>
-      <linearGradient id="web" x1="24" y1="14" x2="24" y2="34" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#6763FF" />
-        <stop offset="1" stopColor="#4A45E5" />
-      </linearGradient>
-    </defs>
-    <rect width="48" height="48" rx="8" fill="hsl(var(--card))" />
-    <rect x="12" y="14" width="24" height="20" rx="3" fill="url(#web)" />
-    <path d="M12 20H36" stroke="white" strokeOpacity="0.5" strokeWidth="1.5" />
-    <circle cx="16" cy="17" r="1" fill="white" fillOpacity="0.8" />
-    <circle cx="20" cy="17" r="1" fill="white" fillOpacity="0.8" />
-  </svg>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M12 21C14.2091 21 16 16.9706 16 12C16 7.02944 14.2091 3 12 3C9.79086 3 8 7.02944 8 12C8 16.9706 9.79086 21 12 21Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M3 12H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
 );
 
 const GameIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <defs>
-      <linearGradient id="game" x1="24" y1="15" x2="24" y2="33" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#FFA6A6" />
-        <stop offset="1" stopColor="#FF6B6B" />
-      </linearGradient>
-    </defs>
-    <rect width="48" height="48" rx="8" fill="hsl(var(--card))" />
-    <path d="M18 21H15V18H18V21Z" fill="#FF6B6B" />
-    <path d="M21 24H18V21H21V24Z" fill="#FFA6A6" />
-    <path d="M21 18H24V15H21V18Z" fill="#FFA6A6" />
-    <path d="M27 18H30V21H27V18Z" fill="#FF6B6B" />
-    <path d="M27 24H30V27H27V24Z" fill="#FFA6A6" />
-    <path d="M24 21H27V24H24V21Z" fill="#FF6B6B" />
-    <path d="M24 27H21V30H24V27Z" fill="#FF6B6B" />
-    <path d="M18 27H21V30H18V27Z" fill="#FFA6A6" />
-    <path d="M24 33V30H21V27H18V24H15V21H18V18H21V15H24V18H27V21H30V24H27V27H24V30H27V33" stroke="url(#game)" strokeWidth="0" />
-  </svg>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M19.792 10.158C20.6621 10.6384 21.3616 11.3379 21.842 12.208L22 12.5C22 16.918 18.918 20.5 14.5 20.5H9.5C5.082 20.5 2 16.918 2 12.5C2 11.234 2.378 10.05 3.038 9.07402" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M18 10C18 7.79086 16.2091 6 14 6C11.7909 6 10 7.79086 10 10" stroke="currentColor" strokeWidth="1.5"></path> <path d="M14 6V5C14 3.34315 12.6569 2 11 2C9.34315 2 8 3.34315 8 5V6" stroke="currentColor" strokeWidth="1.5"></path> <path d="M6.5 11C7.32843 11 8 10.3284 8 9.5C8 8.67157 7.32843 8 6.5 8C5.67157 8 5 8.67157 5 9.5C5 10.3284 5.67157 11 6.5 11Z" fill="currentColor"></path> <path d="M6.5 15C7.32843 15 8 14.3284 8 13.5C8 12.6716 7.32843 12 6.5 12C5.67157 12 5 12.6716 5 13.5C5 14.3284 5.67157 15 6.5 15Z" fill="currentColor"></path> <path d="M19.5 14C20.3284 14 21 13.3284 21 12.5C21 11.6716 20.3284 11 19.5 11C18.6716 11 18 11.6716 18 12.5C18 13.3284 18.6716 14 19.5 14Z" fill="currentColor"></path> </g></svg>
 );
 
 const AiiotIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <defs>
-      <linearGradient id="ai" x1="24" y1="16" x2="24" y2="32" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#A96BFF" />
-        <stop offset="1" stopColor="#8A3DFF" />
-      </linearGradient>
-    </defs>
-    <rect width="48" height="48" rx="8" fill="hsl(var(--card))" />
-    <rect x="16" y="16" width="16" height="16" rx="3" fill="url(#ai)" />
-    <rect x="23" y="20" width="2" height="2" rx="1" fill="white" />
-    <rect x="23" y="26" width="2" height="2" rx="1" fill="white" />
-    <rect x="19" y="23" width="2" height="2" rx="1" fill="white" />
-    <rect x="27" y="23" width="2" height="2" rx="1" fill="white" />
-  </svg>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 17C8.65685 17 10 15.6569 10 14C10 12.3431 8.65685 11 7 11C5.34315 11 4 12.3431 4 14C4 15.6569 5.34315 17 7 17Z" stroke="currentColor" strokeWidth="1.5"></path> <path d="M17 13C18.6569 13 20 11.6569 20 10C20 8.34315 18.6569 7 17 7C15.3431 7 14 8.34315 14 10C14 11.6569 15.3431 13 17 13Z" stroke="currentColor" strokeWidth="1.5"></path> <path d="M12 12L10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M14 14L16 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M10 18L7 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M14 6L17 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
 );
 
 const ClientIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <defs>
-      <linearGradient id="client" x1="24" y1="16" x2="24" y2="32" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#FFD166" />
-        <stop offset="1" stopColor="#F9A825" />
-      </linearGradient>
-    </defs>
-    <rect width="48" height="48" rx="8" fill="hsl(var(--card))" />
-    <path d="M24 16L26.3495 22.0669L32.8058 22.5L28.2 26.545L29.695 32.9331L24 29.5L18.305 32.9331L19.8 26.545L15.1942 22.5L21.6505 22.0669L24 16Z" fill="url(#client)" />
-  </svg>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16.826 21.0028C16.826 21.0028 22 21.0028 22 17.8028C22 14.6028 17.812 13.9328 17.812 13.9328C17.812 13.9328 21.189 13.1028 21.189 9.27285C21.189 5.44285 16.485 5.35285 16.485 5.35285C16.485 5.35285 16.925 2.00285 12.353 2.00285C7.78103 2.00285 6.87903 5.58285 6.87903 5.58285C6.87903 5.58285 2.87303 5.53285 2.87303 9.38285C2.87303 13.2328 6.55103 13.9428 6.55103 13.9428C6.55103 13.9428 2.00003 14.4928 2.00003 17.8028C2.00003 21.1128 7.31903 21.0028 7.31903 21.0028" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
 );
 
 const SalesforceIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <defs>
-      <linearGradient id="salesforce" x1="24" y1="16" x2="24" y2="32" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#56D287" />
-        <stop offset="1" stopColor="#2AB661" />
-      </linearGradient>
-    </defs>
-    <rect width="48" height="48" rx="8" fill="hsl(var(--card))" />
-    <path d="M26.24,25.33a4.63,4.63,0,0,1-3.1,1.15,4.71,4.71,0,0,1-4.8-4.6,4.71,4.71,0,0,1,4.8-4.6,4.63,4.63,0,0,1,3.1,1.15l.4-.4a5.6,5.6,0,0,0-3.5-1.35c-3.2,0-5.8,2.5-5.8,5.6s2.6,5.6,5.8,5.6a5.6,5.6,0,0,0,3.5-1.35Z" fill="url(#salesforce)" />
-  </svg>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12.756 16.035C12.756 16.035 12.756 21.002 9.006 21.002C5.256 21.002 5.256 16.035 5.256 16.035C5.256 16.035 2.131 16.176 2.006 12.285C1.881 8.394 5.256 8.243 5.256 8.243C5.256 8.243 5.256 3.864 9.006 3.864C12.756 3.864 12.756 8.243 12.756 8.243C12.756 8.243 16.518 8.159 17.006 12.285C17.494 16.411 12.756 16.035 12.756 16.035Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M14.0059 8.24301C14.0059 8.24301 19.3479 8.10901 21.8419 10.323C24.3359 12.538 22.0059 16.035 22.0059 16.035" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
 );
 
 const DataScienceIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <defs>
-      <linearGradient id="data" x1="24" y1="16" x2="24" y2="32" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#D06BFF" />
-        <stop offset="1" stopColor="#A83CFF" />
-      </linearGradient>
-    </defs>
-    <rect width="48" height="48" rx="8" fill="hsl(var(--card))" />
-    <rect x="16" y="24" width="4" height="8" rx="1" fill="url(#data)" />
-    <rect x="22" y="20" width="4" height="12" rx="1" fill="url(#data)" />
-    <rect x="28" y="16" width="4" height="16" rx="1" fill="url(#data)" />
-  </svg>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 6V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M12 21C13.6569 21 15 19.6569 15 18V6C15 4.34315 13.6569 3 12 3C10.3431 3 9 4.34315 9 6V18C9 19.6569 10.3431 21 12 21Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"></path> <path d="M18 9V15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M18 17C19.1046 17 20 16.1046 20 15V9C20 7.89543 19.1046 7 18 7C16.8954 7 16 7.89543 16 9V15C16 16.1046 16.8954 17 18 17Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"></path> <path d="M6 11V13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M6 14C6.55228 14 7 13.5523 7 13V11C7 10.4477 6.55228 10 6 10C5.44772 10 5 10.4477 5 11V13C5 13.5523 5.44772 14 6 14Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"></path> </g></svg>
 );
 
 const stats = [
@@ -141,9 +71,15 @@ const stats = [
 
 export function CompanyOverview() {
   return (
-    <section id="about" className="py-20 lg:py-24 bg-secondary/50">
+    <section id="about" className="py-20 lg:py-24 bg-secondary/30">
       <div className="container mx-auto px-4">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <motion.div 
+          className="text-center max-w-3xl mx-auto mb-16"
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground relative inline-block">
             NamanMahi.in Solutions Bring Transformation For Global Businesses
             <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-primary"></span>
@@ -151,23 +87,37 @@ export function CompanyOverview() {
           <p className="text-lg text-muted-foreground mt-6">
             Starting from listening to your business problems to delivering accurate solutions; we make sure to follow industry-specific standards and combine them with our technical knowledge, development expertise, and extensive research.
           </p>
-        </div>
+        </motion.div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <motion.div
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+        >
           {stats.map((stat, index) => (
-            <Card key={index} className="bg-card shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl overflow-hidden border-0">
-              <CardContent className="flex flex-col items-center text-center gap-4 p-8">
-                <stat.icon className="h-12 w-12 flex-shrink-0" />
-                <div className="flex flex-col">
-                  <p className="text-4xl font-bold text-foreground">
-                    <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                  </p>
-                  <p className="text-base font-semibold text-muted-foreground mt-1">{stat.label}</p>
-                </div>
-              </CardContent>
-            </Card>
+            <motion.div
+                key={index}
+                variants={itemVariants}
+            >
+              <Card className="bg-card shadow-lg hover:shadow-primary/20 transition-all duration-300 rounded-xl overflow-hidden border-0 group transform hover:-translate-y-2">
+                <CardContent className="flex flex-col items-center text-center gap-4 p-8">
+                  <div className="relative">
+                    <div className="absolute -inset-2 bg-primary/10 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <stat.icon className="relative h-12 w-12 flex-shrink-0 text-primary transition-transform duration-300 group-hover:scale-110" />
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-4xl font-bold text-foreground">
+                      <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                    </p>
+                    <p className="text-base font-semibold text-muted-foreground mt-1">{stat.label}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

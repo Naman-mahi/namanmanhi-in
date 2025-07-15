@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { CursorFollower } from '@/components/ui/cursor-follower';
 import { BackToTopButton } from '@/components/ui/back-to-top-button';
 import { Chatbot } from '@/components/chatbot/chatbot';
+import { ThemeCustomizer } from '@/components/theme-customizer';
 
 
 export const metadata: Metadata = {
@@ -28,7 +29,7 @@ export default function RootLayout({
       <body className={cn("font-body antialiased", "min-h-screen bg-background font-sans")}>
         <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
         >
@@ -37,6 +38,7 @@ export default function RootLayout({
           <Toaster />
           <BackToTopButton />
           <Chatbot />
+          <ThemeCustomizer />
         </ThemeProvider>
       </body>
     </html>

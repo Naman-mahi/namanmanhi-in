@@ -5,5 +5,14 @@ import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { type ThemeProviderProps } from "next-themes/dist/types"
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  React.useEffect(() => {
+    const themeColor = localStorage.getItem("theme-color") || "blue";
+    document.body.classList.forEach(className => {
+        if (className.startsWith('theme-')) {
+            document.body.classList.remove(className);
+        }
+    });
+    document.body.classList.add(`theme-${themeColor}`)
+  }, [])
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 }

@@ -110,7 +110,7 @@ export default function HireDevelopersPage() {
                         <div className="text-center max-w-3xl mx-auto mb-12">
                             <h2 className="text-3xl md:text-4xl font-bold">Hire Dedicated Programmers To Scale Up Your Development Project Outcomes</h2>
                             <p className="text-muted-foreground mt-4">
-                                The dedicated development team of Invertio InfoSystem has been delivering high-end custom digital solutions that make them the most preferable development team globally. Their development proficiency minimizes the development complexity and delivers top-notch solutions. Hire experienced developers that hold experience to help global businesses achieve incredible heights based on custom development requirements.
+                                The dedicated development team of NamanMahi.in has been delivering high-end custom digital solutions that make them the most preferable development team globally. Their development proficiency minimizes the development complexity and delivers top-notch solutions. Hire experienced developers that hold experience to help global businesses achieve incredible heights based on custom development requirements.
                             </p>
                              <Button className="mt-6">Get a Quote</Button>
                         </div>
@@ -121,7 +121,7 @@ export default function HireDevelopersPage() {
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-12">
                             <h2 className="text-3xl md:text-4xl font-bold">Approx Cost To Hire Dedicated Developers</h2>
-                            <p className="mt-4 text-muted-foreground">Hire Dedicated resources from Invertio Solution Starts from,</p>
+                            <p className="mt-4 text-muted-foreground">Hire Dedicated resources from NamanMahi.in Starts from,</p>
                         </div>
                         <div className="grid md:grid-cols-3 gap-8">
                             {pricingTiers.map(tier => (
@@ -246,7 +246,7 @@ export default function HireDevelopersPage() {
                 <section className="py-20 lg:py-24 bg-secondary/30">
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold">Why Hire Dedicated Developers From Invertio InfoSystem?</h2>
+                            <h2 className="text-3xl md:text-4xl font-bold">Why Hire Dedicated Developers From NamanMahi.in?</h2>
                             <p className="mt-4 text-muted-foreground">Hire a Dedicated Development Team to implement the Industry Best Practices and Minimize the Business Challenges</p>
                         </div>
                         <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -261,8 +261,8 @@ export default function HireDevelopersPage() {
                                 </div>
                             </div>
                             <div>
-                                 <h3 className="text-2xl font-bold mb-4">The Dedicated Development Team of Invertio Solution Offering Reasons to Be The Best</h3>
-                                <p className="text-muted-foreground mb-6">The dedicated developers of the Invertio Solution offer shortcuts way of success for global businesses.</p>
+                                 <h3 className="text-2xl font-bold mb-4">The Dedicated Development Team of NamanMahi.in Offering Reasons to Be The Best</h3>
+                                <p className="text-muted-foreground mb-6">The dedicated developers of the NamanMahi.in offer shortcuts way of success for global businesses.</p>
                                 <ul className="space-y-3">
                                     {whyHireUsReasons.map(reason => (
                                         <li key={reason} className="flex items-start gap-3">

@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { ThemeToggle } from "../theme-toggle";
 
 const navLinks = [
+  { name: "About Us", href: "/about" },
   { name: "Hire Developers", href: "/hire-developers" },
   { name: "Contact", href: "/contact" },
 ];

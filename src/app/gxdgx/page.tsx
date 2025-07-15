@@ -2,82 +2,37 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { ChatMessage } from '@/components/chatbot/chat-message';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { format, parseISO } from 'date-fns';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageSquare, User, FileText, Loader2, Inbox, Send } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
+import { SubmissionList } from '@/components/admin/submission-list';
+import { SubmissionDetails } from '@/components/admin/submission-details';
+import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
-type Message = {
-    id: string;
-    text: string;
-    sender: 'bot' | 'user' | 'options';
-    options?: string[];
-};
-
-type ChatSession = {
-    id: number;
-    sessionId: string;
-    name: string;
-    number: string;
-    messages: Message[];
-    createdAt: string;
-    updatedAt?: string;
-    source: 'Chatbot Lead';
-};
-
-type ContactSubmission = {
-    id: number;
-    fullName: string;
-    email: string;
-    contact: string;
-    whatsapp: string;
-    location: string;
-    budget?: number;
-    message: string;
-    createdAt: string;
-    source: 'Contact Form';
-};
-
-type Submission = ChatSession | ContactSubmission;
+import type { Submission } from '@/lib/types';
 
 export default function AdminPage() {
     const [submissions, setSubmissions] = useState<Submission[]>([]);
     const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const [isSending, setIsSending] = useState(false);
     const [activeTab, setActiveTab] = useState('chat');
-    const [reply, setReply] = useState("");
     const { toast } = useToast();
 
     const fetchData = async () => {
-        setIsLoading(true);
+        if (!isLoading) setIsLoading(true);
         try {
             const response = await fetch('/api/contact');
             const { data } = await response.json();
             const sortedData = data.sort((a: Submission, b: Submission) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
             setSubmissions(sortedData);
             
+            // Re-select or select first item after data refresh
             if (selectedSubmission) {
                 const refreshedSubmission = sortedData.find((s: Submission) => s.id === selectedSubmission.id);
-                if (refreshedSubmission) {
-                    setSelectedSubmission(refreshedSubmission);
-                } else {
-                    setSelectedSubmission(null);
-                }
+                setSelectedSubmission(refreshedSubmission || null);
             } else if (sortedData.length > 0) {
-               const firstItem = sortedData[0];
-               setSelectedSubmission(firstItem);
-               setActiveTab(firstItem.source === 'Chatbot Lead' ? 'chat' : 'forms');
+               const firstItem = sortedData.find((s: Submission) => (s.source === 'Chatbot Lead' && activeTab === 'chat') || (s.source === 'Contact Form' && activeTab === 'forms'));
+               setSelectedSubmission(firstItem || sortedData[0]);
             }
 
         } catch (error) {
@@ -90,7 +45,7 @@ export default function AdminPage() {
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
         fetchData();
@@ -102,45 +57,36 @@ export default function AdminPage() {
         const term = searchTerm.toLowerCase();
         return submissions.filter(sub => {
             if (sub.source === 'Chatbot Lead') {
-                return sub.number.includes(term) || sub.name.toLowerCase().includes(term) || sub.messages.some(m => m.text.toLowerCase().includes(term));
+                return sub.name.toLowerCase().includes(term) || sub.number.includes(term) || sub.messages.some(m => m.text.toLowerCase().includes(term));
             }
             if (sub.source === 'Contact Form') {
-                return sub.contact.includes(term) || sub.fullName.toLowerCase().includes(term) || sub.email.toLowerCase().includes(term) || sub.message.toLowerCase().includes(term);
+                return sub.fullName.toLowerCase().includes(term) || sub.email.toLowerCase().includes(term) || sub.contact.includes(term) || sub.message.toLowerCase().includes(term);
             }
             return false;
         });
     }, [submissions, searchTerm]);
     
     const { chatLeads, formSubmissions } = useMemo(() => ({
-        chatLeads: filteredSubmissions.filter(s => s.source === 'Chatbot Lead') as ChatSession[],
-        formSubmissions: filteredSubmissions.filter(s => s.source === 'Contact Form') as ContactSubmission[]
+        chatLeads: filteredSubmissions.filter(s => s.source === 'Chatbot Lead'),
+        formSubmissions: filteredSubmissions.filter(s => s.source === 'Contact Form')
     }), [filteredSubmissions]);
 
-    const handleSubmissionSelect = (submission: Submission) => {
-        setSelectedSubmission(submission);
-    }
-    
-    const handleReplySubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!reply.trim() || !selectedSubmission || selectedSubmission.source !== 'Chatbot Lead' || isSending) return;
+    const handleReplySubmit = async (replyText: string) => {
+        if (!selectedSubmission || selectedSubmission.source !== 'Chatbot Lead') return;
 
-        setIsSending(true);
-
-        const session = selectedSubmission as ChatSession;
-
-        const newAdminMessage: Message = {
+        const session = selectedSubmission;
+        const newAdminMessage = {
             id: `admin-${Date.now()}`,
-            text: reply,
-            sender: 'bot', // Admin messages are styled like the bot
+            text: replyText,
+            sender: 'bot' as const, // Admin messages are styled like the bot
         };
         
         const updatedMessages = [...session.messages, newAdminMessage];
-        const updatedSession: ChatSession = { ...session, messages: updatedMessages, updatedAt: new Date().toISOString() };
+        const updatedSession = { ...session, messages: updatedMessages, updatedAt: new Date().toISOString() };
 
         // Optimistically update UI
         setSelectedSubmission(updatedSession);
         setSubmissions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
-        setReply('');
 
         try {
             const response = await fetch('/api/contact', {
@@ -149,142 +95,29 @@ export default function AdminPage() {
                 body: JSON.stringify(updatedSession),
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to save message");
-            }
+            if (!response.ok) throw new Error("Failed to save message");
             
             toast({
                 title: "Reply Sent!",
                 description: "Your message has been saved to the chat log.",
             });
-            // Refresh data in the background to ensure consistency
-            await fetchData();
+            await fetchData(); // Refresh data to ensure consistency
 
         } catch (error) {
              console.error("Failed to send reply:", error);
-             toast({
-                title: "Error",
-                description: "Could not send reply. Please try again.",
-                variant: "destructive"
-            });
-            // Revert optimistic update on failure
-            setSelectedSubmission(session);
-            setSubmissions(prev => prev.map(s => s.id === session.id ? session : s));
-        } finally {
-            setIsSending(false);
+             toast({ title: "Error", description: "Could not send reply.", variant: "destructive" });
+             // Revert optimistic update on failure
+             setSelectedSubmission(session);
+             setSubmissions(prev => prev.map(s => s.id === session.id ? session : s));
         }
     };
-
-    const SubmissionList = ({ items, type }: { items: Submission[], type: 'chat' | 'form' }) => (
-        <ScrollArea className="h-full">
-            <div className="p-2 space-y-1">
-                {!isLoading && items.length === 0 && <p className="text-muted-foreground text-center p-4">No {type === 'chat' ? 'chats' : 'forms'} found.</p>}
-                {items.map(sub => {
-                    const lastMessage = sub.source === 'Chatbot Lead' ? sub.messages.filter(m => m.sender === 'user').slice(-1)[0]?.text : sub.message;
-                    const title = sub.source === 'Chatbot Lead' ? sub.name : sub.fullName;
-                    const contactInfo = sub.source === 'Chatbot Lead' ? sub.number : sub.email;
-
-                    return (
-                        <div
-                            key={sub.id}
-                            onClick={() => handleSubmissionSelect(sub)}
-                            className={`p-3 rounded-lg cursor-pointer transition-colors border border-transparent ${selectedSubmission?.id === sub.id ? 'bg-primary/10 border-primary/20' : 'hover:bg-secondary'}`}
-                        >
-                            <div className="flex justify-between items-start">
-                                <p className="font-semibold flex items-center gap-2 text-sm">
-                                   {type === 'chat' ? <MessageSquare className="w-4 h-4 text-primary" /> : <FileText className="w-4 h-4 text-primary" />}
-                                   {title}
-                                </p>
-                                <span className="text-xs text-muted-foreground">
-                                    {format(parseISO(sub.createdAt), "MMM d")}
-                                </span>
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-1 pl-6 truncate">
-                                {contactInfo}
-                            </p>
-                        </div>
-                    )
-                })}
-            </div>
-        </ScrollArea>
-    );
-
-    const SubmissionDetails = () => {
-        if (!selectedSubmission) {
-            return (
-                <div className="hidden lg:flex flex-col items-center justify-center h-full text-center p-8">
-                    <Inbox className="w-16 h-16 text-muted-foreground/50 mb-4"/>
-                    <h3 className="text-xl font-semibold">Select an item to view</h3>
-                    <p className="text-muted-foreground">No submission selected. Please choose one from the list on the left.</p>
-                </div>
-            );
+    
+    useEffect(() => {
+        const firstItemInTab = activeTab === 'chat' ? chatLeads[0] : formSubmissions[0];
+        if(!selectedSubmission || selectedSubmission.source === (activeTab === 'chat' ? 'Contact Form' : 'Chatbot Lead')){
+             setSelectedSubmission(firstItemInTab || null);
         }
-
-        if (selectedSubmission.source === 'Chatbot Lead') {
-            const session = selectedSubmission as ChatSession;
-            return (
-                 <div className="flex flex-col h-full">
-                    <div className="p-4 border-b flex-shrink-0">
-                         <h3 className="font-bold text-lg">{session.name}</h3>
-                         <p className="text-sm text-muted-foreground">{session.number}</p>
-                    </div>
-                    <ScrollArea className="flex-grow p-4">
-                        <div className="space-y-4">
-                            {session.messages.filter(msg => msg.sender !== 'options' && msg.text).map(msg => (
-                                <ChatMessage key={msg.id} message={msg} onOptionSelect={() => {}} perspective="admin" />
-                            ))}
-                        </div>
-                    </ScrollArea>
-                    <div className="p-4 border-t bg-background/50 flex-shrink-0">
-                        <form onSubmit={handleReplySubmit} className="flex items-center gap-2">
-                            <Input 
-                                placeholder="Type your reply..." 
-                                value={reply} 
-                                onChange={(e) => setReply(e.target.value)}
-                                disabled={isSending}
-                            />
-                            <Button type="submit" size="icon" aria-label="Send reply" disabled={isSending || !reply.trim()}>
-                                {isSending ? <Loader2 size={20} className="animate-spin"/> : <Send size={20} />}
-                            </Button>
-                        </form>
-                    </div>
-                </div>
-            );
-        }
-
-        if (selectedSubmission.source === 'Contact Form') {
-            const form = selectedSubmission as ContactSubmission;
-            const DetailItem = ({ label, value, className = '' }: { label: string, value: React.ReactNode, className?: string }) => (
-                <div>
-                    <p className="text-sm font-medium text-muted-foreground">{label}</p>
-                    <p className={`text-base ${className}`}>{value}</p>
-                </div>
-            );
-            return (
-                 <div className="flex flex-col h-full">
-                     <div className="p-4 border-b flex-shrink-0">
-                         <h3 className="font-bold text-lg">{form.fullName}</h3>
-                         <a href={`mailto:${form.email}`} className="text-sm text-primary hover:underline">{form.email}</a>
-                    </div>
-                    <ScrollArea className="flex-grow">
-                        <div className="p-6 space-y-5">
-                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <DetailItem label="Contact No." value={form.contact} />
-                                <DetailItem label="WhatsApp" value={form.whatsapp} />
-                            </div>
-                            <DetailItem label="Location" value={form.location} />
-                            {form.budget && (
-                                <DetailItem label="Project Budget" value={`$${new Intl.NumberFormat('en-US').format(form.budget)}`} className="font-semibold text-green-600" />
-                            )}
-                            <Separator />
-                            <DetailItem label="Message" value={<p className="whitespace-pre-wrap">{form.message}</p>} />
-                        </div>
-                    </ScrollArea>
-                </div>
-            );
-        }
-        return null;
-    };
+    }, [activeTab, chatLeads, formSubmissions, selectedSubmission]);
 
     return (
         <div className="bg-background text-foreground flex flex-col min-h-screen">
@@ -297,37 +130,29 @@ export default function AdminPage() {
 
                 <div className="border rounded-xl shadow-sm overflow-hidden h-[calc(100vh-250px)] grid lg:grid-cols-3">
                     <div className="lg:col-span-1 border-r flex flex-col h-full">
-                        <div className="p-4 border-b">
-                             <Input
-                                placeholder="Filter by name, number, email..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                       {isLoading ? (
+                            <div className="flex-grow flex items-center justify-center">
+                                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                            </div>
+                        ) : (
+                            <SubmissionList
+                                searchTerm={searchTerm}
+                                onSearchTermChange={setSearchTerm}
+                                activeTab={activeTab}
+                                onTabChange={setActiveTab}
+                                chatLeads={chatLeads}
+                                formSubmissions={formSubmissions}
+                                selectedSubmission={selectedSubmission}
+                                onSubmissionSelect={setSelectedSubmission}
                             />
-                        </div>
-                        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col">
-                            <TabsList className="m-2">
-                                <TabsTrigger value="chat" className="flex-1 gap-2"><MessageSquare className="w-4 h-4" /> Chats ({chatLeads.length})</TabsTrigger>
-                                <TabsTrigger value="forms" className="flex-1 gap-2"><FileText className="w-4 h-4" /> Forms ({formSubmissions.length})</TabsTrigger>
-                            </TabsList>
-                            {isLoading ? (
-                                <div className="flex-grow flex items-center justify-center">
-                                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                                </div>
-                            ) : (
-                                <>
-                                    <TabsContent value="chat" className="flex-grow h-0">
-                                        <SubmissionList items={chatLeads} type='chat' />
-                                    </TabsContent>
-                                    <TabsContent value="forms" className="flex-grow h-0">
-                                        <SubmissionList items={formSubmissions} type='form' />
-                                    </TabsContent>
-                                </>
-                            )}
-                       </Tabs>
+                        )}
                     </div>
 
                     <div className="lg:col-span-2 h-full hidden lg:flex flex-col">
-                        <SubmissionDetails />
+                        <SubmissionDetails
+                            submission={selectedSubmission}
+                            onReplySubmit={handleReplySubmit}
+                        />
                     </div>
                 </div>
             </main>

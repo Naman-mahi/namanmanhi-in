@@ -20,6 +20,10 @@ const predefinedQuestions = [
 const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutes
 let messageIdCounter = 0;
 
+const generateUniqueId = () => {
+    return `${Date.now()}-${messageIdCounter++}`;
+};
+
 export function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{ id: string; text: string; sender: 'bot' | 'user' | 'options'; options?: string[] }[]>([]);
@@ -52,6 +56,10 @@ export function Chatbot() {
             });
         }, INACTIVITY_TIMEOUT);
     }, [initializeChat]);
+    
+    const addMessage = (message: Omit<typeof messages[0], 'id'>) => {
+        setMessages(prev => [...prev, { ...message, id: generateUniqueId() }]);
+    }
 
     useEffect(() => {
         if (isOpen) {
@@ -79,20 +87,20 @@ export function Chatbot() {
                     setUserDetails(savedUserDetails);
                     setLastQuestion(savedLastQuestion || '');
                 } else {
-                    initializeChat();
+                    addMessage({ text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' });
                 }
             } else {
-                initializeChat();
+                 addMessage({ text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' });
             }
         } catch (error) {
             console.error("Failed to parse chatbot state from localStorage", error);
-            initializeChat();
+            addMessage({ text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' });
         }
-    }, [initializeChat]);
+    }, []);
     
     useEffect(() => {
         // Save state to localStorage whenever it changes
-        if (messages.length > 0 && step !== 'collecting' && userDetails.name) {
+        if (messages.length > 1 && step !== 'collecting' && userDetails.name) {
              try {
                 const stateToSave = { messages, step, userDetails, lastQuestion };
                 localStorage.setItem('chatbotState', JSON.stringify(stateToSave));
@@ -102,14 +110,6 @@ export function Chatbot() {
             }
         }
     }, [messages, step, userDetails, lastQuestion, resetInactivityTimer]);
-    
-    const generateUniqueId = () => {
-        return `${Date.now()}-${messageIdCounter++}`;
-    };
-
-    const addMessage = (message: Omit<typeof messages[0], 'id'>) => {
-        setMessages(prev => [...prev, { ...message, id: generateUniqueId() }]);
-    }
     
     const handleSendMessage = (text: string) => {
         addMessage({ text, sender: 'user' });

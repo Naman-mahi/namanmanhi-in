@@ -49,7 +49,7 @@ export function Footer() {
       </div>
       <div className="relative container mx-auto px-4 pt-24 pb-8">
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"
           variants={containerVariants}
         >
           {/* Column 1: Logo and About */}
@@ -100,16 +100,21 @@ export function Footer() {
               </li>
             </ul>
           </motion.div>
-          
-          {/* Column 4: Newsletter */}
-          <motion.div className="space-y-6" variants={itemVariants}>
+        </motion.div>
+
+        {/* Newsletter Row */}
+        <motion.div 
+          className="mt-16 pt-12 border-t border-border/50"
+          variants={itemVariants}
+        >
+          <div className="max-w-lg mx-auto text-center">
             <h3 className="text-xl font-bold tracking-tight">Subscribe to our Newsletter</h3>
-            <p className="text-sm text-muted-foreground">Get the latest updates on tech trends and our services.</p>
+            <p className="text-sm text-muted-foreground mt-2 mb-4">Get the latest updates on tech trends and our services.</p>
             <form className="flex space-x-2">
               <Input type="email" placeholder="Your Email" className="bg-background border-border" required/>
               <Button>Subscribe</Button>
             </form>
-          </motion.div>
+          </div>
         </motion.div>
         
         <motion.div 

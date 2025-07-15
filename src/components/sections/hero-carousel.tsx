@@ -6,92 +6,92 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { Button } from '@/components/ui/button';
-import { Header } from '@/components/layout/header';
 import Image from 'next/image';
 import Autoplay from "embla-carousel-autoplay";
+import { ArrowRight } from "lucide-react";
 
 const slides = [
   {
-    title: (
-      <>
-        Pioneering <span className="text-primary">Digital</span> Transformation
-      </>
-    ),
-    description: "We craft innovative solutions in Blockchain, AI/ML, and Web/Mobile Development to elevate your business in the digital era.",
+    title: "Artificial Intelligence (AI)",
+    subtitle: "Development Company",
+    description: "Top AI Development Company in GCC and India",
     image: {
-      src: "https://placehold.co/800x600.png",
-      hint: "digital technology abstract"
+      src: "https://placehold.co/550x550.png",
+      hint: "artificial intelligence robot"
     },
   },
   {
-    title: (
-      <>
-        Building The <span className="text-primary">Future</span>, Today
-      </>
-    ),
-    description: "Our expertise in cutting-edge tech helps you stay ahead of the curve and deliver exceptional user experiences.",
+    title: "Web Development",
+    subtitle: "Crafting Digital Experiences",
+    description: "Modern, responsive websites that drive user engagement.",
     image: {
-      src: "https://placehold.co/800x600.png",
-      hint: "futuristic cityscape night"
+      src: "https://placehold.co/550x550.png",
+      hint: "web design code"
     },
   },
   {
-    title: (
-      <>
-        Your Vision, <span className="text-primary">Engineered</span>
-      </>
-    ),
-    description: "From concept to launch, we are your dedicated partners in turning ambitious ideas into reality.",
+    title: "Mobile App Development",
+    subtitle: "Solutions in Your Pocket",
+    description: "High-performance applications for both iOS and Android.",
     image: {
-      src: "https://placehold.co/800x600.png",
-      hint: "team brainstorming office"
+      src: "https://placehold.co/550x550.png",
+      hint: "mobile app interface"
     },
   },
 ];
 
 export function HeroCarousel() {
   return (
-    <section id="home" className="relative h-screen w-full overflow-hidden bg-background">
-      <Carousel
-        opts={{ loop: true }}
-        plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
-        className="h-full w-full"
-      >
-        <CarouselContent>
-          {slides.map((slide, index) => (
-            <CarouselItem key={index} className="h-full w-full">
-              <div className="container mx-auto h-full w-full flex items-center">
+    <Carousel
+      opts={{ loop: true }}
+      plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
+      className="w-full"
+    >
+      <CarouselContent>
+        {slides.map((slide, index) => (
+          <CarouselItem key={index}>
+            <section className="w-full pt-20">
+               <div className="container mx-auto pt-16 pb-24">
                 <div className="grid md:grid-cols-2 items-center gap-12">
                   <div className="flex flex-col items-start text-left">
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground">
+                    <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground">
                       {slide.title}
                     </h1>
-                    <p className="mt-4 max-w-xl text-lg md:text-xl text-muted-foreground">
-                      {slide.description}
-                    </p>
-                    <div className="mt-8">
-                      <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                        Let's Build Together
-                      </Button>
+                    <p className="mt-2 text-2xl text-foreground/80">{slide.subtitle}</p>
+                    
+                    <div className="mt-8 space-y-6">
+                        <div className="flex items-center gap-4">
+                            <span className="text-5xl font-bold text-primary">#1</span>
+                            <div>
+                                <p className="font-semibold">{slide.description}</p>
+                            </div>
+                        </div>
+                         <div className="flex items-center gap-4 group">
+                            <div className="w-12 h-12 rounded-full border border-muted-foreground/50 flex items-center justify-center group-hover:border-primary transition-colors">
+                                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors"/>
+                            </div>
+                            <a href="#contact" className="font-semibold text-muted-foreground group-hover:text-primary transition-colors">Drop Your Queries</a>
+                        </div>
                     </div>
                   </div>
-                  <div className="hidden md:block">
+                  <div className="relative hidden md:block">
+                    <div className="absolute -right-20 -top-20 w-[500px] h-[500px] bg-gradient-to-br from-blue-200 to-purple-300 rounded-full blur-3xl opacity-30"></div>
                      <Image
                         src={slide.image.src}
-                        alt="Hero background"
-                        width={800}
-                        height={600}
-                        className="object-cover rounded-lg shadow-2xl"
+                        alt={slide.title}
+                        width={550}
+                        height={550}
+                        className="object-contain relative z-10"
                         data-ai-hint={slide.image.hint}
                         priority={index === 0}
                       />
                   </div>
                 </div>
               </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
-    </section>
+            </section>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
   );
 }

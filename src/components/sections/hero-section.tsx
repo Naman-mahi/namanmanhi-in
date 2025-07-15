@@ -33,12 +33,6 @@ export function HeroSection() {
           </div>
           <div className="relative hidden md:block">
             <div className="absolute -right-20 -top-20 w-[500px] h-[500px] bg-gradient-to-br from-blue-200 to-purple-300 rounded-full blur-3xl opacity-30"></div>
-            <div 
-                className="absolute top-1/2 left-1/2 w-[600px] h-[450px] bg-gradient-to-br from-blue-400 to-purple-500 -translate-x-1/2 -translate-y-1/2"
-                style={{
-                    clipPath: 'polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%)'
-                }}
-            ></div>
              <Image
                 src="https://placehold.co/550x550.png"
                 alt="AI Development"

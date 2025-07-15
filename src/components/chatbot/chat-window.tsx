@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChatMessage } from "./chat-message";
 import { TypingIndicator } from "./typing-indicator";
+import { Logo } from "../icons";
 
 interface ChatWindowProps {
     messages: { id: string; text: string; sender: 'bot' | 'user' | 'options'; options?: string[] }[];
@@ -62,7 +63,9 @@ export function ChatWindow({ messages, onSendMessage, onOptionSelect, onClose, i
             className="fixed bottom-0 right-0 z-[999] w-full h-full sm:h-auto sm:max-h-[80vh] sm:w-[400px] sm:bottom-24 sm:right-6 flex flex-col bg-card shadow-2xl rounded-t-2xl sm:rounded-2xl border border-border overflow-hidden"
         >
             <header className="flex items-center justify-between p-4 bg-primary text-primary-foreground border-b border-primary/50">
-                <h3 className="font-bold text-lg">NamanMahi.in</h3>
+                <div className="flex items-center gap-3">
+                    <Logo className="h-9 w-auto" />
+                </div>
                 <Button variant="ghost" size="icon" onClick={onClose} className="text-primary-foreground hover:bg-white/20 h-8 w-8">
                     <X size={20} />
                 </Button>

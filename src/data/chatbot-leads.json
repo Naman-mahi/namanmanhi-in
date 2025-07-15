@@ -155,11 +155,146 @@
           "What technologies do you use?",
           "Can you tell me about your experience?"
         ]
+      },
+      {
+        "id": "1752603913927-0",
+        "text": "How can I hire a developer?",
+        "sender": "user"
+      },
+      {
+        "id": "1752603914928-2",
+        "text": "You can hire developers on an hourly, monthly, or quarterly basis. Please visit our [Hire Developers page](/hire-developers) or provide your details here, and our team will get in touch.",
+        "sender": "bot"
+      },
+      {
+        "id": "1752603914929-5",
+        "text": "What else can I help you with?",
+        "sender": "bot"
+      },
+      {
+        "id": "1752603914929-7",
+        "text": "",
+        "sender": "options",
+        "options": [
+          "What services do you offer?",
+          "What is your pricing?",
+          "Where are you located?",
+          "What technologies do you use?",
+          "Can you tell me about your experience?"
+        ]
+      },
+      {
+        "id": "1752603917602-8",
+        "text": "What is your pricing?",
+        "sender": "user"
+      },
+      {
+        "id": "1752603918609-10",
+        "text": "Our pricing is flexible. For detailed information, please check the 'Pricing' section on our [Hire Developers page](/hire-developers). We can also provide a custom quote based on your project requirements.",
+        "sender": "bot"
+      },
+      {
+        "id": "1752603918609-13",
+        "text": "What else can I help you with?",
+        "sender": "bot"
+      },
+      {
+        "id": "1752603918609-15",
+        "text": "",
+        "sender": "options",
+        "options": [
+          "What services do you offer?",
+          "How can I hire a developer?",
+          "Where are you located?",
+          "What technologies do you use?",
+          "Can you tell me about your experience?"
+        ]
+      },
+      {
+        "id": "1752603919982-16",
+        "text": "What technologies do you use?",
+        "sender": "user"
+      },
+      {
+        "id": "1752603920982-18",
+        "text": "We specialize in a wide array of technologies, including React, Next.js, Node.js, Python for AI/ML, Swift/Kotlin for mobile, and Solidity for Blockchain. You can see a full list on our [Hire Developers page](/hire-developers).",
+        "sender": "bot"
+      },
+      {
+        "id": "1752603920983-21",
+        "text": "What else can I help you with?",
+        "sender": "bot"
+      },
+      {
+        "id": "1752603920983-23",
+        "text": "",
+        "sender": "options",
+        "options": [
+          "What services do you offer?",
+          "How can I hire a developer?",
+          "What is your pricing?",
+          "Where are you located?",
+          "Can you tell me about your experience?"
+        ]
+      },
+      {
+        "id": "1752603923516-24",
+        "text": "Can you tell me about your experience?",
+        "sender": "user"
+      },
+      {
+        "id": "1752603924527-27",
+        "text": "We have over 20 years of experience in the industry, with a team of over 700 developers. We have successfully completed hundreds of projects for clients across the globe.",
+        "sender": "bot"
+      },
+      {
+        "id": "1752603924527-29",
+        "text": "What else can I help you with?",
+        "sender": "bot"
+      },
+      {
+        "id": "1752603924527-31",
+        "text": "",
+        "sender": "options",
+        "options": [
+          "What services do you offer?",
+          "How can I hire a developer?",
+          "What is your pricing?",
+          "Where are you located?",
+          "What technologies do you use?"
+        ]
+      },
+      {
+        "id": "1752603926366-32",
+        "text": "Where are you located?",
+        "sender": "user"
+      },
+      {
+        "id": "1752603927366-34",
+        "text": "Our main office is located at 123 Tech Avenue, Silicon Valley, CA. We serve clients globally!",
+        "sender": "bot"
+      },
+      {
+        "id": "1752603927366-37",
+        "text": "What else can I help you with?",
+        "sender": "bot"
+      },
+      {
+        "id": "1752603927366-39",
+        "text": "",
+        "sender": "options",
+        "options": [
+          "What services do you offer?",
+          "How can I hire a developer?",
+          "What is your pricing?",
+          "What technologies do you use?",
+          "Can you tell me about your experience?"
+        ]
       }
     ],
     "sessionId": "session-1752599550483-ykll957",
     "createdAt": "2025-07-15T17:13:51.199Z",
-    "updatedAt": "2025-07-15T18:22:59.309Z"
+    "updatedAt": "2025-07-15T18:25:29.265Z"
   },
   {
     "id": 1752600555719,

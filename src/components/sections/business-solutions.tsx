@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 const solutions = [
     {
@@ -52,19 +53,21 @@ export function BusinessSolutions() {
             </div>
             
             <div className="lg:col-span-1 sticky top-24">
-                <Card className="bg-card p-8 rounded-lg shadow-xl">
-                    <CardContent className="p-0">
-                        <p className="text-primary font-semibold text-sm mb-2">Contact Us</p>
-                        <h3 className="text-2xl font-bold mb-4">Bring Innovation Together!</h3>
-                        <p className="text-muted-foreground mb-6">
-                            Reach out to the team of the most innovative IT transformation Team and bring the transformation you need.
+                 <Card className="relative bg-gradient-to-br from-primary via-blue-500 to-purple-600 p-8 rounded-2xl shadow-2xl overflow-hidden text-primary-foreground">
+                    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20 [mask-image:radial-gradient(ellipse_at_center,white_20%,transparent_80%)]"></div>
+                    <CardContent className="p-0 relative z-10 text-center flex flex-col items-center">
+                        <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mb-4 backdrop-blur-sm">
+                            <ArrowRight className="h-8 w-8 text-white" />
+                        </div>
+                        <h3 className="text-2xl font-bold mb-2">Bring Innovation Together!</h3>
+                        <p className="opacity-80 mb-6 text-sm">
+                            Reach out to our team of innovators and let's build the future you envision.
                         </p>
-                        <Link href="#contact" className="group inline-flex items-center font-semibold text-foreground">
-                            <span className="flex items-center justify-center h-12 w-12 rounded-full border border-border group-hover:border-primary transition-colors mr-4 bg-secondary/50 group-hover:bg-primary/10">
-                                <ArrowRight className="h-5 w-5 transform group-hover:translate-x-1 transition-transform" />
-                            </span>
-                            Drop Your Queries
-                        </Link>
+                        <Button asChild variant="secondary" size="lg" className="bg-white/90 text-primary hover:bg-white w-full">
+                            <Link href="/contact">
+                                Drop Your Queries
+                            </Link>
+                        </Button>
                     </CardContent>
                 </Card>
             </div>

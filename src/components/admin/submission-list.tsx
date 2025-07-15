@@ -59,8 +59,8 @@ export function SubmissionList({
   const formSubmissionsCount = submissions.filter(s => s.source === 'Contact Form').length;
   
   return (
-    <div className="flex flex-col h-full">
-      <div className="p-4 border-b">
+    <div className="flex flex-col h-full bg-background">
+      <div className="p-4 border-b flex-shrink-0">
         <Input
           placeholder="Filter submissions..."
           value={searchTerm}
@@ -68,7 +68,7 @@ export function SubmissionList({
         />
       </div>
       <Tabs value={activeTab} onValueChange={onTabChange} className="flex-grow flex flex-col">
-        <TabsList className="m-2 grid grid-cols-2">
+        <TabsList className="m-2 grid grid-cols-2 flex-shrink-0">
           <TabsTrigger value="chat" className="gap-2">
             <MessageSquare className="w-4 h-4" /> Chats ({chatLeadsCount})
           </TabsTrigger>

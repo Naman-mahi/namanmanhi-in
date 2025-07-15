@@ -1,34 +1,111 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { z } from 'zod';
 
 const dataFilePath = path.join(process.cwd(), 'src/data/data.json');
+
+// Define a schema for a single chat message
+const MessageSchema = z.object({
+  id: z.string(),
+  text: z.string(),
+  sender: z.enum(['bot', 'user', 'options']),
+  options: z.array(z.string()).optional(),
+});
+
+// Define a schema for a chat lead
+const ChatLeadSchema = z.object({
+  source: z.literal('Chatbot Lead'),
+  name: z.string(),
+  number: z.string(),
+  sessionId: z.string(),
+  messages: z.array(MessageSchema),
+});
+
+// Define a schema for a contact form submission
+const ContactFormSchema = z.object({
+  source: z.literal('Contact Form'),
+  fullName: z.string(),
+  email: z.string().email(),
+  contact: z.string(),
+  whatsapp: z.string(),
+  location: z.string(),
+  budget: z.number().optional(),
+  message: z.string(),
+  file: z.any().optional(),
+});
+
+// A union type for all possible request bodies
+const RequestSchema = z.union([ChatLeadSchema, ContactFormSchema]);
+
+async function readData() {
+    try {
+        await fs.access(dataFilePath);
+        const fileContents = await fs.readFile(dataFilePath, 'utf-8');
+        return JSON.parse(fileContents);
+    } catch (error) {
+        // If file doesn't exist, create it with an empty array
+        await fs.writeFile(dataFilePath, JSON.stringify([], null, 2));
+        return [];
+    }
+}
+
+async function writeData(data: any) {
+    await fs.writeFile(dataFilePath, JSON.stringify(data, null, 2));
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    const parsed = RequestSchema.safeParse(body);
 
-    let data = [];
-    try {
-      const fileContents = await fs.readFile(dataFilePath, 'utf-8');
-      data = JSON.parse(fileContents);
-    } catch (error) {
-      console.log("Could not read data.json, will create a new one.");
+    if (!parsed.success) {
+      return NextResponse.json({ message: 'Invalid data format', errors: parsed.error.issues }, { status: 400 });
     }
-    
-    const newEntry = {
-      id: Date.now(),
-      ...body,
-      createdAt: new Date().toISOString(),
-    };
 
-    data.push(newEntry);
+    const data = await readData();
 
-    await fs.writeFile(dataFilePath, JSON.stringify(data, null, 2));
+    if (parsed.data.source === 'Chatbot Lead') {
+        const { sessionId, ...leadData } = parsed.data;
+        const existingLeadIndex = data.findIndex((item: any) => item.sessionId === sessionId && item.source === 'Chatbot Lead');
 
-    return NextResponse.json({ message: 'Success', data: newEntry }, { status: 201 });
+        if (existingLeadIndex > -1) {
+            // Update existing chat log
+            data[existingLeadIndex] = { ...data[existingLeadIndex], ...leadData, updatedAt: new Date().toISOString() };
+        } else {
+            // Create new chat log
+            data.push({
+                id: Date.now(),
+                ...leadData,
+                sessionId,
+                createdAt: new Date().toISOString(),
+            });
+        }
+    } else {
+        // Handle contact form submission
+        const newEntry = {
+            id: Date.now(),
+            ...parsed.data,
+            createdAt: new Date().toISOString(),
+        };
+        data.push(newEntry);
+    }
+
+    await writeData(data);
+
+    return NextResponse.json({ message: 'Success' }, { status: 201 });
   } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json({ message: 'Error saving data' }, { status: 500 });
   }
+}
+
+export async function GET() {
+    try {
+        const data = await readData();
+        return NextResponse.json({ data }, { status: 200 });
+    } catch (error) {
+        console.error('API Error:', error);
+        return NextResponse.json({ message: 'Error reading data' }, { status: 500 });
+    }
 }

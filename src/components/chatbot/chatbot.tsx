@@ -25,40 +25,65 @@ const generateUniqueId = () => {
     return `${Date.now()}-${messageIdCounter++}`;
 };
 
+const generateSessionId = () => {
+    return `session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+}
+
 export function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{ id: string; text: string; sender: 'bot' | 'user' | 'options'; options?: string[] }[]>([]);
     const [step, setStep] = useState<'collecting' | 'chatting'>('collecting');
     const [userDetails, setUserDetails] = useState({ name: '', number: '' });
     const [isTyping, setIsTyping] = useState(false);
-    const [lastQuestion, setLastQuestion] = useState('');
+    const [sessionId, setSessionId] = useState<string | null>(null);
     const isMobile = useIsMobile();
     const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
     const { toast } = useToast();
 
-    const initializeChat = useCallback(() => {
+    const initializeChat = useCallback((clearStorage = false) => {
+        if (clearStorage) {
+            localStorage.removeItem('chatbotState');
+        }
         setMessages([{ id: generateUniqueId(), text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' }]);
         setStep('collecting');
         setUserDetails({ name: '', number: '' });
-        setLastQuestion('');
-        localStorage.removeItem('chatbotState');
+        const newSessionId = generateSessionId();
+        setSessionId(newSessionId);
+        
+        const initialState = {
+            messages: [{ id: generateUniqueId(), text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' }],
+            step: 'collecting',
+            userDetails: { name: '', number: '' },
+            sessionId: newSessionId,
+        };
+        localStorage.setItem('chatbotState', JSON.stringify(initialState));
+
     }, []);
     
-    const saveChatLead = async (leadData: { name: string; number: string, source: string }) => {
+    const saveChatState = useCallback((currentState: object) => {
+        try {
+            localStorage.setItem('chatbotState', JSON.stringify(currentState));
+        } catch (error) {
+            console.error("Failed to save chat state to localStorage", error);
+        }
+    }, []);
+    
+    const saveChatToDatabase = async (chatData: { name: string; number: string, source: string, sessionId: string, messages: typeof messages }) => {
+        if (!chatData.sessionId) return;
         try {
             const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(leadData),
+                body: JSON.stringify(chatData),
             });
             if (!response.ok) {
-                throw new Error("Failed to save lead");
+                throw new Error("Failed to save chat to database");
             }
         } catch (error) {
-            console.error("Could not save chat lead:", error);
+            console.error("Could not save chat to database:", error);
             toast({
                 title: "Error",
-                description: "There was a problem saving your details. Please try again.",
+                description: "There was a problem syncing your chat. Please try again.",
                 variant: "destructive"
             });
         }
@@ -72,7 +97,7 @@ export function Chatbot() {
             setIsOpen(prev => {
                 if (prev) {
                     addMessage({ text: "It looks like you've been inactive for a while. Let's start over.", sender: 'bot' });
-                    initializeChat();
+                    initializeChat(true); // Clear storage on inactivity timeout
                 }
                 return prev;
             });
@@ -102,12 +127,12 @@ export function Chatbot() {
         try {
             const savedState = localStorage.getItem('chatbotState');
             if (savedState) {
-                const { messages: savedMessages, step: savedStep, userDetails: savedUserDetails, lastQuestion: savedLastQuestion } = JSON.parse(savedState);
-                if (savedMessages && savedMessages.length > 0) {
+                const { messages: savedMessages, step: savedStep, userDetails: savedUserDetails, sessionId: savedSessionId } = JSON.parse(savedState);
+                if (savedMessages && savedMessages.length > 0 && savedSessionId) {
                     setMessages(savedMessages);
                     setStep(savedStep);
                     setUserDetails(savedUserDetails);
-                    setLastQuestion(savedLastQuestion || '');
+                    setSessionId(savedSessionId);
                 } else {
                     initializeChat();
                 }
@@ -122,16 +147,21 @@ export function Chatbot() {
     
     useEffect(() => {
         // Save state to localStorage whenever it changes
-        if (messages.length > 1 && step !== 'collecting' && userDetails.name) {
-             try {
-                const stateToSave = { messages, step, userDetails, lastQuestion };
-                localStorage.setItem('chatbotState', JSON.stringify(stateToSave));
-                resetInactivityTimer();
-            } catch (error) {
-                console.error("Failed to save chatbot state to localStorage", error);
-            }
+        if (messages.length > 0 && sessionId) {
+             const stateToSave = { messages, step, userDetails, sessionId };
+             saveChatState(stateToSave);
+             resetInactivityTimer();
+             if (step === 'chatting' && userDetails.name && userDetails.number) {
+                saveChatToDatabase({
+                    source: 'Chatbot Lead',
+                    name: userDetails.name,
+                    number: userDetails.number,
+                    sessionId,
+                    messages
+                });
+             }
         }
-    }, [messages, step, userDetails, lastQuestion, resetInactivityTimer]);
+    }, [messages, step, userDetails, sessionId, saveChatState, resetInactivityTimer]);
     
     const handleSendMessage = (text: string) => {
         addMessage({ text, sender: 'user' });
@@ -149,9 +179,6 @@ export function Chatbot() {
                 setUserDetails(updatedUserDetails);
                 setIsTyping(true);
                 
-                // Save lead to JSON file
-                saveChatLead({ name: updatedUserDetails.name, number: text, source: 'Chatbot Lead' });
-                
                 setTimeout(() => {
                     setIsTyping(false);
                     const welcomeText = `Great! How can I help you today, ${userDetails.name}? You can ask me about our services, pricing, or how to hire developers.`;
@@ -162,14 +189,12 @@ export function Chatbot() {
                 }, 1000);
             }
         } else {
-            setLastQuestion(text);
             handleUserQuery(text);
         }
     };
     
     const handleOptionSelect = (option: string) => {
         addMessage({ text: option, sender: 'user' });
-        setLastQuestion(option);
         handleUserQuery(option);
     };
 

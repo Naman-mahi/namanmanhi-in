@@ -8,7 +8,6 @@ import {
 import Image from 'next/image';
 import Autoplay from "embla-carousel-autoplay";
 import { ArrowRight } from "lucide-react";
-import { Header } from "../layout/header";
 import { Particles } from "./particles";
 
 const slides = [
@@ -48,7 +47,6 @@ export function HeroCarousel() {
   return (
     <section className="relative w-full overflow-hidden bg-background">
       <Particles className="absolute inset-0 -z-10" />
-      <Header variant="sticky" />
       <Carousel
         opts={{ loop: true }}
         plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}

@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { name: "Hire Developers", href: "/hire-developers" },
-  { name: "Contact", href: "/#contact" },
+  { name: "Contact", href: "/contact" },
 ];
 
 export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }) {
@@ -21,16 +21,20 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
-  const isSticky = variant === "sticky";
+    if (variant === "sticky") {
+        window.addEventListener("scroll", handleScroll);
+        handleScroll();
+    }
+    
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [variant]);
 
   const headerClasses = cn(
-    "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-    isSticky && isScrolled ? "bg-background/80 shadow-md backdrop-blur-sm" : "bg-transparent"
+    "left-0 right-0 z-50 transition-all duration-300",
+    variant === 'sticky' ? 'fixed top-0' : 'relative bg-background shadow-sm',
+    variant === 'sticky' && isScrolled ? "bg-background/80 shadow-md backdrop-blur-sm" : "bg-transparent",
+    variant === 'sticky' && !isScrolled ? "bg-transparent" : "bg-background/80 shadow-md backdrop-blur-sm"
   );
   
   const linkClasses = cn(
@@ -59,8 +63,8 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                 </Link>
               ))}
             </nav>
-            <Button>
-              Get a Quote
+            <Button asChild>
+              <Link href="/get-a-quote">Get a Quote</Link>
             </Button>
           </div>
 
@@ -94,7 +98,9 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                     ))}
                   </nav>
                   <div className="p-4 border-t">
-                    <Button className="w-full">Get a Quote</Button>
+                    <Button asChild className="w-full">
+                        <Link href="/get-a-quote">Get a Quote</Link>
+                    </Button>
                   </div>
                 </div>
               </SheetContent>

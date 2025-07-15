@@ -2,12 +2,10 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { CompanyOverview } from "@/components/sections/company-overview";
 import { CheckCircle } from 'lucide-react';
 import Image from "next/image";
+import { ContactForm } from "@/components/sections/contact-form";
 
 const stats = [
     { value: "20+", label: "Years of Experience" },
@@ -86,7 +84,7 @@ const whyHireUsReasons = [
 export default function HireDevelopersPage() {
     return (
         <div className="bg-background text-foreground">
-            <Header variant="sticky" />
+            <Header variant="inline" />
 
             <main>
                 <section className="pt-24 pb-12 bg-secondary/30">
@@ -278,58 +276,7 @@ export default function HireDevelopersPage() {
                     </div>
                 </section>
 
-                <section id="contact-form" className="py-20 lg:py-24">
-                    <div className="container mx-auto px-4">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold">Feel Free to Contact Us!</h2>
-                            <p className="mt-4 text-muted-foreground">We would be happy to hear from you, please fill in the form below or mail us your requirements on info@invertiosolutions.com</p>
-                        </div>
-                        <Card className="max-w-4xl mx-auto p-6 md:p-8">
-                            <form className="grid md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="fullName">Full Name</Label>
-                                    <Input id="fullName" placeholder="Enter Full Name" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">E-mail</Label>
-                                    <Input id="email" type="email" placeholder="Enter E-mail" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="contact">Contact No.</Label>
-                                    <Input id="contact" type="tel" placeholder="Enter Contact No." />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="whatsapp">WhatsApp</Label>
-                                    <Input id="whatsapp" type="tel" placeholder="Enter WhatsApp No." />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="skype">Skype</Label>
-                                    <Input id="skype" placeholder="Enter Skype Id" />
-                                </div>
-                                 <div className="space-y-2">
-                                    <Label htmlFor="location">Location</Label>
-                                    <Input id="location" placeholder="Enter address / location" />
-                                </div>
-                                <div className="md:col-span-2 space-y-2">
-                                    <Label htmlFor="budget">Project Budget: $10,000</Label>
-                                    <Input id="budget" type="range" min="1000" max="100000" defaultValue="10000" />
-                                </div>
-                                <div className="md:col-span-2 space-y-2">
-                                    <Label htmlFor="file">Attach File (Max Size 20MB)</Label>
-                                    <Input id="file" type="file" />
-                                </div>
-                                <div className="md:col-span-2 space-y-2">
-                                    <Label htmlFor="message">Message</Label>
-                                    <Textarea id="message" placeholder="Your Message" rows={5} />
-                                </div>
-                                <div className="md:col-span-2 flex flex-col items-center">
-                                    <Button type="submit" size="lg">Send Message</Button>
-                                    <p className="text-xs text-muted-foreground mt-4">We sign NDA for all our projects.</p>
-                                </div>
-                            </form>
-                        </Card>
-                    </div>
-                </section>
+                <ContactForm />
 
                 <CompanyOverview />
             </main>

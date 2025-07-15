@@ -18,6 +18,11 @@ const themes = [
   { name: "green", color: "bg-green-500" },
   { name: "orange", color: "bg-orange-500" },
   { name: "rose", color: "bg-rose-500" },
+  { name: "purple", color: "bg-purple-500" },
+  { name: "yellow", color: "bg-yellow-500" },
+  { name: "cyan", color: "bg-cyan-500" },
+  { name: "pink", color: "bg-pink-500" },
+  { name: "slate", color: "bg-slate-500" },
 ]
 
 export function ThemeCustomizer() {
@@ -25,15 +30,20 @@ export function ThemeCustomizer() {
   const [activeTheme, setActiveTheme] = React.useState('blue')
 
   React.useEffect(() => {
-    const currentTheme = localStorage.getItem("theme-color") || "blue"
-    setActiveTheme(currentTheme)
-    document.body.classList.forEach(className => {
+    const applyTheme = (themeName: string) => {
+      document.body.classList.forEach(className => {
         if (className.startsWith('theme-')) {
-            document.body.classList.remove(className);
+          document.body.classList.remove(className);
         }
-    });
-    document.body.classList.add(`theme-${currentTheme}`)
-  }, [])
+      });
+      document.body.classList.add(`theme-${themeName}`);
+      setActiveTheme(themeName);
+    }
+    
+    const currentTheme = localStorage.getItem("theme-color") || "blue";
+    applyTheme(currentTheme);
+
+  }, []);
 
   const handleThemeChange = (themeName: string) => {
     document.body.classList.forEach(className => {
@@ -55,7 +65,7 @@ export function ThemeCustomizer() {
             <span className="sr-only">Customize Theme</span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-56" align="end">
+        <PopoverContent className="w-80" align="end">
           <div className="space-y-4">
             <p className="font-medium text-sm">Theme</p>
             <div className="grid grid-cols-3 gap-2">
@@ -88,19 +98,19 @@ export function ThemeCustomizer() {
             </div>
             
             <p className="font-medium text-sm">Color</p>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-5 gap-2">
               {themes.map((theme) => (
                 <Button
                   key={theme.name}
                   variant="outline"
                   size="icon"
                   className={cn(
-                    "h-8 w-8 rounded-full",
+                    "h-10 w-10 rounded-full",
                     activeTheme === theme.name && "border-2 border-primary"
                   )}
                   onClick={() => handleThemeChange(theme.name)}
                 >
-                  <span className={cn("h-4 w-4 rounded-full", theme.color)}>
+                  <span className={cn("h-6 w-6 rounded-full flex items-center justify-center", theme.color)}>
                      {activeTheme === theme.name && <Check className="h-4 w-4 text-white" />}
                   </span>
                   <span className="sr-only">{theme.name}</span>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -18,9 +19,8 @@ const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
   contact: z.string().min(1, { message: "Contact number is required." }),
   whatsapp: z.string().min(1, { message: "WhatsApp number is required." }),
-  skype: z.string().min(1, { message: "Skype ID is required." }),
   location: z.string().min(1, { message: "Location is required." }),
-  budget: z.number().min(1000),
+  budget: z.number().min(1000).optional(),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
   file: z.any().refine(file => file, { message: "File attachment is required." }),
 });
@@ -37,7 +37,6 @@ export function ContactForm() {
             email: "",
             contact: "",
             whatsapp: "",
-            skype: "",
             location: "",
             budget: 10000,
             message: "",
@@ -124,19 +123,6 @@ export function ContactForm() {
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="skype"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Skype</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="your.skype.id" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
                                     name="location"
                                     render={({ field }) => (
                                         <FormItem>
@@ -152,7 +138,7 @@ export function ContactForm() {
                                     control={form.control}
                                     name="budget"
                                     render={({ field }) => (
-                                        <FormItem className="md:col-span-2">
+                                        <FormItem>
                                             <div className="flex justify-between items-center">
                                                 <FormLabel>Project Budget (Optional)</FormLabel>
                                                 <span className="font-semibold text-primary">${new Intl.NumberFormat('en-US').format(budget)}</span>
@@ -162,7 +148,7 @@ export function ContactForm() {
                                                     min={1000}
                                                     max={100000}
                                                     step={1000}
-                                                    defaultValue={[field.value]}
+                                                    defaultValue={[field.value || 10000]}
                                                     onValueChange={(value) => {
                                                         field.onChange(value[0]);
                                                         setBudget(value[0]);

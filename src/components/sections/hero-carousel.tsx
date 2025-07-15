@@ -8,7 +8,7 @@ import {
 import Image from 'next/image';
 import Autoplay from "embla-carousel-autoplay";
 import { ArrowRight } from "lucide-react";
-import { Particles } from "./particles";
+import { InteractiveGrid } from "./interactive-grid";
 
 const slides = [
   {
@@ -45,8 +45,8 @@ const slides = [
 
 export function HeroCarousel() {
   return (
-    <section className="relative w-full overflow-hidden">
-      <Particles className="absolute inset-0 -z-10" />
+    <section className="relative w-full overflow-hidden bg-background">
+      <InteractiveGrid className="absolute inset-0 -z-10" />
       <Carousel
         opts={{ loop: true }}
         plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}

@@ -47,20 +47,19 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
           <Link href="/" className="flex items-center">
             <Logo className="h-9 w-auto" />
           </Link>
-
-          <nav className="hidden lg:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={linkClasses}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="hidden lg:flex items-center space-x-4">
+          
+          <div className="hidden lg:flex items-center space-x-8">
+            <nav className="flex items-center space-x-8">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={linkClasses}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </nav>
             <Button variant="outline" className={cn(
                 (isSticky && isScrolled) ? "border-primary text-primary hover:bg-primary hover:text-primary-foreground" : "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
             )}>

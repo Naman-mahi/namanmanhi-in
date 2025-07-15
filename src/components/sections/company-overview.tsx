@@ -155,13 +155,13 @@ export function CompanyOverview() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
             <Card key={index} className="bg-card shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl overflow-hidden">
-              <CardContent className="flex flex-col sm:flex-row items-center gap-6 p-6">
+              <CardContent className="flex flex-col items-center text-center gap-4 p-8">
                 <stat.icon className="h-12 w-12 flex-shrink-0" />
-                <div className="flex flex-col text-center sm:text-left">
-                  <p className="text-3xl font-bold text-foreground">
+                <div className="flex flex-col">
+                  <p className="text-4xl font-bold text-foreground">
                     <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                   </p>
-                  <p className="text-sm text-muted-foreground whitespace-nowrap">{stat.label}</p>
+                  <p className="text-base font-semibold text-muted-foreground mt-1">{stat.label}</p>
                 </div>
               </CardContent>
             </Card>

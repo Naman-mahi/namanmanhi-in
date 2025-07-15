@@ -6,6 +6,7 @@ import { AnimatePresence } from "framer-motion";
 import { ChatbotIcon } from "./chatbot-icon";
 import { ChatWindow } from "./chat-window";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useToast } from "@/hooks/use-toast";
 // import { getChatbotResponse } from "@/ai/flows/chatbot-flow";
 
 const predefinedQuestions = [
@@ -33,14 +34,35 @@ export function Chatbot() {
     const [lastQuestion, setLastQuestion] = useState('');
     const isMobile = useIsMobile();
     const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const { toast } = useToast();
 
     const initializeChat = useCallback(() => {
-        setMessages([{ id: '1', text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' }]);
+        setMessages([{ id: generateUniqueId(), text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' }]);
         setStep('collecting');
         setUserDetails({ name: '', number: '' });
         setLastQuestion('');
         localStorage.removeItem('chatbotState');
     }, []);
+    
+    const saveChatLead = async (leadData: { name: string; number: string, source: string }) => {
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(leadData),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to save lead");
+            }
+        } catch (error) {
+            console.error("Could not save chat lead:", error);
+            toast({
+                title: "Error",
+                description: "There was a problem saving your details. Please try again.",
+                variant: "destructive"
+            });
+        }
+    };
 
     const resetInactivityTimer = useCallback(() => {
         if (inactivityTimerRef.current) {
@@ -49,8 +71,8 @@ export function Chatbot() {
         inactivityTimerRef.current = setTimeout(() => {
             setIsOpen(prev => {
                 if (prev) {
+                    addMessage({ text: "It looks like you've been inactive for a while. Let's start over.", sender: 'bot' });
                     initializeChat();
-                    addMessage({ text: "It looks like you've been inactive for a while. Let's start over. What is your name?", sender: 'bot' });
                 }
                 return prev;
             });
@@ -87,16 +109,16 @@ export function Chatbot() {
                     setUserDetails(savedUserDetails);
                     setLastQuestion(savedLastQuestion || '');
                 } else {
-                    addMessage({ text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' });
+                    initializeChat();
                 }
             } else {
-                 addMessage({ text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' });
+                 initializeChat();
             }
         } catch (error) {
             console.error("Failed to parse chatbot state from localStorage", error);
-            addMessage({ text: "Welcome to NamanMahi.in! Before we start, could you please tell me your name?", sender: 'bot' });
+            initializeChat();
         }
-    }, []);
+    }, [initializeChat]);
     
     useEffect(() => {
         // Save state to localStorage whenever it changes
@@ -123,8 +145,13 @@ export function Chatbot() {
                     addMessage({ text: `Thanks, ${text}! What's your contact number?`, sender: 'bot' });
                 }, 1000);
             } else {
-                setUserDetails(prev => ({ ...prev, number: text }));
+                const updatedUserDetails = { ...userDetails, number: text };
+                setUserDetails(updatedUserDetails);
                 setIsTyping(true);
+                
+                // Save lead to JSON file
+                saveChatLead({ name: updatedUserDetails.name, number: text, source: 'Chatbot Lead' });
+                
                 setTimeout(() => {
                     setIsTyping(false);
                     const welcomeText = `Great! How can I help you today, ${userDetails.name}? You can ask me about our services, pricing, or how to hire developers.`;

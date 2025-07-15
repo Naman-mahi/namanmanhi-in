@@ -22,7 +22,7 @@ const formSchema = z.object({
   location: z.string().min(1, { message: "Location is required." }),
   budget: z.number().min(1000).optional(),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
-  file: z.any().refine(file => file, { message: "File attachment is required." }),
+  file: z.any().optional(),
 });
 
 export function ContactForm() {
@@ -45,17 +45,44 @@ export function ContactForm() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsSubmitting(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        console.log(values);
-        setIsSubmitting(false);
-
-        toast({
-            title: "Message Sent!",
-            description: "Thank you for reaching out. We'll get back to you shortly.",
+        
+        const formData = new FormData();
+        Object.entries(values).forEach(([key, value]) => {
+            if (key === 'file') {
+                 if (value && value instanceof File) {
+                    formData.append(key, value);
+                 }
+            } else if (value) {
+                formData.append(key, String(value));
+            }
         });
-        form.reset();
-        setBudget(10000);
+        
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...values, source: 'Contact Form' }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Something went wrong');
+            }
+
+            toast({
+                title: "Message Sent!",
+                description: "Thank you for reaching out. We'll get back to you shortly.",
+            });
+            form.reset();
+            setBudget(10000);
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to send message. Please try again later.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     return (
@@ -164,7 +191,7 @@ export function ContactForm() {
                                     name="file"
                                     render={({ field }) => (
                                         <FormItem className="md:col-span-2">
-                                            <FormLabel>Attach File</FormLabel>
+                                            <FormLabel>Attach File (Optional)</FormLabel>
                                             <FormControl>
                                                 <Input 
                                                     id="file" 

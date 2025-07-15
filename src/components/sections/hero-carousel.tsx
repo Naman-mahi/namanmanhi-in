@@ -9,26 +9,37 @@ import Image from 'next/image';
 import Autoplay from "embla-carousel-autoplay";
 import { ArrowRight } from "lucide-react";
 import { InteractiveGrid } from "./interactive-grid";
+import Link from "next/link";
 
 const slides = [
   {
-    title: "Artificial Intelligence (AI)",
-    subtitle: "Development Company",
-    descriptionLine1: "Top AI Development Company in",
-    descriptionLine2: "GCC and India",
+    title: "AI & ML",
+    subtitle: "Intelligent Automation",
+    descriptionLine1: "Harness the power of AI to build",
+    descriptionLine2: "smarter, more efficient applications.",
     image: {
-      src: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=550&auto=format&fit=crop",
-      hint: "artificial intelligence robot"
+      src: "https://placehold.co/550x550.png",
+      hint: "AI robot vector"
     },
   },
   {
-    title: "Web Development",
-    subtitle: "Crafting Digital Experiences",
-    descriptionLine1: "Modern, responsive websites that",
-    descriptionLine2: "drive user engagement.",
+    title: "Blockchain Development",
+    subtitle: "Decentralized & Secure",
+    descriptionLine1: "Create secure, transparent solutions",
+    descriptionLine2: "with blockchain technology.",
     image: {
-      src: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?q=80&w=550&auto=format&fit=crop",
-      hint: "web design code"
+      src: "https://placehold.co/550x550.png",
+      hint: "blockchain network vector"
+    },
+  },
+  {
+    title: "Metaverse Experiences",
+    subtitle: "The Next Digital Frontier",
+    descriptionLine1: "Build immersive, interactive worlds",
+    descriptionLine2: "in the metaverse.",
+    image: {
+      src: "https://placehold.co/550x550.png",
+      hint: "metaverse vr vector"
     },
   },
   {
@@ -37,8 +48,58 @@ const slides = [
     descriptionLine1: "High-performance applications for",
     descriptionLine2: "both iOS and Android.",
     image: {
-      src: "/mobile-app-dev.png",
-      hint: "mobile app interface"
+      src: "https://placehold.co/550x550.png",
+      hint: "mobile app interface vector"
+    },
+  },
+  {
+    title: "Web Development",
+    subtitle: "Crafting Digital Experiences",
+    descriptionLine1: "Modern, responsive websites that",
+    descriptionLine2: "drive user engagement.",
+    image: {
+      src: "https://placehold.co/550x550.png",
+      hint: "web design code vector"
+    },
+  },
+  {
+    title: "Game Development",
+    subtitle: "Engage and Entertain",
+    descriptionLine1: "Create captivating games for",
+    descriptionLine2: "a global audience.",
+    image: {
+      src: "https://placehold.co/550x550.png",
+      hint: "game controller vector"
+    },
+  },
+  {
+    title: "E-commerce Solutions",
+    subtitle: "Your Digital Storefront",
+    descriptionLine1: "Build powerful, scalable online stores",
+    descriptionLine2: "that drive sales.",
+    image: {
+      src: "https://placehold.co/550x550.png",
+      hint: "ecommerce online shopping vector"
+    },
+  },
+  {
+    title: "IoT Integration",
+    subtitle: "Connecting the World",
+    descriptionLine1: "Develop smart, connected devices",
+    descriptionLine2: "for a seamless ecosystem.",
+    image: {
+      src: "https://placehold.co/550x550.png",
+      hint: "iot smart home vector"
+    },
+  },
+  {
+    title: "Salesforce Customization",
+    subtitle: "Empower Your CRM",
+    descriptionLine1: "Tailor Salesforce to fit your unique",
+    descriptionLine2: "business processes.",
+    image: {
+      src: "https://placehold.co/550x550.png",
+      hint: "salesforce cloud crm vector"
     },
   },
 ];
@@ -72,22 +133,21 @@ export function HeroCarousel() {
                                   <p className="text-muted-foreground">{slide.descriptionLine2}</p>
                               </div>
                           </div>
-                          <div className="flex items-center gap-4 group">
+                           <Link href="#contact" className="group inline-flex items-center gap-4">
                               <div className="w-12 h-12 rounded-full border border-muted-foreground/50 flex items-center justify-center group-hover:border-primary transition-colors">
                                   <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors"/>
                               </div>
-                              <a href="#contact" className="font-semibold text-muted-foreground group-hover:text-primary transition-colors">Drop Your Queries</a>
-                          </div>
+                              <span className="font-semibold text-muted-foreground group-hover:text-primary transition-colors">Drop Your Queries</span>
+                          </Link>
                       </div>
                     </div>
                     <div className="relative hidden md:block">
-                      <div className="absolute -right-20 -top-20 w-[500px] h-[500px] bg-gradient-to-br from-blue-200 to-purple-300 rounded-full blur-3xl opacity-30"></div>
-                      <Image
+                       <Image
                           src={slide.image.src}
                           alt={slide.title}
                           width={550}
                           height={550}
-                          className="object-cover rounded-xl shadow-2xl relative z-10"
+                          className="object-contain rounded-xl relative z-10"
                           data-ai-hint={slide.image.hint}
                           priority={index === 0}
                         />

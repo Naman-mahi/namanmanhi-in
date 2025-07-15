@@ -171,6 +171,88 @@
     ],
     "sessionId": "session-1752599550483-ykll957",
     "createdAt": "2025-07-15T17:13:51.199Z",
-    "updatedAt": "2025-07-15T17:27:43.252Z"
+    "updatedAt": "2025-07-15T17:29:49.461Z"
+  },
+  {
+    "id": 1752600555719,
+    "source": "Chatbot Lead",
+    "name": "Naman",
+    "number": "23456789",
+    "messages": [
+      {
+        "id": "1752599577369-0",
+        "text": "Welcome to NamanMahi.in! Before we start, could you please tell me your name?",
+        "sender": "bot"
+      },
+      {
+        "id": "1752600547316-0",
+        "text": "Naman",
+        "sender": "user"
+      },
+      {
+        "id": "1752600548319-3",
+        "text": "Thanks, Naman! What's your contact number?",
+        "sender": "bot"
+      },
+      {
+        "id": "1752600552751-4",
+        "text": "23456789",
+        "sender": "user"
+      },
+      {
+        "id": "1752600553753-7",
+        "text": "Great! How can I help you today, Naman? You can ask me about our services, pricing, or how to hire developers.",
+        "sender": "bot"
+      },
+      {
+        "id": "1752600553753-9",
+        "text": "You can choose from the options below or type your own question.",
+        "sender": "bot"
+      },
+      {
+        "id": "1752600553753-11",
+        "text": "",
+        "sender": "options",
+        "options": [
+          "What services do you offer?",
+          "How can I hire a developer?",
+          "What is your pricing?",
+          "Where are you located?",
+          "What technologies do you use?",
+          "Can you tell me about your experience?"
+        ]
+      },
+      {
+        "id": "1752600558859-12",
+        "text": "how are you ?",
+        "sender": "user"
+      },
+      {
+        "id": "1752600559869-14",
+        "text": "I'm sorry, I'm not sure how to answer that. Is there anything else I can help with?",
+        "sender": "bot"
+      },
+      {
+        "id": "1752600559871-17",
+        "text": "What else can I help you with?",
+        "sender": "bot"
+      },
+      {
+        "id": "1752600559871-19",
+        "text": "",
+        "sender": "options",
+        "options": [
+          "What services do you offer?",
+          "How can I hire a developer?",
+          "What is your pricing?",
+          "Where are you located?",
+          "What technologies do you use?",
+          "Can you tell me about your experience?"
+        ]
+      }
+    ],
+    "sessionId": "session-1752599577369-lyeo0lc",
+    "createdAt": "2025-07-15T17:29:15.719Z",
+    "updatedAt": "2025-07-15T17:29:21.732Z"
   }
 ]

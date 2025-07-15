@@ -67,25 +67,19 @@ export default function AdminPage() {
             const sortedData = data.sort((a: Submission, b: Submission) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
             setSubmissions(sortedData);
             
-            if (!selectedSubmission && sortedData.length > 0) {
-               const firstChat = sortedData.find(s => s.source === 'Chatbot Lead');
-               if (firstChat) {
-                   setSelectedSubmission(firstChat);
-                   setActiveTab('chat');
-               } else {
-                   setSelectedSubmission(sortedData[0]);
-                   setActiveTab(sortedData[0].source === 'Chatbot Lead' ? 'chat' : 'forms');
-               }
-            } else if (selectedSubmission) {
-                // If a submission was selected, refresh its data
+            if (selectedSubmission) {
                 const refreshedSubmission = sortedData.find((s: Submission) => s.id === selectedSubmission.id);
                 if (refreshedSubmission) {
                     setSelectedSubmission(refreshedSubmission);
                 } else {
-                    // The selected submission might have been deleted, so clear it
                     setSelectedSubmission(null);
                 }
+            } else if (sortedData.length > 0) {
+               const firstItem = sortedData[0];
+               setSelectedSubmission(firstItem);
+               setActiveTab(firstItem.source === 'Chatbot Lead' ? 'chat' : 'forms');
             }
+
         } catch (error) {
             console.error("Failed to fetch submissions:", error);
             toast({
@@ -136,11 +130,15 @@ export default function AdminPage() {
         const newAdminMessage: Message = {
             id: `admin-${Date.now()}`,
             text: reply,
-            sender: 'bot', // Representing admin as 'bot' for styling
+            sender: 'bot', // Admin messages are styled like the bot
         };
         
         const updatedMessages = [...session.messages, newAdminMessage];
-        const updatedSession = { ...session, messages: updatedMessages };
+        const updatedSession: ChatSession = { ...session, messages: updatedMessages, updatedAt: new Date().toISOString() };
+
+        // Optimistically update UI
+        setSelectedSubmission(updatedSession);
+        setReply('');
 
         try {
             const response = await fetch('/api/contact', {
@@ -157,9 +155,7 @@ export default function AdminPage() {
                 title: "Reply Sent!",
                 description: "Your message has been saved to the chat log.",
             });
-
-            setReply('');
-            // Refresh data to show the new message
+            // Refresh data in the background to ensure consistency
             await fetchData();
 
         } catch (error) {
@@ -169,6 +165,8 @@ export default function AdminPage() {
                 description: "Could not send reply. Please try again.",
                 variant: "destructive"
             });
+            // Revert optimistic update on failure
+            setSelectedSubmission(session);
         } finally {
             setIsSending(false);
         }
@@ -224,8 +222,8 @@ export default function AdminPage() {
                          <h3 className="font-bold text-lg">{session.name}</h3>
                          <p className="text-sm text-muted-foreground">{session.number}</p>
                     </div>
-                    <ScrollArea className="flex-grow">
-                        <div className="p-4 space-y-4">
+                    <ScrollArea className="flex-grow p-4">
+                        <div className="space-y-4">
                             {session.messages.filter(msg => msg.sender !== 'options' && msg.text).map(msg => (
                                 <ChatMessage key={msg.id} message={msg} onOptionSelect={() => {}} perspective="admin" />
                             ))}
@@ -239,7 +237,7 @@ export default function AdminPage() {
                                 onChange={(e) => setReply(e.target.value)}
                                 disabled={isSending}
                             />
-                            <Button type="submit" size="icon" aria-label="Send reply" disabled={isSending}>
+                            <Button type="submit" size="icon" aria-label="Send reply" disabled={isSending || !reply.trim()}>
                                 {isSending ? <Loader2 size={20} className="animate-spin"/> : <Send size={20} />}
                             </Button>
                         </form>

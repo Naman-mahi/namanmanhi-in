@@ -23,22 +23,21 @@ export function InteractiveGrid({ className, ...props }: InteractiveGridProps) {
     let mouseY = 0;
 
     const spacing = 35;
-    const dotRadius = 2.5; // Increased dot size
+    const dotRadius = 2.5;
     const maxDistortion = 30;
     const dampening = 0.08;
 
-    // Define a palette of 10 colors
     const colors = [
-      'hsl(var(--primary))',       // Primary color
-      'hsl(210 90% 55%)',          // A secondary blue
-      'hsl(160 90% 55%)',          // A teal/green
-      'hsl(45 90% 55%)',           // A yellow
-      'hsl(30 90% 55%)',           // An orange
-      'hsl(var(--chart-2))',       // Chart color 2
-      'hsl(var(--chart-3))',       // Chart color 3
-      'hsl(var(--chart-4))',       // Chart color 4
-      'hsl(var(--chart-5))',       // Chart color 5
-      'hsl(280 80% 60%)',          // A purple
+      'hsl(var(--primary))',
+      'hsl(210 90% 55%)',
+      'hsl(160 90% 55%)',
+      'hsl(45 90% 55%)',
+      'hsl(30 90% 55%)',
+      'hsl(var(--chart-2))',
+      'hsl(var(--chart-3))',
+      'hsl(var(--chart-4))',
+      'hsl(var(--chart-5))',
+      'hsl(280 80% 60%)',
     ];
 
     let dots: any[] = [];
@@ -121,7 +120,6 @@ export function InteractiveGrid({ className, ...props }: InteractiveGridProps) {
 
         const gradient = 1 - Math.min(1, dotDistance / 200);
 
-        // Set dot color and opacity
         ctx.fillStyle = dot.color;
         ctx.globalAlpha = 0.3 + gradient * 0.5;
 
@@ -129,28 +127,23 @@ export function InteractiveGrid({ className, ...props }: InteractiveGridProps) {
         ctx.arc(dot.x, dot.y, dotRadius, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.globalAlpha = 1; // Reset global alpha
+        ctx.globalAlpha = 1;
 
-        // Draw connecting lines
-        const lineColor = isDark ? `rgba(100, 100, 140, ${0.05 + gradient * 0.2})` : `rgba(31, 41, 55, ${0.05 + gradient * 0.2})`;
+        const lineColor = isDark ? `rgba(255, 255, 255, 0.75)` : `rgba(0, 0, 0, 0.75)`;
+        ctx.strokeStyle = lineColor;
+        ctx.lineWidth = 0.5;
 
-        // Horizontal line to the next dot
         if (i < dots.length - 1 && (i + 1) % cols !== 0) {
           const nextDot = dots[i + 1];
            ctx.beginPath();
-           ctx.strokeStyle = lineColor;
-           ctx.lineWidth = 0.5;
            ctx.moveTo(dot.x, dot.y);
            ctx.lineTo(nextDot.x, nextDot.y);
            ctx.stroke();
         }
 
-        // Vertical line to the dot below
         if (i + cols < dots.length) {
           const dotBelow = dots[i + cols];
             ctx.beginPath();
-            ctx.strokeStyle = lineColor;
-            ctx.lineWidth = 0.5;
             ctx.moveTo(dot.x, dot.y);
             ctx.lineTo(dotBelow.x, dotBelow.y);
             ctx.stroke();

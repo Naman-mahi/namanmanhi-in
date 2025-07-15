@@ -43,7 +43,7 @@ const hiringProcess = [
 export function HiringProcessSection() {
     return (
         <section className="py-20 lg:py-24 bg-secondary/30">
-            <div className="w-full px-4 md:px-8">
+            <div className="container mx-auto px-4">
                 <div className="text-center mb-16 max-w-3xl mx-auto">
                     <h2 className="text-3xl md:text-4xl font-bold">A Well-Defined Hiring Process</h2>
                     <p className="mt-4 text-muted-foreground">Need to augment your team? Follow our quick and transparent steps to onboard top talent for your project.</p>

@@ -1,3 +1,4 @@
+"use client";
 import { Card, CardContent } from '@/components/ui/card';
 import { AnimatedCounter } from '@/components/animated-counter';
 
@@ -154,7 +155,7 @@ export function CompanyOverview() {
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
-            <Card key={index} className="bg-card shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl overflow-hidden">
+            <Card key={index} className="bg-card shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl overflow-hidden border-0">
               <CardContent className="flex flex-col items-center text-center gap-4 p-8">
                 <stat.icon className="h-12 w-12 flex-shrink-0" />
                 <div className="flex flex-col">

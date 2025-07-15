@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Clock, CalendarDays, CalendarClock, Star, CheckCircle } from 'lucide-react';
+import Link from "next/link";
 
 const pricingTiers = [
     {
@@ -69,7 +70,9 @@ export function PricingSection() {
                                         </li>
                                     ))}
                                 </ul>
-                                <Button className="w-full" variant={tier.popular ? 'default' : 'outline'}>Hire Now</Button>
+                                 <Button asChild className="w-full" variant={tier.popular ? 'default' : 'outline'}>
+                                    <Link href="#contact-form">Hire Now</Link>
+                                </Button>
                             </CardContent>
                             <p className="text-xs text-muted-foreground mt-4 text-center p-4">We sign an NDA for all our projects.</p>
                         </Card>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useRef, useEffect } from 'react';
@@ -129,7 +130,7 @@ export function InteractiveGrid({ className, ...props }: InteractiveGridProps) {
 
         ctx.globalAlpha = 1;
 
-        const lineColor = isDark ? `rgba(255, 255, 255, 0.75)` : `rgba(0, 0, 0, 0.75)`;
+        const lineColor = isDark ? `rgba(255, 255, 255, 0.5)` : `rgba(0, 0, 0, 0.5)`;
         ctx.strokeStyle = lineColor;
         ctx.lineWidth = 0.5;
 

@@ -11,8 +11,9 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { format, parseISO } from 'date-fns';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageSquare, User, FileText, Loader2, Inbox } from 'lucide-react';
+import { MessageSquare, User, FileText, Loader2, Inbox, Send } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 
 type Message = {
     id: string;
@@ -53,6 +54,7 @@ export default function AdminPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('chat');
+    const [reply, setReply] = useState("");
 
     useEffect(() => {
         async function fetchData() {
@@ -104,6 +106,42 @@ export default function AdminPage() {
         setSelectedSubmission(submission);
     }
     
+    const handleReplySubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!reply.trim() || !selectedSubmission || selectedSubmission.source !== 'Chatbot Lead') return;
+
+        const newAdminMessage: Message = {
+            id: `admin-${Date.now()}`,
+            text: reply,
+            sender: 'bot', // Representing admin as 'bot' for styling
+        };
+        
+        // Update the state to reflect the new message
+        setSubmissions(prevSubmissions => 
+            prevSubmissions.map(sub => 
+                sub.id === selectedSubmission.id 
+                ? { ...sub, messages: [...(sub as ChatSession).messages, newAdminMessage] }
+                : sub
+            )
+        );
+
+        setSelectedSubmission(prevSelected => {
+            if (prevSelected && prevSelected.id === selectedSubmission.id) {
+                return {
+                    ...prevSelected,
+                    messages: [...(prevSelected as ChatSession).messages, newAdminMessage]
+                }
+            }
+            return prevSelected;
+        });
+
+        // Here you would also call an API to send the message to the user
+        // and save it to the database
+        console.log("Admin reply:", reply);
+        
+        setReply('');
+    };
+
     const SubmissionList = ({ items, type }: { items: Submission[], type: 'chat' | 'form' }) => (
         <ScrollArea className="h-full">
             <div className="p-2 space-y-1">
@@ -157,10 +195,22 @@ export default function AdminPage() {
                     <ScrollArea className="flex-grow">
                         <div className="p-4 space-y-4">
                             {session.messages.filter(msg => msg.sender !== 'options' && msg.text).map(msg => (
-                                <ChatMessage key={msg.id} message={msg} onOptionSelect={() => {}} />
+                                <ChatMessage key={msg.id} message={msg} onOptionSelect={() => {}} perspective="admin" />
                             ))}
                         </div>
                     </ScrollArea>
+                    <div className="p-4 border-t bg-background/50">
+                        <form onSubmit={handleReplySubmit} className="flex items-center gap-2">
+                            <Input 
+                                placeholder="Type your reply..." 
+                                value={reply} 
+                                onChange={(e) => setReply(e.target.value)}
+                            />
+                            <Button type="submit" size="icon" aria-label="Send reply">
+                                <Send size={20} />
+                            </Button>
+                        </form>
+                    </div>
                 </div>
             );
         }
@@ -208,8 +258,8 @@ export default function AdminPage() {
                     <p className="text-muted-foreground">Review and manage customer interactions.</p>
                 </div>
 
-                <div className="border rounded-xl shadow-sm overflow-hidden grid lg:grid-cols-3">
-                    <div className="lg:col-span-1 border-r flex flex-col">
+                <div className="border rounded-xl shadow-sm overflow-hidden h-[70vh] grid lg:grid-cols-3">
+                    <div className="lg:col-span-1 border-r flex flex-col h-full">
                         <div className="p-4 border-b">
                              <Input
                                 placeholder="Filter by name, number, email..."
@@ -239,7 +289,7 @@ export default function AdminPage() {
                        </Tabs>
                     </div>
 
-                    <div className="lg:col-span-2">
+                    <div className="lg:col-span-2 h-full">
                         <SubmissionDetails />
                     </div>
                 </div>
@@ -247,5 +297,3 @@ export default function AdminPage() {
             <Footer />
         </div>
     );
-
-    

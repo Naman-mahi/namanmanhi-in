@@ -9,10 +9,12 @@ import Link from "next/link";
 interface ChatMessageProps {
     message: { id: string; text: string; sender: 'bot' | 'user' | 'options', options?: string[] };
     onOptionSelect: (option: string) => void;
+    perspective?: 'user' | 'admin';
 }
 
-export function ChatMessage({ message, onOptionSelect }: ChatMessageProps) {
+export function ChatMessage({ message, onOptionSelect, perspective = 'user' }: ChatMessageProps) {
     const isBot = message.sender === 'bot';
+    const isUser = message.sender === 'user';
     const isOptions = message.sender === 'options';
 
     const messageVariants = {
@@ -69,9 +71,18 @@ export function ChatMessage({ message, onOptionSelect }: ChatMessageProps) {
         );
     }
 
+    const alignmentClass = perspective === 'user' 
+        ? (isBot ? "justify-start" : "justify-end")
+        : (isUser ? "justify-start" : "justify-end");
+        
+    const bubbleClass = perspective === 'user'
+        ? (isBot ? "bg-secondary text-secondary-foreground rounded-bl-none" : "bg-primary text-primary-foreground rounded-br-none")
+        : (isUser ? "bg-secondary text-secondary-foreground rounded-bl-none" : "bg-primary text-primary-foreground rounded-br-none");
+
+
     return (
         <motion.div
-            className={cn("flex items-end gap-2", isBot ? "justify-start" : "justify-end")}
+            className={cn("flex items-end gap-2", alignmentClass)}
             variants={messageVariants}
             initial="hidden"
             animate="visible"
@@ -79,9 +90,7 @@ export function ChatMessage({ message, onOptionSelect }: ChatMessageProps) {
             <div
                 className={cn(
                     "max-w-[80%] rounded-2xl px-4 py-2 text-sm",
-                    isBot
-                        ? "bg-secondary text-secondary-foreground rounded-bl-none"
-                        : "bg-primary text-primary-foreground rounded-br-none"
+                    bubbleClass
                 )}
             >
                 {isBot ? renderTextWithLinks(message.text) : message.text}

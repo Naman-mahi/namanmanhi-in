@@ -17,7 +17,7 @@ const slides = [
     descriptionLine1: "Top AI Development Company in",
     descriptionLine2: "GCC and India",
     image: {
-      src: "https://placehold.co/550x550.png",
+      src: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=550&auto=format&fit=crop",
       hint: "artificial intelligence robot"
     },
   },
@@ -27,7 +27,7 @@ const slides = [
     descriptionLine1: "Modern, responsive websites that",
     descriptionLine2: "drive user engagement.",
     image: {
-      src: "https://placehold.co/550x550.png",
+      src: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?q=80&w=550&auto=format&fit=crop",
       hint: "web design code"
     },
   },
@@ -37,7 +37,7 @@ const slides = [
     descriptionLine1: "High-performance applications for",
     descriptionLine2: "both iOS and Android.",
     image: {
-      src: "https://placehold.co/550x550.png",
+      src: "https://images.unsplash.com/photo-1605152276825-9516d2698c62?q=80&w=550&auto=format&fit=crop",
       hint: "mobile app interface"
     },
   },
@@ -87,7 +87,7 @@ export function HeroCarousel() {
                           alt={slide.title}
                           width={550}
                           height={550}
-                          className="object-contain relative z-10"
+                          className="object-cover rounded-xl shadow-2xl relative z-10"
                           data-ai-hint={slide.image.hint}
                           priority={index === 0}
                         />

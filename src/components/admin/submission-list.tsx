@@ -13,15 +13,14 @@ interface SubmissionListProps {
   onSearchTermChange: (term: string) => void;
   activeTab: string;
   onTabChange: (tab: string) => void;
-  chatLeads: Submission[];
-  formSubmissions: Submission[];
+  submissions: Submission[];
   selectedSubmission: Submission | null;
   onSubmissionSelect: (submission: Submission) => void;
 }
 
 const SubmissionListItem = ({ submission, isSelected, onSelect }: { submission: Submission; isSelected: boolean; onSelect: (sub: Submission) => void }) => {
   const title = submission.source === 'Chatbot Lead' ? submission.name : submission.fullName;
-  const contactInfo = submission.source === 'Chatbot Lead' ? submission.number : submission.email;
+  const lastMessage = submission.source === 'Chatbot Lead' ? submission.messages.filter(m => m.text).slice(-1)[0]?.text : submission.message;
   const Icon = submission.source === 'Chatbot Lead' ? MessageSquare : FileText;
 
   return (
@@ -34,12 +33,12 @@ const SubmissionListItem = ({ submission, isSelected, onSelect }: { submission: 
           <Icon className="w-4 h-4 text-primary flex-shrink-0" />
           <span className="truncate">{title}</span>
         </p>
-        <span className="text-xs text-muted-foreground flex-shrink-0">
+        <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
           {format(parseISO(submission.createdAt), "MMM d")}
         </span>
       </div>
       <p className="text-xs text-muted-foreground mt-1 pl-6 truncate">
-        {contactInfo}
+        {lastMessage}
       </p>
     </div>
   );
@@ -50,36 +49,38 @@ export function SubmissionList({
   onSearchTermChange,
   activeTab,
   onTabChange,
-  chatLeads,
-  formSubmissions,
+  submissions,
   selectedSubmission,
   onSubmissionSelect,
 }: SubmissionListProps) {
+  const chatLeadsCount = submissions.filter(s => s.source === 'Chatbot Lead').length;
+  const formSubmissionsCount = submissions.filter(s => s.source === 'Contact Form').length;
+  
   return (
-    <>
+    <div className="flex flex-col h-full">
       <div className="p-4 border-b">
         <Input
-          placeholder="Filter by name, number, email..."
+          placeholder="Filter submissions..."
           value={searchTerm}
           onChange={(e) => onSearchTermChange(e.target.value)}
         />
       </div>
       <Tabs value={activeTab} onValueChange={onTabChange} className="flex-grow flex flex-col">
-        <TabsList className="m-2">
-          <TabsTrigger value="chat" className="flex-1 gap-2">
-            <MessageSquare className="w-4 h-4" /> Chats ({chatLeads.length})
+        <TabsList className="m-2 grid grid-cols-2">
+          <TabsTrigger value="chat" className="gap-2">
+            <MessageSquare className="w-4 h-4" /> Chats ({chatLeadsCount})
           </TabsTrigger>
-          <TabsTrigger value="forms" className="flex-1 gap-2">
-            <FileText className="w-4 h-4" /> Forms ({formSubmissions.length})
+          <TabsTrigger value="forms" className="gap-2">
+            <FileText className="w-4 h-4" /> Forms ({formSubmissionsCount})
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="chat" className="flex-grow h-0">
+        <div className="flex-grow h-0">
           <ScrollArea className="h-full">
             <div className="p-2 space-y-1">
-              {chatLeads.length === 0 ? (
-                <p className="text-muted-foreground text-center p-4">No chats found.</p>
+              {submissions.length === 0 ? (
+                <p className="text-muted-foreground text-center p-4">No submissions found.</p>
               ) : (
-                chatLeads.map(sub => (
+                submissions.map(sub => (
                   <SubmissionListItem
                     key={sub.id}
                     submission={sub}
@@ -90,26 +91,8 @@ export function SubmissionList({
               )}
             </div>
           </ScrollArea>
-        </TabsContent>
-        <TabsContent value="forms" className="flex-grow h-0">
-          <ScrollArea className="h-full">
-            <div className="p-2 space-y-1">
-              {formSubmissions.length === 0 ? (
-                <p className="text-muted-foreground text-center p-4">No forms found.</p>
-              ) : (
-                formSubmissions.map(sub => (
-                  <SubmissionListItem
-                    key={sub.id}
-                    submission={sub}
-                    isSelected={selectedSubmission?.id === sub.id}
-                    onSelect={onSubmissionSelect}
-                  />
-                ))
-              )}
-            </div>
-          </ScrollArea>
-        </TabsContent>
+        </div>
       </Tabs>
-    </>
+    </div>
   );
 }

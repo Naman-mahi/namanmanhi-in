@@ -7,7 +7,7 @@
  */
 
 import {genkit, Plugin} from 'genkit';
-import {googleAI} from 'genkit/googleai';
+import {googleAI} from '@genkit-ai/googleai';
 import {firebase} from 'genkit/firebase';
 
 const plugins: Plugin<any>[] = [

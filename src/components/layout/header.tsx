@@ -59,8 +59,8 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                 </Link>
               ))}
             </nav>
-            <Button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-              Get A Free Quote
+            <Button>
+              Get a Quote
             </Button>
           </div>
 
@@ -94,7 +94,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                     ))}
                   </nav>
                   <div className="p-4 border-t">
-                    <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white">Get A Free Quote</Button>
+                    <Button className="w-full">Get a Quote</Button>
                   </div>
                 </div>
               </SheetContent>

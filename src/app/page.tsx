@@ -4,7 +4,6 @@ import { HeroSlider } from "@/components/sections/hero-slider";
 import { ServicesGrid } from "@/components/sections/services-grid";
 import { IndustriesCarousel } from "@/components/sections/industries-carousel";
 import { CompanyOverview } from "@/components/sections/company-overview";
-import { ProjectSummaryGenerator } from "@/components/sections/project-summary-generator";
 
 export default function Home() {
   return (
@@ -15,7 +14,6 @@ export default function Home() {
         <ServicesGrid />
         <IndustriesCarousel />
         <CompanyOverview />
-        <ProjectSummaryGenerator />
       </main>
       <Footer />
     </div>

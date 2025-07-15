@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from '@/components/theme-provider';
 import { CursorFollower } from '@/components/ui/cursor-follower';
 import { BackToTopButton } from '@/components/ui/back-to-top-button';
+import { Chatbot } from '@/components/chatbot/chatbot';
 
 
 export const metadata: Metadata = {
@@ -35,6 +36,7 @@ export default function RootLayout({
           {children}
           <Toaster />
           <BackToTopButton />
+          <Chatbot />
         </ThemeProvider>
       </body>
     </html>

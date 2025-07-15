@@ -5,6 +5,7 @@ import { CompanyOverview } from "@/components/sections/company-overview";
 import { BusinessSolutions } from "@/components/sections/business-solutions";
 import { HeroCarousel } from "@/components/sections/hero-carousel";
 import { Header } from "@/components/layout/header";
+import { ProjectsSection } from "@/components/sections/projects-section";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         <BusinessSolutions />
         <CompanyOverview />
         <IndustriesCarousel />
+        <ProjectsSection />
       </main>
       <Footer />
     </div>

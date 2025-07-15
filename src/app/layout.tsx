@@ -3,6 +3,9 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from '@/components/theme-provider';
+import { CursorFollower } from '@/components/ui/cursor-follower';
+import { BackToTopButton } from '@/components/ui/back-to-top-button';
+
 
 export const metadata: Metadata = {
   title: 'NamanMahi.in - Innovative Digital Solutions',
@@ -28,8 +31,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
+          <CursorFollower />
           {children}
           <Toaster />
+          <BackToTopButton />
         </ThemeProvider>
       </body>
     </html>

@@ -32,7 +32,7 @@ export function WhyHireUsSection() {
                     <div>
                         <div className="grid grid-cols-2 gap-8 mb-8">
                             {whyHireUsStats.map(stat => (
-                                <div key={stat.label} className="text-center p-4 bg-background rounded-lg shadow-md">
+                                <div key={stat.label} className="text-center p-4 bg-background rounded-lg shadow-md transition-all duration-300 hover:shadow-primary/20 hover:border-primary/50 hover:-translate-y-1">
                                     <p className="text-4xl font-bold text-primary">{stat.value}</p>
                                     <p className="text-muted-foreground mt-2">{stat.label}</p>
                                 </div>

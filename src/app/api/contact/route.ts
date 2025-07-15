@@ -42,6 +42,10 @@ async function readData() {
     try {
         await fs.access(dataFilePath);
         const fileContents = await fs.readFile(dataFilePath, 'utf-8');
+        // Handle empty file case
+        if (fileContents.trim() === '') {
+            return [];
+        }
         return JSON.parse(fileContents);
     } catch (error) {
         // If file doesn't exist, create it with an empty array

@@ -88,7 +88,7 @@ export default function AboutPage() {
                         </div>
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {values.map(value => (
-                                <Card key={value.title} className="p-6 text-center bg-card shadow-lg hover:shadow-primary/20 transition-all">
+                                <Card key={value.title} className="p-6 text-center bg-card shadow-lg hover:shadow-primary/20 transition-all transform hover:-translate-y-2">
                                     <value.icon className="h-12 w-12 text-primary mx-auto mb-4" />
                                     <h3 className="text-xl font-bold mb-2">{value.title}</h3>
                                     <p className="text-muted-foreground">{value.description}</p>
@@ -110,7 +110,7 @@ export default function AboutPage() {
                             <div>
                                 <div className="grid grid-cols-2 gap-8 mb-8">
                                     {whyHireUsStats.map(stat => (
-                                        <div key={stat.label} className="text-center p-4 bg-background rounded-lg shadow-md">
+                                        <div key={stat.label} className="text-center p-4 bg-background rounded-lg shadow-md transition-all duration-300 hover:shadow-primary/20 hover:border-primary/50 hover:-translate-y-1">
                                             <p className="text-4xl font-bold text-primary">{stat.value}</p>
                                             <p className="text-muted-foreground mt-2">{stat.label}</p>
                                         </div>
@@ -122,7 +122,7 @@ export default function AboutPage() {
                                 <p className="text-muted-foreground mb-6">The dedicated developers of the NamanMahi.in Solution offer shortcuts way of success for global businesses.</p>
                                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {whyHireUsReasons.map(reason => (
-                                        <li key={reason} className="flex items-start gap-3 p-4 border rounded-lg shadow-sm bg-background">
+                                        <li key={reason} className="flex items-start gap-3 p-4 border rounded-lg shadow-sm bg-background transition-all duration-300 hover:shadow-primary/20 hover:border-primary/50 hover:-translate-y-1">
                                             <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                                             <span className="text-muted-foreground">{reason}</span>
                                         </li>

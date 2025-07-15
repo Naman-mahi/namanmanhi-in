@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Logo } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "../theme-toggle";
 
 const navLinks = [
   { name: "Hire Developers", href: "/hire-developers" },
@@ -32,9 +33,8 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
 
   const headerClasses = cn(
     "left-0 right-0 z-50 transition-all duration-300",
-    variant === 'sticky' ? 'fixed top-0' : 'relative bg-background shadow-sm',
+    variant === 'sticky' ? 'fixed top-0' : 'relative bg-card shadow-sm',
     variant === 'sticky' && isScrolled ? "bg-background/80 shadow-md backdrop-blur-sm" : "bg-transparent",
-    variant === 'sticky' && !isScrolled ? "bg-transparent" : "bg-background/80 shadow-md backdrop-blur-sm"
   );
   
   const linkClasses = cn(
@@ -63,12 +63,16 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                 </Link>
               ))}
             </nav>
-            <Button asChild>
-              <Link href="/get-a-quote">Get a Quote</Link>
-            </Button>
+            <div className="flex items-center space-x-4">
+              <ThemeToggle />
+              <Button asChild>
+                <Link href="/get-a-quote">Get a Quote</Link>
+              </Button>
+            </div>
           </div>
 
-          <div className="lg:hidden">
+          <div className="lg:hidden flex items-center gap-2">
+            <ThemeToggle />
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className={mobileMenuIconColor}>

@@ -8,7 +8,7 @@ export function ContactForm() {
     return (
         <section id="contact-form" className="py-20 lg:py-24">
             <div className="container mx-auto px-4">
-                <Card className="max-w-4xl mx-auto p-6 md:p-8">
+                <Card className="max-w-4xl mx-auto p-6 md:p-8 bg-card shadow-lg">
                     <form className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <Label htmlFor="fullName">Full Name</Label>

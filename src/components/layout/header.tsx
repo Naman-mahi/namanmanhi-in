@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Logo } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { name: "Home", href: "/" },
   { name: "Hire Developers", href: "/hire-developers" },
   { name: "Contact", href: "/#contact" },
 ];
@@ -31,7 +30,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
 
   const headerClasses = cn(
     "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-    isSticky && isScrolled ? "bg-background/80 shadow-md backdrop-blur-sm" : "bg-background"
+    isSticky && isScrolled ? "bg-background/80 shadow-md backdrop-blur-sm" : "bg-transparent"
   );
   
   const linkClasses = cn(
@@ -48,7 +47,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
             <Logo className="h-9 w-auto" />
           </Link>
           
-          <div className="hidden lg:flex items-center justify-center flex-1">
+          <div className="hidden lg:flex items-center space-x-8">
             <nav className="flex items-center space-x-8">
               {navLinks.map((link) => (
                 <Link
@@ -60,10 +59,7 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                 </Link>
               ))}
             </nav>
-          </div>
-
-          <div className="hidden lg:flex items-center">
-             <Button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+            <Button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
               Get A Free Quote
             </Button>
           </div>

@@ -47,7 +47,7 @@ export function ThemeCustomizer() {
   }
 
   return (
-    <div className="fixed bottom-6 right-[calc(100vw-100%+6rem)] z-50">
+    <div className="fixed top-1/2 -translate-y-1/2 right-6 z-50">
        <Popover>
         <PopoverTrigger asChild>
           <Button size="icon" variant="outline" className="rounded-full w-14 h-14 shadow-2xl">

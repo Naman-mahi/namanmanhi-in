@@ -81,7 +81,7 @@
   
   .theme-green {
     --primary: 142.1 76.2% 36.3%;
-    --primary-foreground: 144.9 80.4% 10%;
+    --primary-foreground: 210 40% 98%;
   }
   .dark .theme-green {
     --primary: 142.1 70.6% 45.3%;
@@ -90,7 +90,7 @@
 
   .theme-orange {
     --primary: 24.6 95% 53.1%;
-    --primary-foreground: 60 9.1% 97.8%;
+    --primary-foreground: 210 40% 98%;
   }
   .dark .theme-orange {
     --primary: 20.5 90.2% 48.2%;
@@ -99,7 +99,7 @@
 
   .theme-rose {
     --primary: 346.8 77.2% 49.8%;
-    --primary-foreground: 355.7 100% 97.3%;
+    --primary-foreground: 210 40% 98%;
   }
   .dark .theme-rose {
     --primary: 346.8 77.2% 49.8%;

@@ -7,13 +7,6 @@ import { CheckCircle, Users, Lightbulb, ShieldCheck, Handshake } from 'lucide-re
 import Image from "next/image";
 import { ContactForm } from "@/components/sections/contact-form";
 
-const teamMembers = [
-    { name: "Naman Mahi", role: "Founder & CEO", image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=80&auto=format&fit=crop", hint: "male ceo" },
-    { name: "Jane Smith", role: "Chief Technology Officer", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=80&auto=format&fit=crop", hint: "female cto" },
-    { name: "Alex Johnson", role: "Lead Developer", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=80&auto=format&fit=crop", hint: "male developer" },
-    { name: "Emily White", role: "Project Manager", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=80&auto=format&fit=crop", hint: "female project manager" },
-];
-
 const values = [
     { icon: Lightbulb, title: "Innovation", description: "We constantly seek new and better ways to solve problems, pushing the boundaries of technology." },
     { icon: Users, title: "Customer Centricity", description: "Our clients are our partners. We succeed when they succeed." },
@@ -107,24 +100,6 @@ export default function AboutPage() {
 
                 <CompanyOverview />
                 
-                <section className="py-20 lg:py-24">
-                    <div className="container mx-auto px-4">
-                        <div className="text-center mb-12">
-                             <h2 className="text-3xl md:text-4xl font-bold">Meet Our Experts</h2>
-                             <p className="mt-4 text-muted-foreground max-w-3xl mx-auto">The brilliant minds behind our success. A team of passionate and dedicated professionals.</p>
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                           {teamMembers.map(member => (
-                                <div key={member.name} className="text-center">
-                                    <Image src={member.image} alt={member.name} width={120} height={120} className="rounded-full mx-auto mb-4 shadow-lg object-cover" data-ai-hint={member.hint} />
-                                    <h3 className="text-lg font-bold">{member.name}</h3>
-                                    <p className="text-primary font-medium">{member.role}</p>
-                                </div>
-                           ))}
-                        </div>
-                    </div>
-                </section>
-
                  <section className="py-20 lg:py-24 bg-secondary/30">
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-12">

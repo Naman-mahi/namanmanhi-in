@@ -59,7 +59,7 @@ export function ChatWindow({ messages, onSendMessage, onOptionSelect, onClose, i
             animate={isMobile ? { y: 0 } : { y: 0, opacity: 1 }}
             exit={isMobile ? { y: "100%" } : { y: 50, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed bottom-0 right-0 z-[998] w-full h-full sm:h-auto sm:max-h-[80vh] sm:w-[400px] sm:bottom-24 sm:right-6 flex flex-col bg-card shadow-2xl rounded-t-2xl sm:rounded-2xl border border-border overflow-hidden"
+            className="fixed bottom-0 right-0 z-[999] w-full h-full sm:h-auto sm:max-h-[80vh] sm:w-[400px] sm:bottom-24 sm:right-6 flex flex-col bg-card shadow-2xl rounded-t-2xl sm:rounded-2xl border border-border overflow-hidden"
         >
             <header className="flex items-center justify-between p-4 bg-primary text-primary-foreground border-b border-primary/50">
                 <h3 className="font-bold text-lg">NamanMahi.in</h3>

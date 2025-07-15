@@ -1,3 +1,4 @@
+
 "use client";
 
 import { MessageSquare, X } from "lucide-react";
@@ -11,7 +12,7 @@ interface ChatbotIconProps {
 
 export function ChatbotIcon({ isOpen, onClick }: ChatbotIconProps) {
     return (
-        <div className="fixed bottom-6 right-6 z-[999]">
+        <div className="fixed bottom-6 right-6 z-[1000]">
             <motion.div
                 initial={{ scale: 0, y: 50 }}
                 animate={{ scale: 1, y: 0 }}

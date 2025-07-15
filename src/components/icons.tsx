@@ -19,7 +19,7 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
       {/* Full Name Text */}
       <text x="36" y="27" fontFamily="'Poppins', sans-serif" fontSize="24" fontWeight="bold" fill="hsl(var(--foreground))">
         NamanMahi
-        <tspan fill="url(#logoTextGradient)">.in</tspan>
+        <tspan fill="url(#logoTextGradient)" dx="2">.in</tspan>
       </text>
     </svg>
   );

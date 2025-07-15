@@ -266,7 +266,7 @@ export function Chatbot() {
     };
 
     return (
-        <>
+        <div className="z-50 relative">
             <ChatbotIcon isOpen={isOpen} onClick={toggleOpen} />
             <AnimatePresence>
                 {isOpen && (
@@ -281,6 +281,6 @@ export function Chatbot() {
                     />
                 )}
             </AnimatePresence>
-        </>
+        </div>
     );
 }

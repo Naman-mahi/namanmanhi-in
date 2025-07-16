@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from "framer-motion";
 import { BlogCard } from "@/components/blog/blog-card";
+import { Card } from "@/components/ui/card";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -90,7 +91,7 @@ export default function BlogsPage() {
 
                 <section className="py-16 lg:py-20">
                     <div className="container mx-auto px-4">
-                        <div className="mb-12 p-6 bg-card rounded-2xl shadow-lg border">
+                        <Card className="mb-12 p-6 bg-card rounded-2xl shadow-lg border">
                             <div className="grid md:grid-cols-3 gap-6 items-center">
                                 <div className="md:col-span-1">
                                     <div className="relative">
@@ -120,7 +121,7 @@ export default function BlogsPage() {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </Card>
 
                         <motion.div
                             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[500px]"

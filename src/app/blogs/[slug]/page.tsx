@@ -1,4 +1,6 @@
 
+"use client";
+
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import blogData from '@/data/blogs.json';
@@ -7,7 +9,8 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, User, Tag } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { ShareButtons } from "@/components/blog/share-buttons";
 
 type Props = {
     params: {
@@ -15,15 +18,14 @@ type Props = {
     }
 }
 
-export function generateStaticParams() {
-    return blogData.map(blog => ({
-        slug: blog.slug,
-    }));
-}
-
 export default function BlogPage(props: Props) {
     const { slug } = React.use(props).params;
     const blog = blogData.find(post => post.slug === slug);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     if (!blog) {
         notFound();
@@ -68,6 +70,10 @@ export default function BlogPage(props: Props) {
                         dangerouslySetInnerHTML={{ __html: blog.content }} 
                     />
 
+                    <Separator className="my-12" />
+
+                    {isClient && <ShareButtons title={blog.title} slug={blog.slug} />}
+                    
                     <Separator className="my-12" />
                     
                     <div className="flex items-center gap-2 text-muted-foreground">

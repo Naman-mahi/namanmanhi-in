@@ -137,7 +137,7 @@ export default function BlogsPage() {
                 </section>
 
                 <section className="py-16 lg:py-20">
-                    <div className="container mx-auto px-4 grid lg:grid-cols-4 gap-12">
+                    <div className="px-4 sm:px-6 lg:px-8 grid lg:grid-cols-4 gap-12">
                         
                         <FilterSidebar />
 

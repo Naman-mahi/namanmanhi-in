@@ -6,6 +6,7 @@ import { BusinessSolutions } from "@/components/sections/business-solutions";
 import { HeroCarousel } from "@/components/sections/hero-carousel";
 import { Header } from "@/components/layout/header";
 import { ProjectsSection } from "@/components/sections/projects-section";
+import { BlogSection } from "@/components/sections/blog-section";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
         <CompanyOverview />
         <IndustriesCarousel />
         <ProjectsSection />
+        <BlogSection />
       </main>
       <Footer />
     </div>

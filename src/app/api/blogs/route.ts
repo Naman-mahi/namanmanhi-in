@@ -26,7 +26,7 @@ export async function GET() {
         const data = await db.collection('blogs').find({}).sort({ date: -1 }).toArray();
         return NextResponse.json({ data }, { status: 200 });
     } catch (error) {
-        console.error('API GET Error:', error);
+        console.error('API GET (Blogs) Error:', error);
         return NextResponse.json({ message: 'Error reading blog data' }, { status: 500 });
     }
 }
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (!parsed.success) {
-            console.error('Zod parsing error:', parsed.error.issues);
+            console.error('API POST (Blogs) Zod parsing error:', parsed.error.issues);
             return NextResponse.json({ message: 'Invalid data format', errors: parsed.error.issues }, { status: 400 });
         }
         
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
         
         return NextResponse.json({ message: 'Blog post saved successfully' }, { status: 201 });
     } catch (error) {
-        console.error('API POST Error:', error);
+        console.error('API POST (Blogs) Error:', error);
         return NextResponse.json({ message: 'Error saving blog data' }, { status: 500 });
     }
 }
@@ -90,7 +90,7 @@ export async function DELETE(request: NextRequest) {
 
         return NextResponse.json({ message: 'Blog post deleted successfully' }, { status: 200 });
     } catch (error) {
-        console.error('API DELETE Error:', error);
+        console.error('API DELETE (Blogs) Error:', error);
         return NextResponse.json({ message: 'Error deleting blog data' }, { status: 500 });
     }
 }

@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     const parsed = RequestSchema.safeParse(body);
 
     if (!parsed.success) {
-      console.error('Zod parsing error:', parsed.error.issues);
+      console.error('API POST (Contact) Zod parsing error:', parsed.error.issues);
       return NextResponse.json({ message: 'Invalid data format', errors: parsed.error.issues }, { status: 400 });
     }
 
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ message: 'Success' }, { status: 201 });
   } catch (error) {
-    console.error('API Error:', error);
+    console.error('API POST (Contact) Error:', error);
     return NextResponse.json({ message: 'Error saving data' }, { status: 500 });
   }
 }
@@ -112,7 +112,7 @@ export async function GET(request: NextRequest) {
              return NextResponse.json({ message: "Invalid or missing source parameter" }, { status: 400 });
         }
     } catch (error) {
-        console.error('API Error:', error);
+        console.error('API GET (Contact) Error:', error);
         return NextResponse.json({ message: 'Error reading data' }, { status: 500 });
     }
 }

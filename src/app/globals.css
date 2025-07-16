@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root, .light, .light-zinc, .light-blue, .light-green, .light-orange, .light-rose, .light-purple, .light-yellow, .light-cyan, .light-pink, .light-slate {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -32,7 +32,7 @@
     --radius: 0.5rem;
   }
 
-  .dark {
+  .dark, .dark-zinc, .dark-blue, .dark-green, .dark-orange, .dark-rose, .dark-purple, .dark-yellow, .dark-cyan, .dark-pink, .dark-slate {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
@@ -60,93 +60,104 @@
   }
 }
 
+/* Default Theme (Blue) */
 @layer base {
-  .theme-zinc {
+  :root, .light, .dark {
+    --primary: 204 90% 54%;
+    --primary-foreground: 210 40% 98%;
+  }
+
+  .light-blue, .dark-blue {
+    --primary: 204 90% 54%;
+    --primary-foreground: 210 40% 98%;
+  }
+
+  /* Zinc Theme */
+  .light-zinc {
     --primary: 240 5.9% 10%;
     --primary-foreground: 210 40% 98%;
   }
-  .dark .theme-zinc {
+  .dark-zinc {
     --primary: 210 40% 98%;
     --primary-foreground: 240 5.9% 10%;
   }
 
-  .theme-blue {
-    --primary: 204 90% 54%;
-    --primary-foreground: 210 40% 98%;
-  }
-  .dark .theme-blue {
-    --primary: 204 90% 54%;
-    --primary-foreground: 210 40% 98%;
-  }
-  
-  .theme-green {
+  /* Green Theme */
+  .light-green {
     --primary: 142.1 76.2% 36.3%;
     --primary-foreground: 210 40% 98%;
   }
-  .dark .theme-green {
+  .dark-green {
     --primary: 142.1 70.6% 45.3%;
     --primary-foreground: 144.9 80.4% 10%;
   }
 
-  .theme-orange {
+  /* Orange Theme */
+  .light-orange {
     --primary: 24.6 95% 53.1%;
     --primary-foreground: 210 40% 98%;
   }
-  .dark .theme-orange {
+  .dark-orange {
     --primary: 20.5 90.2% 48.2%;
     --primary-foreground: 60 9.1% 97.8%;
   }
 
-  .theme-rose {
+  /* Rose Theme */
+  .light-rose {
     --primary: 346.8 77.2% 49.8%;
     --primary-foreground: 210 40% 98%;
   }
-  .dark .theme-rose {
+  .dark-rose {
     --primary: 346.8 77.2% 49.8%;
     --primary-foreground: 355.7 100% 97.3%;
   }
   
-  .theme-purple {
+  /* Purple Theme */
+  .light-purple {
     --primary: 262.1 83.3% 57.8%;
     --primary-foreground: 210 20% 98%;
   }
-  .dark .theme-purple {
+  .dark-purple {
     --primary: 263.4 95.2% 56.1%;
     --primary-foreground: 210 20% 98%;
   }
   
-  .theme-yellow {
+  /* Yellow Theme */
+  .light-yellow {
     --primary: 47.9 95.8% 53.1%;
     --primary-foreground: 222.2 47.4% 11.2%;
   }
-  .dark .theme-yellow {
+  .dark-yellow {
     --primary: 47.9 95.8% 53.1%;
     --primary-foreground: 222.2 47.4% 11.2%;
   }
   
-  .theme-cyan {
+  /* Cyan Theme */
+  .light-cyan {
       --primary: 180 85% 45%;
       --primary-foreground: 210 40% 98%;
   }
-  .dark .theme-cyan {
+  .dark-cyan {
       --primary: 180 85% 45%;
       --primary-foreground: 210 40% 98%;
   }
   
-  .theme-pink {
+  /* Pink Theme */
+  .light-pink {
     --primary: 332.6 81.7% 53.5%;
     --primary-foreground: 210 20% 98%;
   }
-  .dark .theme-pink {
+  .dark-pink {
     --primary: 332.6 81.7% 53.5%;
     --primary-foreground: 210 20% 98%;
   }
   
-  .theme-slate {
+  /* Slate Theme */
+  .light-slate {
     --primary: 215.3 22.2% 43.1%;
     --primary-foreground: 210 40% 98%;
   }
-  .dark .theme-slate {
+  .dark-slate {
     --primary: 215.3 22.2% 43.1%;
     --primary-foreground: 210 40% 98%;
   }

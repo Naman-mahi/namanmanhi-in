@@ -4,17 +4,28 @@ import * as React from "react"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { type ThemeProviderProps } from "next-themes/dist/types"
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  React.useEffect(() => {
-    // On initial load, apply the saved color theme from localStorage, defaulting to 'blue'
-    const storedTheme = localStorage.getItem("theme-color") || "blue";
-    document.body.classList.forEach(className => {
-      if (className.startsWith('theme-')) {
-        document.body.classList.remove(className);
-      }
-    });
-    document.body.classList.add(`theme-${storedTheme}`);
-  }, [])
+const themes = [
+    "light", "dark", "system",
+    "light-zinc", "dark-zinc",
+    "light-blue", "dark-blue",
+    "light-green", "dark-green",
+    "light-orange", "dark-orange",
+    "light-rose", "dark-rose",
+    "light-purple", "dark-purple",
+    "light-yellow", "dark-yellow",
+    "light-cyan", "dark-cyan",
+    "light-pink", "dark-pink",
+    "light-slate", "dark-slate",
+]
 
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return (
+    <NextThemesProvider 
+        {...props} 
+        attribute="class"
+        themes={themes}
+    >
+        {children}
+    </NextThemesProvider>
+  )
 }

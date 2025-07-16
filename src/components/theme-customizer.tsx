@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
-const themes = [
+const colors = [
   { name: "zinc", color: "bg-zinc-500" },
   { name: "blue", color: "bg-blue-500" },
   { name: "green", color: "bg-green-500" },
@@ -26,31 +26,43 @@ const themes = [
 ]
 
 export function ThemeCustomizer() {
-  const { setTheme: setMode, theme: mode } = useTheme()
-  const [colorTheme, setColorTheme] = React.useState("blue")
+  const { setTheme: setNextTheme, theme: currentTheme = "system" } = useTheme();
+  const [mode, setModeState] = React.useState("system");
+  const [color, setColor] = React.useState("blue");
 
-  // Effect to load and apply the saved color theme on component mount
   React.useEffect(() => {
-    const storedTheme = localStorage.getItem("theme-color") || "blue";
-    handleColorChange(storedTheme, false); // Apply without saving again
-  }, []);
-
-  const handleColorChange = (themeName: string, save = true) => {
-    // Remove any existing theme- class from the body
-    document.body.classList.forEach(className => {
-      if (className.startsWith('theme-')) {
-        document.body.classList.remove(className);
-      }
-    });
-    // Add the new theme class
-    document.body.classList.add(`theme-${themeName}`);
-    setColorTheme(themeName);
+    // On mount, read from localStorage and set the initial state
+    const savedMode = localStorage.getItem("theme-mode") || "dark";
+    const savedColor = localStorage.getItem("theme-color") || "blue";
+    setModeState(savedMode);
+    setColor(savedColor);
     
-    // Save the new theme to local storage
-    if (save) {
-      localStorage.setItem("theme-color", themeName);
+    // Apply the initial theme
+    if (savedMode === "system") {
+      setNextTheme("system");
+    } else {
+      setNextTheme(`${savedMode}-${savedColor}`);
     }
-  }
+  }, [setNextTheme]);
+
+  const handleModeChange = (newMode: string) => {
+    setModeState(newMode);
+    localStorage.setItem("theme-mode", newMode);
+    if (newMode === "system") {
+      setNextTheme("system");
+    } else {
+      setNextTheme(`${newMode}-${color}`);
+    }
+  };
+
+  const handleColorChange = (newColor: string) => {
+    setColor(newColor);
+    localStorage.setItem("theme-color", newColor);
+    const currentMode = localStorage.getItem("theme-mode") || "dark";
+    if (currentMode !== "system") {
+      setNextTheme(`${currentMode}-${newColor}`);
+    }
+  };
 
   return (
     <div className="fixed top-1/2 -translate-y-1/2 right-6 z-50">
@@ -69,7 +81,7 @@ export function ThemeCustomizer() {
                 <Button
                   variant={"outline"}
                   size="sm"
-                  onClick={() => setMode("light")}
+                  onClick={() => handleModeChange("light")}
                   className={cn(mode === "light" && "border-2 border-primary")}
                 >
                   <Sun className="mr-2" /> Light
@@ -77,7 +89,7 @@ export function ThemeCustomizer() {
                 <Button
                   variant={"outline"}
                   size="sm"
-                  onClick={() => setMode("dark")}
+                  onClick={() => handleModeChange("dark")}
                   className={cn(mode === "dark" && "border-2 border-primary")}
                 >
                   <Moon className="mr-2" /> Dark
@@ -85,7 +97,7 @@ export function ThemeCustomizer() {
                 <Button
                   variant={"outline"}
                   size="sm"
-                  onClick={() => setMode("system")}
+                  onClick={() => handleModeChange("system")}
                   className={cn(mode === "system" && "border-2 border-primary")}
                 >
                   <Laptop className="mr-2" /> System
@@ -96,21 +108,21 @@ export function ThemeCustomizer() {
             <div>
               <p className="font-medium text-sm text-foreground mb-2">Color</p>
               <div className="grid grid-cols-5 gap-2">
-                {themes.map((theme) => (
+                {colors.map((c) => (
                   <Button
-                    key={theme.name}
+                    key={c.name}
                     variant="outline"
                     size="icon"
                     className={cn(
                       "h-10 w-10 rounded-full",
-                      colorTheme === theme.name && "border-2 border-primary"
+                      color === c.name && "border-2 border-primary"
                     )}
-                    onClick={() => handleColorChange(theme.name)}
+                    onClick={() => handleColorChange(c.name)}
                   >
-                    <span className={cn("h-6 w-6 rounded-full flex items-center justify-center", theme.color)}>
-                       {colorTheme === theme.name && <Check className="h-4 w-4 text-white" />}
+                    <span className={cn("h-6 w-6 rounded-full flex items-center justify-center", c.color)}>
+                       {color === c.name && <Check className="h-4 w-4 text-white" />}
                     </span>
-                    <span className="sr-only">{theme.name}</span>
+                    <span className="sr-only">{c.name}</span>
                   </Button>
                 ))}
               </div>

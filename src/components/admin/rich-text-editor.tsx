@@ -1,43 +1,27 @@
 
 "use client";
 
-import dynamic from "next/dynamic";
-import { useMemo, forwardRef } from "react";
-import "react-quill/dist/quill.snow.css";
-import { Skeleton } from "../ui/skeleton";
-import type ReactQuill from 'react-quill';
+import { forwardRef } from "react";
+import { Textarea } from "../ui/textarea";
 
-interface RichTextEditorProps extends React.ComponentProps<typeof ReactQuill> {
+interface RichTextEditorProps {
     value: string;
     onChange: (value: string) => void;
 }
 
-const ReactQuillComponent = dynamic(() => import('react-quill'), { 
-    ssr: false,
-    loading: () => <Skeleton className="w-full h-[250px] rounded-md" />,
-});
-
-export const RichTextEditor = forwardRef<ReactQuill, RichTextEditorProps>((props, ref) => {
-    const modules = {
-        toolbar: [
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          ['bold', 'italic', 'underline','strike', 'blockquote'],
-          [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-          ['link', 'image'],
-          ['clean']
-        ],
-    };
-
+// A simple fallback editor that allows editing raw HTML in a textarea.
+// This replaces react-quill to avoid persistent compatibility issues with React 18.
+export const RichTextEditor = forwardRef<HTMLTextAreaElement, RichTextEditorProps>(
+    ({ value, onChange, ...props }, ref) => {
     return (
-        <div className="bg-background">
-            <ReactQuillComponent
-                ref={ref}
-                theme="snow"
-                modules={modules}
-                className="h-[250px] pb-10"
-                {...props}
-            />
-        </div>
+        <Textarea
+            ref={ref}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="Main content (HTML is supported)..."
+            rows={15}
+            {...props}
+        />
     );
 });
 

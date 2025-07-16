@@ -218,8 +218,6 @@ const BlogEditor = ({ post, onSave, onCancel }: { post: BlogPost | null, onSave:
                                      <RichTextEditor
                                         {...field}
                                         ref={field.ref}
-                                        value={field.value}
-                                        onChange={field.onChange}
                                     />
                                 </FormControl>
                                 <FormMessage />

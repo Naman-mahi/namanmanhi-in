@@ -26,34 +26,25 @@ const themes = [
 ]
 
 export function ThemeCustomizer() {
-  const { setTheme: setMode, theme: mode } = useTheme()
+  const { setTheme: setMode, resolvedTheme: mode } = useTheme()
   const [activeTheme, setActiveTheme] = React.useState('blue')
 
   React.useEffect(() => {
-    const applyTheme = (themeName: string) => {
-      document.body.classList.forEach(className => {
-        if (className.startsWith('theme-')) {
-          document.body.classList.remove(className);
-        }
-      });
-      document.body.classList.add(`theme-${themeName}`);
-      setActiveTheme(themeName);
-    }
-    
-    const currentTheme = localStorage.getItem("theme-color") || "blue";
-    applyTheme(currentTheme);
-
+    const storedTheme = localStorage.getItem("theme-color") || "blue";
+    handleThemeChange(storedTheme, false);
   }, []);
 
-  const handleThemeChange = (themeName: string) => {
+  const handleThemeChange = (themeName: string, save = true) => {
     document.body.classList.forEach(className => {
-        if (className.startsWith('theme-')) {
-            document.body.classList.remove(className);
-        }
+      if (className.startsWith('theme-')) {
+        document.body.classList.remove(className);
+      }
     });
-    document.body.classList.add(`theme-${themeName}`)
-    localStorage.setItem("theme-color", themeName)
-    setActiveTheme(themeName)
+    document.body.classList.add(`theme-${themeName}`);
+    setActiveTheme(themeName);
+    if (save) {
+      localStorage.setItem("theme-color", themeName);
+    }
   }
 
   return (
@@ -86,14 +77,6 @@ export function ThemeCustomizer() {
               >
                 <Moon className="mr-1 -ml-1 h-4 w-4" />
                 Dark
-              </Button>
-               <Button
-                variant={"outline"}
-                size="sm"
-                onClick={() => setMode("system")}
-                className={cn(mode === "system" && "border-2 border-primary")}
-              >
-                System
               </Button>
             </div>
             

@@ -50,8 +50,7 @@ export default function BlogsPage() {
             })
             .filter(blog => {
                 if (!searchTerm) return true;
-                return blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                       blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+                return blog.title.toLowerCase().includes(searchTerm.toLowerCase());
             })
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     }, [searchTerm, selectedTag]);

@@ -68,7 +68,7 @@ export function ThemeCustomizer() {
     <div className="fixed top-1/2 -translate-y-1/2 right-6 z-50">
        <Popover>
         <PopoverTrigger asChild>
-          <Button size="icon" variant="outline" className="rounded-full w-14 h-14 shadow-2xl">
+          <Button size="icon" variant="outline" className="rounded-full w-12 h-12 shadow-2xl">
             <Cog className="h-6 w-6 animate-spin-slow" />
             <span className="sr-only">Customize Theme</span>
           </Button>

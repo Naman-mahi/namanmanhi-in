@@ -19,7 +19,9 @@ type Props = {
 }
 
 export default function BlogPage({ params }: Props) {
-    const { slug } = params;
+    // Using React.use() to be compliant with future Next.js versions
+    const resolvedParams = React.use(params as any as Promise<typeof params>) || params;
+    const { slug } = resolvedParams;
     const blog = blogData.find(post => post.slug === slug);
     const [isClient, setIsClient] = useState(false);
 

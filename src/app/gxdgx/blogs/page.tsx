@@ -215,7 +215,12 @@ const BlogEditor = ({ post, onSave, onCancel }: { post: BlogPost | null, onSave:
                             <FormItem className="md:col-span-2">
                                 <FormLabel>Content</FormLabel>
                                 <FormControl>
-                                    <RichTextEditor {...field} />
+                                     <RichTextEditor
+                                        {...field}
+                                        ref={field.ref}
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

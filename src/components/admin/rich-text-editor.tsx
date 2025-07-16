@@ -2,22 +2,22 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useMemo, useRef } from "react";
+import { useMemo, forwardRef } from "react";
 import "react-quill/dist/quill.snow.css";
 import { Skeleton } from "../ui/skeleton";
 import type ReactQuill from 'react-quill';
 
-interface RichTextEditorProps {
+interface RichTextEditorProps extends React.ComponentProps<typeof ReactQuill> {
     value: string;
     onChange: (value: string) => void;
 }
 
-export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
-    const Quill = useMemo(() => dynamic(() => import('react-quill'), { 
-        ssr: false,
-        loading: () => <Skeleton className="w-full h-[250px] rounded-md" />,
-    }), []);
-    
+const ReactQuillComponent = dynamic(() => import('react-quill'), { 
+    ssr: false,
+    loading: () => <Skeleton className="w-full h-[250px] rounded-md" />,
+});
+
+export const RichTextEditor = forwardRef<ReactQuill, RichTextEditorProps>((props, ref) => {
     const modules = {
         toolbar: [
           [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -28,18 +28,17 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
         ],
     };
 
-    const quillRef = useRef<ReactQuill>(null);
-
     return (
         <div className="bg-background">
-            <Quill
-                ref={quillRef}
+            <ReactQuillComponent
+                ref={ref}
                 theme="snow"
-                value={value}
-                onChange={onChange}
                 modules={modules}
                 className="h-[250px] pb-10"
+                {...props}
             />
         </div>
     );
-}
+});
+
+RichTextEditor.displayName = 'RichTextEditor';

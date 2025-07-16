@@ -37,7 +37,6 @@ export function BlogCard({ blog }: BlogCardProps) {
                         {blog.title}
                     </Link>
                 </CardTitle>
-                <p className="text-muted-foreground text-sm mb-4">{blog.excerpt}</p>
             </CardContent>
             <CardFooter className="p-6 pt-0 mt-auto bg-card border-t">
                 <div className="w-full flex justify-between items-center text-sm text-muted-foreground">

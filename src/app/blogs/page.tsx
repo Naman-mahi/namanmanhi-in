@@ -11,6 +11,31 @@ import { AnimatePresence, motion } from "framer-motion";
 import { BlogCard } from "@/components/blog/blog-card";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import type { Metadata } from 'next';
+
+// Although this is a client component, we can't export metadata from it.
+// We'll place metadata in a separate page.tsx for the /blogs route if needed,
+// or rely on the root layout's metadata for this page.
+// For demonstration, if this were a server component, it would look like this:
+/*
+export const metadata: Metadata = {
+  title: "Our Blog",
+  description: "Explore articles on AI, Blockchain, Web Development, technology, and innovation from the expert team at NamanMahi.in.",
+  alternates: {
+    canonical: '/blogs',
+  },
+   openGraph: {
+    title: "Our Blog | NamanMahi.in",
+    description: "Explore articles on AI, Blockchain, Web Development, technology, and innovation from the expert team at NamanMahi.in.",
+    url: '/blogs',
+  },
+  twitter: {
+    title: "Our Blog | NamanMahi.in",
+    description: "Explore articles on AI, Blockchain, Web Development, technology, and innovation from the expert team at NamanMahi.in.",
+  },
+};
+*/
+
 
 const containerVariants = {
   hidden: { opacity: 0 },

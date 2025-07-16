@@ -2,6 +2,24 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CompanyOverview } from "@/components/sections/company-overview";
 import { ContactForm } from "@/components/sections/contact-form";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Get a Quote",
+  description: "Request a free, no-obligation quote for your project. NamanMahi.in provides custom quotes for web development, app development, AI solutions, and more.",
+  alternates: {
+    canonical: '/get-a-quote',
+  },
+  openGraph: {
+    title: "Get a Quote | NamanMahi.in",
+    description: "Tell us about your project and get a custom quote from our experts. We offer competitive pricing for high-quality digital solutions.",
+    url: '/get-a-quote',
+  },
+  twitter: {
+    title: "Get a Quote | NamanMahi.in",
+    description: "Tell us about your project and get a custom quote from our experts. We offer competitive pricing for high-quality digital solutions.",
+  },
+};
 
 export default function GetAQuotePage() {
     return (

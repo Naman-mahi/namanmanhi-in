@@ -2,6 +2,24 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CompanyOverview } from "@/components/sections/company-overview";
 import { ContactForm } from "@/components/sections/contact-form";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description: "Get in touch with NamanMahi.in. Fill out our contact form or find our contact details to discuss your project. Let's build the future together.",
+  alternates: {
+    canonical: '/contact',
+  },
+  openGraph: {
+    title: "Contact Us | NamanMahi.in",
+    description: "Ready to start your project? Contact the NamanMahi.in team for a consultation on our web, mobile, AI, and blockchain development services.",
+    url: '/contact',
+  },
+  twitter: {
+    title: "Contact Us | NamanMahi.in",
+    description: "Ready to start your project? Contact the NamanMahi.in team for a consultation on our web, mobile, AI, and blockchain development services.",
+  },
+};
 
 export default function ContactPage() {
     return (

@@ -10,6 +10,60 @@ import { Calendar, User, Tag, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import React, { useEffect, useState } from "react";
 import { ShareButtons } from "@/components/blog/share-buttons";
+import type { Metadata } from 'next';
+
+// We cannot generate dynamic metadata in a Client Component.
+// A server component would be needed to fetch data and generate metadata.
+// For now, the page will fall back to the root layout's metadata.
+// If this were a server component, the implementation would be:
+/*
+async function getBlogData(slug: string) {
+    // In a real app, you'd fetch this from your API/DB
+    const res = await fetch(`http://localhost:3000/api/blogs`);
+    const { data } = await res.json();
+    return data.find((post: BlogPost) => post.slug === slug) || null;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const blog = await getBlogData(params.slug);
+
+  if (!blog) {
+    return {
+      title: 'Blog Post Not Found',
+    };
+  }
+
+  return {
+    title: blog.title,
+    description: blog.excerpt,
+    alternates: {
+      canonical: `/blogs/${blog.slug}`,
+    },
+    openGraph: {
+      title: blog.title,
+      description: blog.excerpt,
+      url: `/blogs/${blog.slug}`,
+      type: 'article',
+      publishedTime: new Date(blog.date).toISOString(),
+      authors: [blog.author],
+      images: [
+        {
+          url: blog.image,
+          width: 1200,
+          height: 600,
+          alt: blog.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: blog.title,
+      description: blog.excerpt,
+      images: [blog.image],
+    },
+  };
+}
+*/
 
 type Props = {
     params: {

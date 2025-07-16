@@ -6,6 +6,24 @@ import { CompanyOverview } from "@/components/sections/company-overview";
 import { CheckCircle, Users, Lightbulb, ShieldCheck, Handshake } from 'lucide-react';
 import Image from "next/image";
 import { ContactForm } from "@/components/sections/contact-form";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description: "Learn about the story, mission, and values of NamanMahi.in. Discover our experienced team and why we are a leader in digital innovation for AI, Blockchain, and web development.",
+  alternates: {
+    canonical: '/about',
+  },
+  openGraph: {
+    title: "About Us | NamanMahi.in",
+    description: "Discover the journey, mission, and core values that drive our team at NamanMahi.in to deliver innovative digital solutions.",
+    url: '/about',
+  },
+  twitter: {
+    title: "About Us | NamanMahi.in",
+    description: "Discover the journey, mission, and core values that drive our team at NamanMahi.in to deliver innovative digital solutions.",
+  },
+};
 
 const values = [
     { icon: Lightbulb, title: "Innovation", description: "We constantly seek new and better ways to solve problems, pushing the boundaries of technology." },

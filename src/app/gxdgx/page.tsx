@@ -136,10 +136,12 @@ export default function AdminPage() {
         setSubmissions(prev => prev.map(s => s._id === updatedSession._id ? updatedSession : s));
 
         try {
+            const { _id, ...payload } = updatedSession;
+
             const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...updatedSession, source: 'Chatbot Lead' }),
+                body: JSON.stringify({ ...payload, source: 'Chatbot Lead' }),
             });
 
             if (!response.ok) throw new Error("Failed to save message");

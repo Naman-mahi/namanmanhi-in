@@ -30,7 +30,9 @@ export function BlogSection() {
                 const res = await fetch('/api/blogs');
                 const { data } = await res.json();
                 // API already sorts by date, so we can just take the first 3
-                setRecentBlogs(data.slice(0, 3)); 
+                if (data && Array.isArray(data)) {
+                    setRecentBlogs(data.slice(0, 3)); 
+                }
             } catch (error) {
                 console.error("Failed to fetch recent blogs", error);
             } finally {

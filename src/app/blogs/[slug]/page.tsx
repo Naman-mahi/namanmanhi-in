@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, User, Tag } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import React from "react";
 
 type Props = {
     params: {
@@ -20,8 +21,8 @@ export function generateStaticParams() {
     }));
 }
 
-export default function BlogPage({ params }: Props) {
-    const { slug } = params;
+export default function BlogPage(props: Props) {
+    const { slug } = React.use(props).params;
     const blog = blogData.find(post => post.slug === slug);
 
     if (!blog) {

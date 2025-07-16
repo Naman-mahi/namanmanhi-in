@@ -1,0 +1,147 @@
+diff --git a/node_modules/react-quill/lib/index.js b/node_modules/react-quill/lib/index.js
+index 589700d..075c32b 100644
+--- a/node_modules/react-quill/lib/index.js
++++ b/node_modules/react-quill/lib/index.js
+@@ -10,7 +10,7 @@
+ 
+ var _react = _interopRequireDefault(require('react'));
+ 
+-var _reactDom = _interopRequireDefault(require('react-dom'));
++// var _reactDom = _interopRequireDefault(require('react-dom'));
+ 
+ var _quill = _interopRequireDefault(require('quill'));
+ 
+@@ -321,7 +321,7 @@
+   },
+   getEditor: function getEditor() {
+     if (!this.editor) throw new Error('The editor is not initialized.');
+-    return this.editor;
++    return this.editor; 
+   },
+ 
+   /*
+@@ -330,7 +330,7 @@
+   getEditingArea: function getEditingArea() {
+     if (!this.editingArea) {
+       throw new Error('The editing area is not initialized yet');
+-    }
++    } 
+ 
+     return this.editingArea;
+   },
+@@ -524,7 +524,7 @@
+   },
+   setEditorSelection: function setEditorSelection(nextSelection) {
+     var selection = this.getEditorSelection();
+-    if (selection && nextSelection && this.selectionIsEqual(selection, nextSelection)) return;
++    if (selection && nextSelection && this.selectionIsEqual(selection, nextSelection)) return; 
+ 
+     var editor = this.getEditor();
+     editor.setSelection(nextSelection);
+@@ -551,7 +551,7 @@
+     var editor = this.getEditor();
+ 
+     if (this.isControlled()) {
+-      editor.setContents(value, 'api');
++      editor.setContents(value, 'api'); 
+     } else {
+       editor.pasteHTML(value || '');
+     }
+@@ -628,7 +628,7 @@
+       this.lastDeltaChangeSet = change;
+ 
+       this.unprivilegedEditor.setContents(this.state.value, 'api');
+-    }
++    } 
+   },
+ 
+   /*
+@@ -677,7 +677,7 @@
+       return;
+     }
+ 
+-    var el = _reactDom.default.findDOMNode(this.editingArea);
++    var el = this.editingArea;
+ 
+     var editor = this.editor = new _quill.default(el, {
+       bounds: this.props.bounds,
+@@ -744,7 +744,7 @@
+   renderEditingArea: function renderEditingArea() {
+     var _this3 = this;
+ 
+-    var _this$props = this.props,
++    var _this$props = this.props, 
+         readOnly = _this$props.readOnly,
+         style = _this$props.style,
+         tabIndex = _this$props.tabIndex;
+@@ -754,7 +754,9 @@
+       className: 'ql-editor',
+       ref: function ref(el) {
+         _this3.editingArea = el;
+-      }
++      },
++      dangerouslySetInnerHTML: { __html: this.getEditorContents()
++      },
+     }));
+   },
+   render: function render() {
+diff --git a/node_modules/react-quill/lib/mixin.js b/node_modules/react-quill/lib/mixin.js
+index 4756ba8..553c3d3 100644
+--- a/node_modules/react-quill/lib/mixin.js
++++ b/node_modules/react-quill/lib/mixin.js
+@@ -3,7 +3,7 @@
+ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+-exports.default = void 0;
++// exports.default = void 0;
+ 
+ var _react = _interopRequireDefault(require("react"));
+ 
+@@ -26,7 +26,7 @@
+       throw new Error('The editor is not initialized.');
+     }
+ 
+-    return this.editor;
++    return this.editor; 
+   },
+ 
+   /*
+@@ -35,7 +35,7 @@
+   getEditingArea: function getEditingArea() {
+     if (!this.editingArea) {
+       throw new Error('The editing area is not initialized yet');
+-    }
++    } 
+ 
+     return this.editingArea;
+   },
+@@ -198,7 +198,7 @@
+       this.lastDeltaChangeSet = change;
+       this.unprivilegedEditor.setContents(this.state.value, 'api');
+     }
+-  },
++  }, 
+ 
+   /*
+   Renders the editor element.
+@@ -242,7 +242,7 @@
+       return;
+     }
+ 
+-    var el = (0, _reactDom.findDOMNode)(this.editingArea);
++    var el = this.editingArea;
+     var editor = this.editor = new _quill.default(el, {
+       bounds: this.props.bounds,
+       formats: this.props.formats,
+@@ -311,7 +311,9 @@
+       className: "ql-editor",
+       ref: function ref(el) {
+         return _this2.editingArea = el;
+-      }
++      },
++      dangerouslySetInnerHTML: { __html: this.getEditorContents()
++      },
+     }));
+   },
+   render: function render() {

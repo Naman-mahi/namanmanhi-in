@@ -1,3 +1,4 @@
+
 'use server';
 
 import { NextResponse, type NextRequest } from 'next/server';
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
         
         const collection = db.collection('blogs');
 
-        if (_id) {
+        if (_id && ObjectId.isValid(_id)) {
             // Update existing post
             const result = await collection.updateOne(
                 { _id: new ObjectId(_id) },

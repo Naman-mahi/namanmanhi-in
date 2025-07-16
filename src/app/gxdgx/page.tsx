@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
 
 const StatCard = ({ title, value, icon: Icon, color }: { title: string; value: number; icon: React.ElementType, color: string }) => (
     <Card className="bg-card">
@@ -27,6 +28,7 @@ const StatCard = ({ title, value, icon: Icon, color }: { title: string; value: n
 );
 
 export default function AdminPage() {
+    const router = useRouter();
     const [submissions, setSubmissions] = useState<Submission[]>([]);
     const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -191,6 +193,10 @@ export default function AdminPage() {
                                     onSearchTermChange={setSearchTerm}
                                     activeTab={activeTab}
                                     onTabChange={(tab) => {
+                                        if (tab === 'blogs') {
+                                            router.push('/gxdgx/blogs');
+                                            return;
+                                        }
                                         setActiveTab(tab);
                                         const firstInTab = submissions.find(s => (tab === 'chat' && s.source === 'Chatbot Lead') || (tab === 'forms' && s.source === 'Contact Form'));
                                         if (!isMobile) {

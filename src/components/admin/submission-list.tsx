@@ -5,8 +5,10 @@ import type { Submission } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageSquare, FileText } from 'lucide-react';
+import { MessageSquare, FileText, Newspaper } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
+import { useRouter } from 'next/navigation';
+import { Button } from '../ui/button';
 
 interface SubmissionListProps {
   submissions: Submission[];
@@ -55,9 +57,15 @@ export function SubmissionList({
   activeTab,
   onTabChange,
 }: SubmissionListProps) {
+  const router = useRouter();
   const chatLeadsCount = submissions.filter(s => s.source === 'Chatbot Lead').length;
   const formSubmissionsCount = submissions.filter(s => s.source === 'Contact Form').length;
   
+  if (activeTab === 'blogs') {
+      router.push('/gxdgx/blogs');
+      return null;
+  }
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-4 border-b flex-shrink-0">
@@ -68,12 +76,15 @@ export function SubmissionList({
         />
       </div>
       <Tabs value={activeTab} onValueChange={onTabChange} className="flex-grow flex flex-col">
-        <TabsList className="m-2 grid grid-cols-2 flex-shrink-0">
+        <TabsList className="m-2 grid grid-cols-3 flex-shrink-0">
           <TabsTrigger value="chat" className="gap-2">
             <MessageSquare className="w-4 h-4" /> Chats ({chatLeadsCount})
           </TabsTrigger>
           <TabsTrigger value="forms" className="gap-2">
             <FileText className="w-4 h-4" /> Forms ({formSubmissionsCount})
+          </TabsTrigger>
+           <TabsTrigger value="blogs" className="gap-2">
+            <Newspaper className="w-4 h-4" /> Blogs
           </TabsTrigger>
         </TabsList>
         <div className="flex-grow h-0">

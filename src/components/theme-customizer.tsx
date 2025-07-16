@@ -27,23 +27,26 @@ const colors = [
 ]
 
 export function ThemeCustomizer() {
-  const { setTheme: setNextTheme, theme: currentTheme = "system" } = useTheme();
+  const { setTheme: setNextTheme } = useTheme();
   const [mode, setModeState] = React.useState("system");
   const [color, setColor] = React.useState("blue");
+  const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
-    // On mount, read from localStorage and set the initial state
+    // This code now runs only on the client, after the component has mounted.
     const savedMode = localStorage.getItem("theme-mode") || "dark";
     const savedColor = localStorage.getItem("theme-color") || "blue";
     setModeState(savedMode);
     setColor(savedColor);
     
-    // Apply the initial theme
+    // Apply the initial theme from storage
     if (savedMode === "system") {
       setNextTheme("system");
     } else {
       setNextTheme(`${savedMode}-${savedColor}`);
     }
+
+    setMounted(true);
   }, [setNextTheme]);
 
   const handleModeChange = (newMode: string) => {
@@ -64,6 +67,11 @@ export function ThemeCustomizer() {
       setNextTheme(`${currentMode}-${newColor}`);
     }
   };
+
+  // Prevent rendering on the server and during initial client render
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="fixed top-1/2 -translate-y-1/2 right-6 z-50">

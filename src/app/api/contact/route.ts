@@ -34,7 +34,6 @@ const ContactFormSchema = z.object({
   location: z.string(),
   budget: z.number().optional(),
   message: z.string(),
-  file: z.any().optional(),
   status: z.enum(['New', 'Contacted', 'In Progress', 'Closed']).optional(),
   notes: z.string().optional(),
   createdAt: z.string().optional(),

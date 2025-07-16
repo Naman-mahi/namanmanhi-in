@@ -22,7 +22,6 @@ const formSchema = z.object({
   location: z.string().min(1, { message: "Location is required." }),
   budget: z.number().min(1000).optional(),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
-  file: z.any().optional(),
 });
 
 export function ContactForm() {
@@ -159,25 +158,6 @@ export function ContactForm() {
                                                     }}
                                                 />
                                             </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="file"
-                                    render={({ field }) => (
-                                        <FormItem className="md:col-span-2">
-                                            <FormLabel>Attach File (Optional)</FormLabel>
-                                            <FormControl>
-                                                <Input 
-                                                    id="file" 
-                                                    type="file" 
-                                                    className="file:text-primary"
-                                                    onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : null)}
-                                                />
-                                            </FormControl>
-                                            <p className="text-xs text-muted-foreground">Max file size: 20MB</p>
                                             <FormMessage />
                                         </FormItem>
                                     )}

@@ -53,7 +53,8 @@ export function Chatbot() {
             const currentSession = data.find((s: any) => s.sessionId === sessionId);
             
             if (currentSession && currentSession.messages.length > messages.length) {
-                const newMessages = currentSession.messages.slice(messages.length);
+                // Filter out messages that are already present to avoid duplicates
+                const newMessages = currentSession.messages.filter((msg: Message) => !messages.find(m => m.id === msg.id));
                 if (newMessages.length > 0) {
                     setMessages(prev => [...prev, ...newMessages]);
                 }

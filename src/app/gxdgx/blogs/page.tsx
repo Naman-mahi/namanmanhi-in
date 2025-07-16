@@ -11,6 +11,10 @@ import toast from 'react-hot-toast';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { format, parseISO } from 'date-fns';
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,72 +40,188 @@ type BlogPost = {
     content: string;
 };
 
-const emptyPost: Omit<BlogPost, 'id' | 'date' | 'tags'> & { tags: string } = {
-    slug: '',
-    title: '',
-    author: '',
-    image: '',
-    imageHint: '',
-    excerpt: '',
-    content: '',
-};
+const blogFormSchema = z.object({
+  id: z.number().optional(),
+  title: z.string().min(2, { message: "Title must be at least 2 characters." }),
+  slug: z.string().min(2, { message: "Slug is required." }),
+  author: z.string().min(2, { message: "Author name is required." }),
+  image: z.string().url({ message: "Please enter a valid URL." }),
+  imageHint: z.string().optional(),
+  tags: z.string().min(1, { message: "Please enter at least one tag." }),
+  excerpt: z.string().min(10, { message: "Excerpt must be at least 10 characters." }),
+  content: z.string().min(20, { message: "Content must be at least 20 characters." }),
+  date: z.string().optional(),
+});
 
-const BlogEditor = ({ post, onSave, onCancel }: { post: BlogPost | null, onSave: (post: Omit<BlogPost, 'id'>) => void, onCancel: () => void }) => {
-    const [formData, setFormData] = useState(post ? { ...post, tags: post.tags.join(', ') } : { ...emptyPost, slug: '' });
-    const [isSaving, setIsSaving] = useState(false);
+type BlogFormValues = z.infer<typeof blogFormSchema>;
+
+const BlogEditor = ({ post, onSave, onCancel }: { post: BlogPost | null, onSave: (post: BlogFormValues) => Promise<void>, onCancel: () => void }) => {
+    const form = useForm<BlogFormValues>({
+        resolver: zodResolver(blogFormSchema),
+        defaultValues: post ? { ...post, tags: post.tags.join(', ') } : {
+            title: '',
+            slug: '',
+            author: '',
+            image: '',
+            imageHint: '',
+            tags: '',
+            excerpt: '',
+            content: '',
+        },
+    });
 
     useEffect(() => {
-        setFormData(post ? { ...post, tags: post.tags.join(', ') } : { ...emptyPost, slug: '' });
-    }, [post]);
+        form.reset(post ? { ...post, tags: post.tags.join(', ') } : {
+            title: '',
+            slug: '',
+            author: '',
+            image: '',
+            imageHint: '',
+            tags: '',
+            excerpt: '',
+            content: '',
+        });
+    }, [post, form]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const title = e.target.value;
         const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-        setFormData(prev => ({ ...prev, title, slug }));
+        form.setValue('title', title, { shouldValidate: true });
+        form.setValue('slug', slug, { shouldValidate: true });
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSaving(true);
+    const onSubmit = async (data: BlogFormValues) => {
         const toastId = toast.loading(post?.id ? 'Updating post...' : 'Creating post...');
-        
         try {
-            await onSave(formData);
+            await onSave(data);
             toast.success('Post saved successfully!', { id: toastId });
         } catch (error) {
             toast.error('Failed to save post.', { id: toastId });
-        } finally {
-            setIsSaving(false);
         }
     };
     
+    const { isSubmitting } = form.formState;
+
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 p-1">
-             <div className="flex justify-between items-center">
-                <Button type="button" variant="ghost" onClick={onCancel}>
-                    <ArrowLeft className="mr-2 h-4 w-4" /> Back to list
-                </Button>
-                <Button type="submit" disabled={isSaving}>
-                    {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                    {post?.id ? 'Update Post' : 'Create Post'}
-                </Button>
-            </div>
-            <div className="grid md:grid-cols-2 gap-6">
-                <Input name="title" value={formData.title} onChange={handleTitleChange} placeholder="Blog Title" required className="md:col-span-2"/>
-                <Input name="slug" value={formData.slug} onChange={handleChange} placeholder="blog-slug" required />
-                <Input name="author" value={formData.author} onChange={handleChange} placeholder="Author Name" required />
-                <Input name="image" value={formData.image} onChange={handleChange} placeholder="Image URL (e.g., https://placehold.co/600x400.png)" required className="md:col-span-2"/>
-                <Input name="imageHint" value={formData.imageHint} onChange={handleChange} placeholder="Image AI Hint (e.g. 'robot brain')" className="md:col-span-2" />
-                <Input name="tags" value={formData.tags} onChange={handleChange} placeholder="Tags (comma-separated)" required className="md:col-span-2"/>
-                <Textarea name="excerpt" value={formData.excerpt} onChange={handleChange} placeholder="Excerpt..." required rows={3} className="md:col-span-2" />
-                <Textarea name="content" value={formData.content} onChange={handleChange} placeholder="Main Content (HTML supported)..." required rows={15} className="md:col-span-2" />
-            </div>
-        </form>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-1">
+                 <div className="flex justify-between items-center">
+                    <Button type="button" variant="ghost" onClick={onCancel} disabled={isSubmitting}>
+                        <ArrowLeft className="mr-2 h-4 w-4" /> Back to list
+                    </Button>
+                    <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                        {post?.id ? 'Update Post' : 'Create Post'}
+                    </Button>
+                </div>
+                <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                    <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                            <FormItem className="md:col-span-2">
+                                <FormLabel>Title</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Blog Title" {...field} onChange={handleTitleChange} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                     <FormField
+                        control={form.control}
+                        name="slug"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Slug</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="blog-slug-will-be-here" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                     <FormField
+                        control={form.control}
+                        name="author"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Author</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Author Name" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="image"
+                        render={({ field }) => (
+                            <FormItem className="md:col-span-2">
+                                <FormLabel>Image URL</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="https://placehold.co/600x400.png" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                     <FormField
+                        control={form.control}
+                        name="imageHint"
+                        render={({ field }) => (
+                            <FormItem className="md:col-span-2">
+                                <FormLabel>Image AI Hint (Optional)</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="e.g. 'robot brain'" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                     <FormField
+                        control={form.control}
+                        name="tags"
+                        render={({ field }) => (
+                            <FormItem className="md:col-span-2">
+                                <FormLabel>Tags</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Technology, AI, Business (comma-separated)" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="excerpt"
+                        render={({ field }) => (
+                            <FormItem className="md:col-span-2">
+                                <FormLabel>Excerpt</FormLabel>
+                                <FormControl>
+                                    <Textarea placeholder="A short summary of the blog post..." {...field} rows={3}/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="content"
+                        render={({ field }) => (
+                            <FormItem className="md:col-span-2">
+                                <FormLabel>Content</FormLabel>
+                                <FormControl>
+                                    <Textarea placeholder="Main content (HTML is supported)..." {...field} rows={15}/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+            </form>
+        </Form>
     );
 };
 
@@ -129,11 +249,11 @@ export default function AdminBlogPage() {
         fetchPosts();
     }, []);
     
-    const handleSavePost = async (formData: Omit<BlogPost, 'id'>) => {
+    const handleSavePost = async (formData: BlogFormValues) => {
         const postToSave = {
             ...formData,
             id: selectedPost?.id, // Keep original ID if editing
-            date: selectedPost?.id ? formData.date : new Date().toISOString(), // Keep original date or set new one
+            date: selectedPost?.id ? (selectedPost.date || new Date().toISOString()) : new Date().toISOString(), // Keep original date or set new one
             tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
         };
 
@@ -144,7 +264,16 @@ export default function AdminBlogPage() {
         });
 
         if (!response.ok) {
-            throw new Error("Failed to save post");
+            const errorData = await response.json();
+            console.error("API Error:", errorData);
+            const errorMessage = errorData.message || "Failed to save post";
+            if (errorData.errors) {
+                const specificErrors = errorData.errors.map((e: any) => e.message).join('\n');
+                toast.error(`${errorMessage}:\n${specificErrors}`);
+            } else {
+                toast.error(errorMessage);
+            }
+            throw new Error(errorMessage);
         }
         
         await fetchPosts();

@@ -6,13 +6,15 @@ import { type ThemeProviderProps } from "next-themes/dist/types"
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   React.useEffect(() => {
-    const themeColor = localStorage.getItem("theme-color") || "blue";
-    if (document.body.className.includes("theme-")) {
-        document.body.className = document.body.className.replace(/theme-\w+/g, `theme-${themeColor}`);
-    } else {
-        document.body.classList.add(`theme-${themeColor}`);
-    }
+    // On initial load, apply the saved color theme from localStorage, defaulting to 'blue'
+    const storedTheme = localStorage.getItem("theme-color") || "blue";
+    document.body.classList.forEach(className => {
+      if (className.startsWith('theme-')) {
+        document.body.classList.remove(className);
+      }
+    });
+    document.body.classList.add(`theme-${storedTheme}`);
   }, [])
-  
+
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 }

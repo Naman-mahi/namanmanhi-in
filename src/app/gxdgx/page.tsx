@@ -141,7 +141,7 @@ export default function AdminPage() {
             const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...payload, source: 'Chatbot Lead' }),
+                body: JSON.stringify({ ...payload, source: 'Chatbot Lead', sessionId: updatedSession.sessionId }),
             });
 
             if (!response.ok) throw new Error("Failed to save message");

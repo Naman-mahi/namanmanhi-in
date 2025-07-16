@@ -11,9 +11,9 @@ const MessageSchema = z.object({
   options: z.array(z.string()).optional(),
 });
 
-// Schema for a chat lead, referencing MongoDB's _id
+// Schema for a chat lead, accepting a string _id
 const ChatLeadSchema = z.object({
-  _id: z.instanceof(ObjectId).optional(),
+  _id: z.string().optional(),
   source: z.literal('Chatbot Lead'),
   name: z.string(),
   number: z.string(),
@@ -23,9 +23,9 @@ const ChatLeadSchema = z.object({
   updatedAt: z.string().optional(),
 });
 
-// Schema for a contact form submission, referencing MongoDB's _id
+// Schema for a contact form submission, accepting a string _id
 const ContactFormSchema = z.object({
-  _id: z.instanceof(ObjectId).optional(),
+  _id: z.string().optional(),
   source: z.literal('Contact Form'),
   fullName: z.string(),
   email: z.string().email(),
@@ -58,13 +58,13 @@ export async function POST(request: NextRequest) {
 
     if (source === 'Chatbot Lead') {
         const collection = db.collection('chatLeads');
-        const { sessionId, ...leadData } = parsed.data;
+        const { _id, sessionId, ...leadData } = parsed.data;
 
         await collection.updateOne(
             { sessionId: sessionId },
             { 
                 $set: { ...leadData, updatedAt: new Date().toISOString() },
-                $setOnInsert: { createdAt: new Date().toISOString() }
+                $setOnInsert: { createdAt: new Date().toISOString(), sessionId }
             },
             { upsert: true }
         );
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         const collection = db.collection('contactForms');
         const { _id, ...formData } = parsed.data;
         
-        if (_id) {
+        if (_id && ObjectId.isValid(_id)) {
             // Update existing form submission
             await collection.updateOne(
                 { _id: new ObjectId(_id) },

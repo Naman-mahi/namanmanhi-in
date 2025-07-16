@@ -2,9 +2,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import "react-quill/dist/quill.snow.css";
 import { Skeleton } from "../ui/skeleton";
+import type ReactQuill from 'react-quill';
 
 interface RichTextEditorProps {
     value: string;
@@ -12,7 +13,7 @@ interface RichTextEditorProps {
 }
 
 export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
-    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { 
+    const Quill = useMemo(() => dynamic(() => import('react-quill'), { 
         ssr: false,
         loading: () => <Skeleton className="w-full h-[250px] rounded-md" />,
     }), []);
@@ -27,9 +28,12 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
         ],
     };
 
+    const quillRef = useRef<ReactQuill>(null);
+
     return (
         <div className="bg-background">
-            <ReactQuill 
+            <Quill
+                ref={quillRef}
                 theme="snow"
                 value={value}
                 onChange={onChange}

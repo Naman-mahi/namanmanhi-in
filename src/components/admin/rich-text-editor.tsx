@@ -14,19 +14,16 @@ const RichTextEditor = forwardRef<any, RichTextEditorProps>(
         const editorRef = useRef<HTMLDivElement>(null);
         const quillRef = useRef<Quill | null>(null);
 
-        // Expose Quill instance to parent components if needed
         useImperativeHandle(ref, () => ({
             getQuill: () => quillRef.current,
         }));
 
         useEffect(() => {
-            let isMounted = true;
-
             const initializeQuill = async () => {
                 const { default: Quill } = await import('quill');
                 await import('quill/dist/quill.snow.css');
 
-                if (editorRef.current && isMounted && !quillRef.current) {
+                if (editorRef.current && !quillRef.current) {
                     const quill = new Quill(editorRef.current, {
                         theme: "snow",
                         modules: {
@@ -49,12 +46,10 @@ const RichTextEditor = forwardRef<any, RichTextEditorProps>(
 
                     quillRef.current = quill;
 
-                    // Set initial content
                     if (value) {
                         quill.clipboard.dangerouslyPasteHTML(value);
                     }
 
-                    // Listen for changes
                     quill.on("text-change", (delta, oldDelta, source) => {
                         if (source === "user") {
                             onChange(quill.root.innerHTML);
@@ -65,27 +60,14 @@ const RichTextEditor = forwardRef<any, RichTextEditorProps>(
             
             initializeQuill();
 
-            // Cleanup on unmount
-            return () => {
-                isMounted = false;
-                if (quillRef.current) {
-                    quillRef.current.off("text-change");
-                    const toolbar = quillRef.current.getModule('toolbar');
-                    if (toolbar && toolbar.container) {
-                         toolbar.container.remove();
-                    }
-                }
-            };
-        }, []); // Empty dependency array ensures this runs only once on mount
+        }, []);
 
 
-        // Update Quill content if the 'value' prop changes from outside
         useEffect(() => {
              if (quillRef.current && value !== quillRef.current.root.innerHTML) {
                 const currentSelection = quillRef.current.getSelection();
                 quillRef.current.clipboard.dangerouslyPasteHTML(value);
                  if (currentSelection) {
-                    // Restore selection if possible
                     setTimeout(() => quillRef.current?.setSelection(currentSelection.index, currentSelection.length), 0);
                  }
             }

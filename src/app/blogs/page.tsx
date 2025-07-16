@@ -66,14 +66,14 @@ export default function BlogsPage() {
     }, []);
 
     const allTags = useMemo(() => {
-        if (isLoading) return [];
+        if (isLoading || !Array.isArray(blogData)) return [];
         const tags = new Set<string>();
         blogData.forEach(blog => blog.tags.forEach(tag => tags.add(tag)));
         return Array.from(tags);
     }, [blogData, isLoading]);
 
     const filteredBlogs = useMemo(() => {
-        if (isLoading) return [];
+        if (isLoading || !Array.isArray(blogData)) return [];
         return blogData
             .filter(blog => {
                 if (!selectedTag) return true;

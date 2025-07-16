@@ -26,6 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { RichTextEditor } from '@/components/admin/rich-text-editor';
 
 type BlogPost = {
     _id: string;
@@ -96,6 +97,7 @@ const BlogEditor = ({ post, onSave, onCancel }: { post: BlogPost | null, onSave:
             await onSave(data);
             toast.success('Post saved successfully!', { id: toastId });
         } catch (error) {
+            console.error('Error saving post:', error);
             toast.error('Failed to save post.', { id: toastId });
         }
     };
@@ -213,7 +215,7 @@ const BlogEditor = ({ post, onSave, onCancel }: { post: BlogPost | null, onSave:
                             <FormItem className="md:col-span-2">
                                 <FormLabel>Content</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder="Main content (HTML is supported)..." {...field} rows={15}/>
+                                    <RichTextEditor {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -293,6 +295,7 @@ export default function AdminBlogPage() {
             toast.success('Post deleted!', { id: toastId });
             await fetchPosts();
         } catch (error) {
+            console.error("Could not delete post:", error);
             toast.error('Could not delete post.', { id: toastId });
         }
     };

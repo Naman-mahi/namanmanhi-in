@@ -18,8 +18,8 @@ type Props = {
     }
 }
 
-export default function BlogPage(props: Props) {
-    const { slug } = React.use(props).params;
+export default function BlogPage({ params }: Props) {
+    const { slug } = params;
     const blog = blogData.find(post => post.slug === slug);
     const [isClient, setIsClient] = useState(false);
 

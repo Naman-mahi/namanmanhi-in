@@ -11,7 +11,7 @@ import { ChatMessage } from '@/components/chatbot/chat-message';
 import { Inbox, Loader2, Send, Save, User, Mail, Phone, MapPin, DollarSign, MessageSquare, StickyNote, Copy } from 'lucide-react';
 import { Textarea } from '../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useToast } from '@/hooks/use-toast';
+import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 
 interface SubmissionDetailsProps {
@@ -21,15 +21,10 @@ interface SubmissionDetailsProps {
 }
 
 const DetailItem = ({ icon: Icon, label, value, copyValue, className = '' }: { icon: React.ElementType, label: string, value: React.ReactNode, copyValue?: string, className?: string }) => {
-    const { toast } = useToast();
-
     const handleCopy = () => {
         if (!copyValue) return;
         navigator.clipboard.writeText(copyValue);
-        toast({
-            title: "Copied to clipboard!",
-            description: `${label} has been copied.`,
-        });
+        toast.success(`${label} copied to clipboard!`);
     };
 
     return (
@@ -60,7 +55,6 @@ const FormDetails = ({ form, onUpdate }: { form: ContactSubmission, onUpdate: ()
     const [status, setStatus] = useState(form.status || 'New');
     const [notes, setNotes] = useState(form.notes || '');
     const [isSaving, setIsSaving] = useState(false);
-    const { toast } = useToast();
 
     useEffect(() => {
         setStatus(form.status || 'New');
@@ -78,11 +72,11 @@ const FormDetails = ({ form, onUpdate }: { form: ContactSubmission, onUpdate: ()
 
             if (!response.ok) throw new Error('Failed to save details');
             
-            toast({ title: "Success", description: "Submission details have been updated." });
+            toast.success("Submission details updated.");
             await onUpdate(); // Refetch data in parent
         } catch (error) {
             console.error("Failed to save:", error);
-            toast({ title: "Error", description: "Could not save details.", variant: "destructive" });
+            toast.error("Could not save details.");
         } finally {
             setIsSaving(false);
         }

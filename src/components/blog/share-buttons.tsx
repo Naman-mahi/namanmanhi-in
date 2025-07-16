@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import toast from "react-hot-toast";
 import { Twitter, Linkedin, Facebook, Link as LinkIcon, Share2 } from 'lucide-react';
 
 interface ShareButtonsProps {
@@ -13,7 +13,6 @@ interface ShareButtonsProps {
 
 export function ShareButtons({ title, slug }: ShareButtonsProps) {
     const [url, setUrl] = useState("");
-    const { toast } = useToast();
 
     useEffect(() => {
         // Ensure this runs only on the client where window is defined
@@ -35,10 +34,7 @@ export function ShareButtons({ title, slug }: ShareButtonsProps) {
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(url);
-        toast({
-            title: "Link Copied!",
-            description: "The blog post URL has been copied to your clipboard.",
-        });
+        toast.success("Link copied to clipboard!");
     };
 
     return (

@@ -6,7 +6,7 @@ import { AnimatePresence } from "framer-motion";
 import { ChatbotIcon } from "./chatbot-icon";
 import { ChatWindow } from "./chat-window";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useToast } from "@/hooks/use-toast";
+import toast from 'react-hot-toast';
 import type { Message } from '@/lib/types';
 
 const predefinedQuestions = [
@@ -38,7 +38,6 @@ export function Chatbot() {
     const [sessionId, setSessionId] = useState<string | null>(null);
     const isMobile = useIsMobile();
     const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
-    const { toast } = useToast();
 
     const addMessage = useCallback((message: Omit<Message, 'id'>) => {
         setMessages(prev => {
@@ -121,11 +120,7 @@ export function Chatbot() {
             }
         } catch (error) {
             console.error("Could not save chat to database:", error);
-            toast({
-                title: "Error",
-                description: "There was a problem syncing your chat. Please try again.",
-                variant: "destructive"
-            });
+            toast.error("There was a problem syncing your chat.");
         }
     };
 

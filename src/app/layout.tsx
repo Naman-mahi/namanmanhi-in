@@ -1,6 +1,6 @@
 import type {Metadata} from 'next';
 import './globals.css';
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from 'react-hot-toast';
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from '@/components/theme-provider';
 import { CursorFollower } from '@/components/ui/cursor-follower';
@@ -33,9 +33,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
+          <Toaster position="top-right" />
           <CursorFollower />
           {children}
-          <Toaster />
           <BackToTopButton />
           <Chatbot />
           <ThemeCustomizer />

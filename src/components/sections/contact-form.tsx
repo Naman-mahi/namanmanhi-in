@@ -11,7 +11,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
+import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
@@ -28,7 +28,6 @@ const formSchema = z.object({
 export function ContactForm() {
     const [budget, setBudget] = useState(10000);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { toast } = useToast();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -45,6 +44,7 @@ export function ContactForm() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsSubmitting(true);
+        const toastId = toast.loading('Sending message...');
         
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -68,18 +68,11 @@ export function ContactForm() {
                 throw new Error('Something went wrong');
             }
 
-            toast({
-                title: "Message Sent!",
-                description: "Thank you for reaching out. We'll get back to you shortly.",
-            });
+            toast.success("Message Sent! We'll get back to you shortly.", { id: toastId });
             form.reset();
             setBudget(10000);
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to send message. Please try again later.",
-                variant: "destructive",
-            });
+            toast.error("Failed to send message. Please try again.", { id: toastId });
         } finally {
             setIsSubmitting(false);
         }

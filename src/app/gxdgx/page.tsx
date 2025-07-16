@@ -7,7 +7,7 @@ import { Footer } from '@/components/layout/footer';
 import { SubmissionList } from '@/components/admin/submission-list';
 import { SubmissionDetails } from '@/components/admin/submission-details';
 import { Loader2, ArrowLeft, RefreshCw, FileText, MessageSquare, CheckCircle, MailOpen } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import toast from 'react-hot-toast';
 import type { Submission, ContactSubmission, ChatSession } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -33,7 +33,6 @@ export default function AdminPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [activeTab, setActiveTab] = useState('chat');
-    const { toast } = useToast();
     const isMobile = useIsMobile();
 
     const fetchData = async () => {
@@ -57,11 +56,7 @@ export default function AdminPage() {
             }
         } catch (error) {
             console.error("Failed to fetch submissions:", error);
-            toast({
-                title: "Error",
-                description: "Failed to load submission data.",
-                variant: "destructive"
-            });
+            toast.error("Failed to load submission data.");
         } finally {
             setIsLoading(false);
             setIsRefreshing(false);
@@ -145,13 +140,10 @@ export default function AdminPage() {
 
             if (!response.ok) throw new Error("Failed to save message");
             
-            toast({
-                title: "Reply Sent!",
-                description: "Your message has been saved to the chat log.",
-            });
+            toast.success("Reply Sent!");
         } catch (error) {
              console.error("Failed to send reply:", error);
-             toast({ title: "Error", description: "Could not send reply.", variant: "destructive" });
+             toast.error("Could not send reply.");
              // Revert optimistic update on failure
              setSelectedSubmission(session);
              setSubmissions(prev => prev.map(s => s.id === session.id ? session : s));

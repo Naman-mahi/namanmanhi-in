@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -86,10 +87,6 @@ export function Header({ variant = "sticky" }: { variant?: "sticky" | "inline" }
                 <SheetHeader className="flex flex-row justify-between items-center p-4 border-b">
                    <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                    <Logo className="h-9 w-auto" />
-                  <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
-                      <X className="h-6 w-6"/>
-                      <span className="sr-only">Close menu</span>
-                  </Button>
                 </SheetHeader>
                 <div className="flex flex-col h-full p-6">
                   <nav className="flex flex-col space-y-4">

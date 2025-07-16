@@ -52,7 +52,7 @@ export function BlogSection() {
                                 </CardTitle>
                                 <p className="text-muted-foreground text-sm mb-4">{blog.excerpt}</p>
                             </CardContent>
-                            <CardFooter className="p-6 pt-0 mt-auto bg-card">
+                            <CardFooter className="p-6 pt-0 mt-auto bg-card border-t">
                                 <div className="w-full flex justify-between items-center text-sm text-muted-foreground">
                                     <div className="flex items-center gap-2">
                                         <User className="w-4 h-4" />

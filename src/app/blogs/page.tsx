@@ -96,7 +96,7 @@ export default function BlogsPage() {
                                 {allTags.map(tag => (
                                     <Button
                                         key={tag}
-                                        variant={selectedTag === tag ? "default" : "outline"}
+                                        variant={selectedTag === tag || (tag === 'All' && !selectedTag) ? "default" : "outline"}
                                         onClick={() => setSelectedTag(tag === 'All' ? null : tag)}
                                         className="rounded-full"
                                     >

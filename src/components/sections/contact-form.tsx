@@ -27,9 +27,7 @@ const formSchema = z.object({
 
 export function ContactForm() {
     const [budget, setBudget] = useState(10000);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const form = useForm<z.infer<typeof formSchema>>({
+    const { formState: { isSubmitting }, ...form } = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             fullName: "",
@@ -43,19 +41,7 @@ export function ContactForm() {
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        setIsSubmitting(true);
         const toastId = toast.loading('Sending message...');
-        
-        const formData = new FormData();
-        Object.entries(values).forEach(([key, value]) => {
-            if (key === 'file') {
-                 if (value && value instanceof File) {
-                    formData.append(key, value);
-                 }
-            } else if (value) {
-                formData.append(key, String(value));
-            }
-        });
         
         try {
             const response = await fetch('/api/contact', {
@@ -73,8 +59,6 @@ export function ContactForm() {
             setBudget(10000);
         } catch (error) {
             toast.error("Failed to send message. Please try again.", { id: toastId });
-        } finally {
-            setIsSubmitting(false);
         }
     }
 

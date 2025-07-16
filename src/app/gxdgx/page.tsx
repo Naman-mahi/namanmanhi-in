@@ -40,8 +40,10 @@ export default function AdminPage() {
     const fetchData = async () => {
         if (!isLoading) setIsRefreshing(true);
         try {
-            const chatResponse = await fetch('/api/contact?source=chat');
-            const formsResponse = await fetch('/api/contact?source=forms');
+            const [chatResponse, formsResponse] = await Promise.all([
+                fetch('/api/contact?source=chat'),
+                fetch('/api/contact?source=forms')
+            ]);
             
             const { data: chatData } = await chatResponse.json();
             const { data: formsData } = await formsResponse.json();
@@ -53,7 +55,7 @@ export default function AdminPage() {
             setSubmissions(sortedData);
             
             if (selectedSubmission) {
-                const refreshedSubmission = sortedData.find((s: Submission) => s.id === selectedSubmission.id);
+                const refreshedSubmission = sortedData.find((s: Submission) => s._id === selectedSubmission._id);
                 setSelectedSubmission(refreshedSubmission || null);
             }
         } catch (error) {
@@ -107,7 +109,7 @@ export default function AdminPage() {
 
     useEffect(() => {
         if (filteredSubmissions.length > 0) {
-             const currentSelectionExists = filteredSubmissions.some(s => s.id === selectedSubmission?.id);
+             const currentSelectionExists = filteredSubmissions.some(s => s._id === selectedSubmission?._id);
              if (!currentSelectionExists && !isMobile) {
                 setSelectedSubmission(filteredSubmissions[0]);
              }
@@ -131,24 +133,25 @@ export default function AdminPage() {
 
         // Optimistic UI update
         setSelectedSubmission(updatedSession);
-        setSubmissions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
+        setSubmissions(prev => prev.map(s => s._id === updatedSession._id ? updatedSession : s));
 
         try {
-            const response = await fetch('/api/contact?source=chat', {
+            const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...updatedSession, source: 'Chatbot Lead' }), // ensure source is passed
+                body: JSON.stringify({ ...updatedSession, source: 'Chatbot Lead' }),
             });
 
             if (!response.ok) throw new Error("Failed to save message");
             
             toast.success("Reply Sent!");
+            await fetchData();
         } catch (error) {
              console.error("Failed to send reply:", error);
              toast.error("Could not send reply.");
              // Revert optimistic update on failure
              setSelectedSubmission(session);
-             setSubmissions(prev => prev.map(s => s.id === session.id ? session : s));
+             setSubmissions(prev => prev.map(s => s._id === session._id ? session : s));
         }
     };
     

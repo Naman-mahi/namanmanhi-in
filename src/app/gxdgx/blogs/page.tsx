@@ -281,6 +281,22 @@ export default function AdminBlogPage() {
         setSelectedPost(null);
     };
 
+    const handleDeletePost = async (postId: string) => {
+        const toastId = toast.loading('Deleting post...');
+        try {
+            const response = await fetch(`/api/blogs?id=${postId}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Failed to delete post');
+            }
+            toast.success('Post deleted!', { id: toastId });
+            await fetchPosts();
+        } catch (error) {
+            toast.error('Could not delete post.', { id: toastId });
+        }
+    };
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -323,6 +339,30 @@ export default function AdminBlogPage() {
                                                      <Button variant="ghost" size="icon" onClick={() => { setSelectedPost(post); setIsEditing(true); }}>
                                                         <Edit className="w-4 h-4" />
                                                     </Button>
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger asChild>
+                                                            <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                                                                <Trash2 className="w-4 h-4" />
+                                                            </Button>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                This action cannot be undone. This will permanently delete the blog post.
+                                                            </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogAction
+                                                                onClick={() => handleDeletePost(post._id)}
+                                                                className="bg-destructive hover:bg-destructive/90"
+                                                            >
+                                                                Delete
+                                                            </AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
                                                 </div>
                                             </div>
                                         ))}

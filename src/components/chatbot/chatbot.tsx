@@ -53,8 +53,7 @@ export function Chatbot() {
             const currentSession = data.find((s: any) => s.sessionId === sessionId);
             
             if (currentSession && currentSession.messages.length > messages.length) {
-                // Filter out messages that are already present to avoid duplicates
-                const newMessages = currentSession.messages.filter((msg: Message) => !messages.find(m => m.id === msg.id));
+                const newMessages = currentSession.messages.slice(messages.length);
                 if (newMessages.length > 0) {
                     setMessages(prev => [...prev, ...newMessages]);
                 }
@@ -108,7 +107,7 @@ export function Chatbot() {
     const saveChatToDatabase = async (chatData: { name: string; number: string, source: string, sessionId: string, messages: typeof messages }) => {
         if (!chatData.sessionId) return;
         try {
-            const response = await fetch('/api/contact?source=chat', {
+            const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(chatData),

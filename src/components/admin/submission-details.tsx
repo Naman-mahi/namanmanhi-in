@@ -13,6 +13,7 @@ import { Textarea } from '../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
+import { ObjectId } from 'mongodb';
 
 interface SubmissionDetailsProps {
   submission: Submission | null;
@@ -64,7 +65,7 @@ const FormDetails = ({ form, onUpdate }: { form: ContactSubmission, onUpdate: ()
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            const response = await fetch('/api/contact?source=forms', {
+            const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...form, status, notes, source: 'Contact Form' }),

@@ -70,3 +70,26 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: 'Error saving blog data' }, { status: 500 });
     }
 }
+
+export async function DELETE(request: NextRequest) {
+    try {
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get('id');
+
+        if (!id || !ObjectId.isValid(id)) {
+            return NextResponse.json({ message: 'Invalid blog post ID' }, { status: 400 });
+        }
+
+        const db = await getDb();
+        const result = await db.collection('blogs').deleteOne({ _id: new ObjectId(id) });
+
+        if (result.deletedCount === 0) {
+            return NextResponse.json({ message: 'Blog post not found' }, { status: 404 });
+        }
+
+        return NextResponse.json({ message: 'Blog post deleted successfully' }, { status: 200 });
+    } catch (error) {
+        console.error('API DELETE Error:', error);
+        return NextResponse.json({ message: 'Error deleting blog data' }, { status: 500 });
+    }
+}

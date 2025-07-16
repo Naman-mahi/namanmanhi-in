@@ -1,13 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
 import { z } from 'zod';
+import { getDb } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
-const dataDir = path.join(process.cwd(), 'src/data');
-const chatLeadsFilePath = path.join(dataDir, 'chatbot-leads.json');
-const contactFormsFilePath = path.join(dataDir, 'contact-forms.json');
-
-// Define a schema for a single chat message
+// Schema for a single chat message
 const MessageSchema = z.object({
   id: z.string(),
   text: z.string(),
@@ -15,18 +11,21 @@ const MessageSchema = z.object({
   options: z.array(z.string()).optional(),
 });
 
-// Define a schema for a chat lead
+// Schema for a chat lead, referencing MongoDB's _id
 const ChatLeadSchema = z.object({
+  _id: z.instanceof(ObjectId).optional(),
   source: z.literal('Chatbot Lead'),
   name: z.string(),
   number: z.string(),
   sessionId: z.string(),
   messages: z.array(MessageSchema),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
-// Define a schema for a contact form submission
+// Schema for a contact form submission, referencing MongoDB's _id
 const ContactFormSchema = z.object({
-  id: z.number().optional(),
+  _id: z.instanceof(ObjectId).optional(),
   source: z.literal('Contact Form'),
   fullName: z.string(),
   email: z.string().email(),
@@ -38,38 +37,15 @@ const ContactFormSchema = z.object({
   file: z.any().optional(),
   status: z.enum(['New', 'Contacted', 'In Progress', 'Closed']).optional(),
   notes: z.string().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
-// A union type for all possible request bodies
 const RequestSchema = z.union([ChatLeadSchema, ContactFormSchema]);
 
-async function readData(filePath: string) {
-    try {
-        await fs.access(dataDir, fs.constants.F_OK).catch(async () => {
-            await fs.mkdir(dataDir, { recursive: true });
-        });
-        await fs.access(filePath);
-        const fileContents = await fs.readFile(filePath, 'utf-8');
-        // Handle empty file case
-        if (fileContents.trim() === '') {
-            return [];
-        }
-        return JSON.parse(fileContents);
-    } catch (error) {
-        // If file doesn't exist, create it with an empty array
-        await fs.writeFile(filePath, JSON.stringify([], null, 2));
-        return [];
-    }
-}
-
-async function writeData(filePath: string, data: any) {
-    await fs.writeFile(filePath, JSON.stringify(data, null, 2));
-}
-
 export async function POST(request: NextRequest) {
-  const source = request.nextUrl.searchParams.get('source');
-
   try {
+    const db = await getDb();
     const body = await request.json();
     const parsed = RequestSchema.safeParse(body);
 
@@ -77,43 +53,41 @@ export async function POST(request: NextRequest) {
       console.error('Zod parsing error:', parsed.error.issues);
       return NextResponse.json({ message: 'Invalid data format', errors: parsed.error.issues }, { status: 400 });
     }
-    
-    if (parsed.data.source === 'Chatbot Lead' || source === 'chat') {
-        const data = await readData(chatLeadsFilePath);
-        const { sessionId, ...leadData } = parsed.data as z.infer<typeof ChatLeadSchema>;
-        const existingLeadIndex = data.findIndex((item: any) => item.sessionId === sessionId && item.source === 'Chatbot Lead');
 
-        if (existingLeadIndex > -1) {
-            data[existingLeadIndex] = { ...data[existingLeadIndex], ...leadData, updatedAt: new Date().toISOString() };
+    const { source } = parsed.data;
+
+    if (source === 'Chatbot Lead') {
+        const collection = db.collection('chatLeads');
+        const { sessionId, ...leadData } = parsed.data;
+
+        await collection.updateOne(
+            { sessionId: sessionId },
+            { 
+                $set: { ...leadData, updatedAt: new Date().toISOString() },
+                $setOnInsert: { createdAt: new Date().toISOString() }
+            },
+            { upsert: true }
+        );
+
+    } else if (source === 'Contact Form') {
+        const collection = db.collection('contactForms');
+        const { _id, ...formData } = parsed.data;
+        
+        if (_id) {
+            // Update existing form submission
+            await collection.updateOne(
+                { _id: new ObjectId(_id) },
+                { $set: { ...formData, updatedAt: new Date().toISOString() } }
+            );
         } else {
-            data.push({
-                id: Date.now(),
-                ...leadData,
-                sessionId,
-                createdAt: new Date().toISOString(),
+            // Create new form submission
+            await collection.insertOne({ 
+                ...formData,
+                status: 'New',
+                notes: '',
+                createdAt: new Date().toISOString() 
             });
         }
-        await writeData(chatLeadsFilePath, data);
-
-    } else if (parsed.data.source === 'Contact Form' || source === 'forms') {
-        const data = await readData(contactFormsFilePath);
-        const { id, ...formData } = parsed.data as z.infer<typeof ContactFormSchema>;
-        if (id) {
-            const existingFormIndex = data.findIndex((item: any) => item.id === id && item.source === 'Contact Form');
-            if (existingFormIndex > -1) {
-                data[existingFormIndex] = { ...data[existingFormIndex], ...formData, updatedAt: new Date().toISOString() };
-            }
-        } else {
-            const newEntry = {
-                id: Date.now(),
-                ...formData,
-                status: 'New' as const,
-                notes: '',
-                createdAt: new Date().toISOString(),
-            };
-            data.push(newEntry);
-        }
-        await writeData(contactFormsFilePath, data);
     } else {
         return NextResponse.json({ message: 'Invalid source' }, { status: 400 });
     }
@@ -128,16 +102,15 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
     const source = request.nextUrl.searchParams.get('source');
     try {
+        const db = await getDb();
         if (source === 'chat') {
-            const data = await readData(chatLeadsFilePath);
+            const data = await db.collection('chatLeads').find({}).sort({ createdAt: -1 }).toArray();
             return NextResponse.json({ data }, { status: 200 });
         } else if (source === 'forms') {
-            const data = await readData(contactFormsFilePath);
+            const data = await db.collection('contactForms').find({}).sort({ createdAt: -1 }).toArray();
             return NextResponse.json({ data }, { status: 200 });
         } else {
-            const chatData = await readData(chatLeadsFilePath);
-            const formData = await readData(contactFormsFilePath);
-            return NextResponse.json({ data: [...chatData, ...formData] }, { status: 200 });
+             return NextResponse.json({ message: "Invalid or missing source parameter" }, { status: 400 });
         }
     } catch (error) {
         console.error('API Error:', error);

@@ -95,9 +95,9 @@ export function SubmissionList({
               ) : (
                 filteredSubmissions.map(sub => (
                   <SubmissionListItem
-                    key={sub.id}
+                    key={sub._id?.toString()}
                     submission={sub}
-                    isSelected={selectedSubmission?.id === sub.id}
+                    isSelected={selectedSubmission?._id === sub._id}
                     onSelect={onSubmissionSelect}
                   />
                 ))

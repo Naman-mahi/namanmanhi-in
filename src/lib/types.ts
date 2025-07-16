@@ -1,4 +1,6 @@
 
+import type { ObjectId } from 'mongodb';
+
 export type Message = {
     id: string;
     text: string;
@@ -7,7 +9,7 @@ export type Message = {
 };
 
 export type ChatSession = {
-    id: number;
+    _id?: ObjectId;
     sessionId: string;
     name: string;
     number: string;
@@ -18,7 +20,7 @@ export type ChatSession = {
 };
 
 export type ContactSubmission = {
-    id: number;
+    _id?: ObjectId;
     fullName: string;
     email: string;
     contact: string;

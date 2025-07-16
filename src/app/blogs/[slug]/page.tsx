@@ -3,11 +3,10 @@
 
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import blogData from '@/data/blogs.json';
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, User, Tag } from "lucide-react";
+import { Calendar, User, Tag, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import React, { useEffect, useState } from "react";
 import { ShareButtons } from "@/components/blog/share-buttons";
@@ -18,19 +17,55 @@ type Props = {
     }
 }
 
+type BlogPost = {
+    _id: string;
+    slug: string;
+    title: string;
+    author: string;
+    date: string;
+    tags: string[];
+    image: string;
+    imageHint?: string;
+    excerpt: string;
+    content: string;
+};
+
 export default function BlogPage({ params }: Props) {
-    // Using React.use() to be compliant with future Next.js versions
-    const resolvedParams = React.use(params as any as Promise<typeof params>) || params;
-    const { slug } = resolvedParams;
-    const blog = blogData.find(post => post.slug === slug);
-    const [isClient, setIsClient] = useState(false);
+    const { slug } = React.use(params as any as Promise<typeof params>) || params;
+    const [blog, setBlog] = useState<BlogPost | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        setIsClient(true);
-    }, []);
+        const fetchBlog = async () => {
+            try {
+                const res = await fetch('/api/blogs');
+                const { data } = await res.json();
+                const currentBlog = data.find((post: BlogPost) => post.slug === slug);
+                if (currentBlog) {
+                    setBlog(currentBlog);
+                } else {
+                    notFound();
+                }
+            } catch (error) {
+                console.error("Failed to fetch blog post", error);
+                notFound();
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchBlog();
+    }, [slug]);
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+        );
+    }
 
     if (!blog) {
-        notFound();
+        return notFound();
     }
 
     return (
@@ -74,7 +109,7 @@ export default function BlogPage({ params }: Props) {
 
                     <Separator className="my-12" />
 
-                    {isClient && <ShareButtons title={blog.title} slug={blog.slug} />}
+                    <ShareButtons title={blog.title} slug={blog.slug} />
                     
                     <Separator className="my-12" />
                     

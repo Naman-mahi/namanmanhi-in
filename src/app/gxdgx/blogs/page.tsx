@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/alert-dialog"
 
 type BlogPost = {
-    id: number;
+    _id: string;
     slug: string;
     title: string;
     author: string;
@@ -41,7 +41,7 @@ type BlogPost = {
 };
 
 const blogFormSchema = z.object({
-  id: z.number().optional(),
+  _id: z.string().optional(),
   title: z.string().min(2, { message: "Title must be at least 2 characters." }),
   slug: z.string().min(2, { message: "Slug is required." }),
   author: z.string().min(2, { message: "Author name is required." }),
@@ -91,7 +91,7 @@ const BlogEditor = ({ post, onSave, onCancel }: { post: BlogPost | null, onSave:
     };
 
     const onSubmit = async (data: BlogFormValues) => {
-        const toastId = toast.loading(post?.id ? 'Updating post...' : 'Creating post...');
+        const toastId = toast.loading(post?._id ? 'Updating post...' : 'Creating post...');
         try {
             await onSave(data);
             toast.success('Post saved successfully!', { id: toastId });
@@ -111,7 +111,7 @@ const BlogEditor = ({ post, onSave, onCancel }: { post: BlogPost | null, onSave:
                     </Button>
                     <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                        {post?.id ? 'Update Post' : 'Create Post'}
+                        {post?._id ? 'Update Post' : 'Create Post'}
                     </Button>
                 </div>
                 <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
@@ -252,8 +252,8 @@ export default function AdminBlogPage() {
     const handleSavePost = async (formData: BlogFormValues) => {
         const postToSave = {
             ...formData,
-            id: selectedPost?.id, // Keep original ID if editing
-            date: selectedPost?.id ? (selectedPost.date || new Date().toISOString()) : new Date().toISOString(), // Keep original date or set new one
+            _id: selectedPost?._id, // Keep original ID if editing
+            date: selectedPost?._id ? (selectedPost.date || new Date().toISOString()) : new Date().toISOString(), // Keep original date or set new one
             tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
         };
 
@@ -312,7 +312,7 @@ export default function AdminBlogPage() {
                                 <div className="border rounded-lg">
                                     <div className="divide-y">
                                         {posts.map(post => (
-                                            <div key={post.id} className="p-4 flex justify-between items-center hover:bg-secondary/50">
+                                            <div key={post._id} className="p-4 flex justify-between items-center hover:bg-secondary/50">
                                                 <div>
                                                     <h3 className="font-semibold">{post.title}</h3>
                                                     <p className="text-sm text-muted-foreground">

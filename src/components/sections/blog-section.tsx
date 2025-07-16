@@ -1,14 +1,44 @@
 
 "use client";
 
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import blogData from '@/data/blogs.json';
+import { ArrowRight, Loader2 } from "lucide-react";
 import { BlogCard } from "@/components/blog/blog-card";
 
+type BlogPost = {
+    _id: string;
+    slug: string;
+    title: string;
+    author: string;
+    date: string;
+    tags: string[];
+    image: string;
+    imageHint?: string;
+    excerpt: string;
+    content: string;
+};
+
 export function BlogSection() {
-    const recentBlogs = blogData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 3);
+    const [recentBlogs, setRecentBlogs] = useState<BlogPost[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchRecentBlogs = async () => {
+            try {
+                const res = await fetch('/api/blogs');
+                const { data } = await res.json();
+                // API already sorts by date, so we can just take the first 3
+                setRecentBlogs(data.slice(0, 3)); 
+            } catch (error) {
+                console.error("Failed to fetch recent blogs", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchRecentBlogs();
+    }, []);
 
     return (
         <section className="py-20 lg:py-24 bg-secondary/30">
@@ -20,11 +50,18 @@ export function BlogSection() {
                     </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {recentBlogs.map((blog) => (
-                       <BlogCard key={blog.id} blog={blog} />
-                    ))}
-                </div>
+                 {isLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                    </div>
+                ) : (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {recentBlogs.map((blog) => (
+                           <BlogCard key={blog._id} blog={blog} />
+                        ))}
+                    </div>
+                )}
+
                 <div className="text-center mt-16">
                     <Button asChild size="lg">
                         <Link href="/blogs">

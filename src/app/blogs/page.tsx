@@ -4,10 +4,9 @@
 import { useState, useMemo, useEffect } from "react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import blogData from '@/data/blogs.json';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, ChevronLeft, ChevronRight, Tags, Rss } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Tags, Rss, Loader2 } from 'lucide-react';
 import { AnimatePresence, motion } from "framer-motion";
 import { BlogCard } from "@/components/blog/blog-card";
 import { Card } from "@/components/ui/card";
@@ -31,23 +30,50 @@ const itemVariants = {
 
 const POSTS_PER_PAGE = 6;
 
+type BlogPost = {
+    _id: string;
+    slug: string;
+    title: string;
+    author: string;
+    date: string;
+    tags: string[];
+    image: string;
+    imageHint?: string;
+    excerpt: string;
+    content: string;
+};
+
 export default function BlogsPage() {
+    const [blogData, setBlogData] = useState<BlogPost[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [isClient, setIsClient] = useState(false);
-
+    
     useEffect(() => {
-        setIsClient(true);
+        const fetchBlogs = async () => {
+            try {
+                const res = await fetch('/api/blogs');
+                const { data } = await res.json();
+                setBlogData(data);
+            } catch (error) {
+                console.error("Failed to fetch blogs", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchBlogs();
     }, []);
 
     const allTags = useMemo(() => {
+        if (isLoading) return [];
         const tags = new Set<string>();
         blogData.forEach(blog => blog.tags.forEach(tag => tags.add(tag)));
         return Array.from(tags);
-    }, []);
+    }, [blogData, isLoading]);
 
     const filteredBlogs = useMemo(() => {
+        if (isLoading) return [];
         return blogData
             .filter(blog => {
                 if (!selectedTag) return true;
@@ -56,9 +82,8 @@ export default function BlogsPage() {
             .filter(blog => {
                 if (!searchTerm) return true;
                 return blog.title.toLowerCase().includes(searchTerm.toLowerCase());
-            })
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    }, [searchTerm, selectedTag]);
+            });
+    }, [searchTerm, selectedTag, blogData, isLoading]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -71,10 +96,6 @@ export default function BlogsPage() {
     }, [filteredBlogs, currentPage]);
 
     const totalPages = Math.ceil(filteredBlogs.length / POSTS_PER_PAGE);
-
-    if (!isClient) {
-        return null; 
-    }
 
     const FilterSidebar = () => (
         <div className="lg:col-span-1 lg:sticky lg:top-24 h-fit">
@@ -142,51 +163,59 @@ export default function BlogsPage() {
                         <FilterSidebar />
 
                         <div className="lg:col-span-3">
-                            <motion.div
-                                className="grid sm:grid-cols-2 xl:grid-cols-3 gap-8 min-h-[500px]"
-                                variants={containerVariants}
-                                initial="hidden"
-                                animate="visible"
-                            >
-                                <AnimatePresence>
-                                    {paginatedBlogs.map((blog) => (
-                                        <motion.div key={blog.id} variants={itemVariants} exit="exit" layout>
-                                            <BlogCard blog={blog} />
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
-                            </motion.div>
-
-                            {filteredBlogs.length === 0 && (
-                                <div className="text-center py-16 flex flex-col items-center justify-center min-h-[500px]">
-                                    <Search className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-                                    <h3 className="text-2xl font-semibold">No Articles Found</h3>
-                                    <p className="text-muted-foreground mt-2">Try adjusting your search or filter criteria.</p>
+                             {isLoading ? (
+                                <div className="flex justify-center items-center min-h-[500px]">
+                                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
                                 </div>
-                            )}
+                             ) : (
+                                <>
+                                    <motion.div
+                                        className="grid sm:grid-cols-2 xl:grid-cols-3 gap-8 min-h-[500px]"
+                                        variants={containerVariants}
+                                        initial="hidden"
+                                        animate="visible"
+                                    >
+                                        <AnimatePresence>
+                                            {paginatedBlogs.map((blog) => (
+                                                <motion.div key={blog._id} variants={itemVariants} exit="exit" layout>
+                                                    <BlogCard blog={blog} />
+                                                </motion.div>
+                                            ))}
+                                        </AnimatePresence>
+                                    </motion.div>
 
-                            {totalPages > 1 && (
-                                <div className="mt-16 flex justify-center items-center gap-4">
-                                    <Button 
-                                        variant="outline"
-                                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                                        disabled={currentPage === 1}
-                                    >
-                                        <ChevronLeft className="w-4 h-4 mr-2" />
-                                        Previous
-                                    </Button>
-                                    <span className="text-sm text-muted-foreground">
-                                        Page {currentPage} of {totalPages}
-                                    </span>
-                                    <Button 
-                                        variant="outline"
-                                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                                        disabled={currentPage === totalPages}
-                                    >
-                                        Next
-                                        <ChevronRight className="w-4 h-4 ml-2" />
-                                    </Button>
-                                </div>
+                                    {filteredBlogs.length === 0 && (
+                                        <div className="text-center py-16 flex flex-col items-center justify-center min-h-[500px]">
+                                            <Search className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                                            <h3 className="text-2xl font-semibold">No Articles Found</h3>
+                                            <p className="text-muted-foreground mt-2">Try adjusting your search or filter criteria.</p>
+                                        </div>
+                                    )}
+
+                                    {totalPages > 1 && (
+                                        <div className="mt-16 flex justify-center items-center gap-4">
+                                            <Button 
+                                                variant="outline"
+                                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                                disabled={currentPage === 1}
+                                            >
+                                                <ChevronLeft className="w-4 h-4 mr-2" />
+                                                Previous
+                                            </Button>
+                                            <span className="text-sm text-muted-foreground">
+                                                Page {currentPage} of {totalPages}
+                                            </span>
+                                            <Button 
+                                                variant="outline"
+                                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                                disabled={currentPage === totalPages}
+                                            >
+                                                Next
+                                                <ChevronRight className="w-4 h-4 ml-2" />
+                                            </Button>
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>

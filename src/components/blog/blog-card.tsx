@@ -4,9 +4,19 @@ import Image from "next/image";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { User, Calendar } from "lucide-react";
-import type blogData from '@/data/blogs.json';
 
-type Blog = typeof blogData[0];
+type Blog = {
+    _id: string;
+    slug: string;
+    title: string;
+    author: string;
+    date: string;
+    tags: string[];
+    image: string;
+    imageHint?: string;
+    excerpt: string;
+    content: string;
+};
 
 interface BlogCardProps {
     blog: Blog;

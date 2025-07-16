@@ -1,15 +1,13 @@
 'use server';
 
 import { NextResponse, type NextRequest } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
 import { z } from 'zod';
-
-const dataDir = path.join(process.cwd(), 'src/data');
-const blogsFilePath = path.join(dataDir, 'blogs.json');
+import { getDb } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 const BlogSchema = z.object({
-    id: z.number().optional(), // Optional for new posts
+    _id: z.string().optional(),
+    id: z.number().optional(), // Old numeric ID from JSON
     slug: z.string().min(1, 'Slug is required.'),
     title: z.string().min(1, 'Title is required.'),
     author: z.string().min(1, 'Author is required.'),
@@ -21,25 +19,10 @@ const BlogSchema = z.object({
     content: z.string().min(1, 'Content is required.'),
 });
 
-async function readData(filePath: string) {
-    try {
-        await fs.access(filePath);
-        const fileContents = await fs.readFile(filePath, 'utf-8');
-        return JSON.parse(fileContents);
-    } catch (error) {
-        // If file doesn't exist, it's an issue for blogs.
-        console.error("Error reading blogs.json:", error);
-        return [];
-    }
-}
-
-async function writeData(filePath: string, data: any) {
-    await fs.writeFile(filePath, JSON.stringify(data, null, 4));
-}
-
 export async function GET() {
     try {
-        const data = await readData(blogsFilePath);
+        const db = await getDb();
+        const data = await db.collection('blogs').find({}).sort({ date: -1 }).toArray();
         return NextResponse.json({ data }, { status: 200 });
     } catch (error) {
         console.error('API GET Error:', error);
@@ -49,38 +32,38 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
     try {
+        const db = await getDb();
         const body = await request.json();
+        
+        const { _id, ...postData } = body;
+        
         const parsed = BlogSchema.safeParse({
-            ...body,
-            tags: Array.isArray(body.tags) ? body.tags : body.tags.split(',').map((t: string) => t.trim()),
+            ...postData,
+            tags: Array.isArray(postData.tags) ? postData.tags : postData.tags.split(',').map((t: string) => t.trim()),
         });
 
         if (!parsed.success) {
             console.error('Zod parsing error:', parsed.error.issues);
             return NextResponse.json({ message: 'Invalid data format', errors: parsed.error.issues }, { status: 400 });
         }
-
-        const data = await readData(blogsFilePath);
         
-        if (parsed.data.id) {
+        const collection = db.collection('blogs');
+
+        if (_id) {
             // Update existing post
-            const index = data.findIndex((post: any) => post.id === parsed.data.id);
-            if (index > -1) {
-                data[index] = parsed.data;
-            } else {
-                return NextResponse.json({ message: `Blog post with id ${parsed.data.id} not found.` }, { status: 404 });
+            const result = await collection.updateOne(
+                { _id: new ObjectId(_id) },
+                { $set: parsed.data }
+            );
+
+            if (result.matchedCount === 0) {
+                 return NextResponse.json({ message: `Blog post with id ${_id} not found.` }, { status: 404 });
             }
         } else {
             // Create new post
-            const newPost = {
-                ...parsed.data,
-                id: Date.now(), // Assign a new ID
-            };
-            data.unshift(newPost); // Add to the beginning of the array
+            await collection.insertOne(parsed.data);
         }
         
-        await writeData(blogsFilePath, data);
-
         return NextResponse.json({ message: 'Blog post saved successfully' }, { status: 201 });
     } catch (error) {
         console.error('API POST Error:', error);

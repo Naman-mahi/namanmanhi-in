@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -19,7 +20,7 @@ const slides = [
     descriptionLine1: "Harness the power of AI to build",
     descriptionLine2: "smarter, more efficient applications.",
     image: {
-      src: "https://placehold.co/550x550.png",
+      src: "https://images.unsplash.com/photo-1534723452862-4c874018d66d?q=80&w=550&auto=format&fit=crop",
       hint: "AI robot vector"
     },
   },
@@ -29,7 +30,7 @@ const slides = [
     descriptionLine1: "Create secure, transparent solutions",
     descriptionLine2: "with blockchain technology.",
     image: {
-      src: "https://placehold.co/550x550.png",
+      src: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=550&auto=format&fit=crop",
       hint: "blockchain network vector"
     },
   },
@@ -39,7 +40,7 @@ const slides = [
     descriptionLine1: "Build immersive, interactive worlds",
     descriptionLine2: "in the metaverse.",
     image: {
-      src: "https://placehold.co/550x550.png",
+      src: "https://images.unsplash.com/photo-1639762681057-408e52192e50?q=80&w=550&auto=format&fit=crop",
       hint: "metaverse vr vector"
     },
   },
@@ -49,8 +50,8 @@ const slides = [
     descriptionLine1: "High-performance applications for",
     descriptionLine2: "both iOS and Android.",
     image: {
-      src: "https://placehold.co/550x550.png",
-      hint: "mobile app interface vector"
+      src: "https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=550&auto=format&fit=crop",
+      hint: "mobile app interface"
     },
   },
   {
@@ -59,8 +60,8 @@ const slides = [
     descriptionLine1: "Modern, responsive websites that",
     descriptionLine2: "drive user engagement.",
     image: {
-      src: "https://placehold.co/550x550.png",
-      hint: "web design code vector"
+      src: "https://images.unsplash.com/photo-1542744095-291d1f67b221?q=80&w=550&auto=format&fit=crop",
+      hint: "web design code"
     },
   },
   {
@@ -69,8 +70,8 @@ const slides = [
     descriptionLine1: "Create captivating games for",
     descriptionLine2: "a global audience.",
     image: {
-      src: "https://placehold.co/550x550.png",
-      hint: "game controller vector"
+      src: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=550&auto=format&fit=crop",
+      hint: "game controller"
     },
   },
   {
@@ -79,8 +80,8 @@ const slides = [
     descriptionLine1: "Build powerful, scalable online stores",
     descriptionLine2: "that drive sales.",
     image: {
-      src: "https://placehold.co/550x550.png",
-      hint: "ecommerce online shopping vector"
+      src: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=550&auto=format&fit=crop",
+      hint: "ecommerce online shopping"
     },
   },
   {
@@ -89,8 +90,8 @@ const slides = [
     descriptionLine1: "Develop smart, connected devices",
     descriptionLine2: "for a seamless ecosystem.",
     image: {
-      src: "https://placehold.co/550x550.png",
-      hint: "iot smart home vector"
+      src: "https://images.unsplash.com/photo-1586796676735-81639a04a34b?q=80&w=550&auto=format&fit=crop",
+      hint: "iot smart home"
     },
   },
   {
@@ -99,8 +100,8 @@ const slides = [
     descriptionLine1: "Tailor Salesforce to fit your unique",
     descriptionLine2: "business processes.",
     image: {
-      src: "https://placehold.co/550x550.png",
-      hint: "salesforce cloud crm vector"
+      src: "https://images.unsplash.com/photo-1616401784845-180844d1baed?q=80&w=550&auto=format&fit=crop",
+      hint: "salesforce cloud crm"
     },
   },
 ];

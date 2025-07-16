@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(req: NextRequest) {
@@ -9,9 +10,9 @@ export function middleware(req: NextRequest) {
       const authValue = basicAuth.split(' ')[1];
       const [user, pwd] = atob(authValue).split(':');
 
-      // These are the credentials you'll use to log in
-      const validUser = 'admin';
-      const validPass = '2020';
+      // Use environment variables for credentials
+      const validUser = process.env.ADMIN_USERNAME;
+      const validPass = process.env.ADMIN_PASSWORD;
 
       if (user === validUser && pwd === validPass) {
         return NextResponse.next();
